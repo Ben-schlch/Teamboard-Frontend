@@ -18,11 +18,24 @@ export class AppComponent {
   title = 'Teamboard-Client';
 
   protected readonly _loginForm = this._formBuilder.group({
-    userType: ['local', [Validators.required]],
     username: ['', [Validators.required]],
     password:['', [Validators.required]],
-    rememberMe: ['false'],
   });
+
+  protected readonly _registrationForm = this._formBuilder.group({
+    username: ['', [Validators.required]],
+    password:['', [Validators.required]],
+    password_wdh:['', [Validators.required]]
+  });
+  // opened: boolean = true;
+  basic:any = true;
+
+  // @ts-ignore
+  _isChecked: any =  document.getElementById("isRegistration")?.checked;
+
+
+
+
 
   _login() {
     if(!this._loginForm.valid){
@@ -30,6 +43,30 @@ export class AppComponent {
     }
 
     const person = this._loginForm.getRawValue();
-    this.service.login(person);
+    if(this.service.login(person)){
+      // this.opened = false;
+    }
+  }
+
+  _register() {
+    if(!this._registrationForm.valid){
+      return;
+    }
+
+    const person_register = this._registrationForm.getRawValue();
+
+    if(person_register.password !== person_register.password_wdh){
+      // set form to invalid
+      return;
+    }
+
+    const person = {
+      username: person_register.username,
+      password: person_register.password
+    }
+    if(this.service.register(person)){
+
+    }
+
   }
 }

@@ -24,41 +24,93 @@
 
 </style>
 
+
+
+<!--<clr-modal [(clrModalOpen)]="basic">-->
+<!--  <h3 class="modal-title">I have a nice title</h3>-->
+<!--  <div class="modal-body">-->
+<!--    <p>But not much to say...</p>-->
+<!--  </div>-->
+<!--  <div class="modal-footer">-->
+<!--    <button type="button" class="btn btn-outline" (click)="basic = false">Cancel</button>-->
+<!--    <button type="button" class="btn btn-primary" (click)="basic = false">Ok</button>-->
+<!--  </div>-->
+<!--</clr-modal>-->
+
 <!-- Toolbar -->
-<<div class="login-wrapper">
-  <form [formGroup]="_loginForm"
-        (ngSubmit)="_login()"
-  >
-    <section class="title">
-      <h3 class="welcome">Welcome to</h3>
-      Company Product Name
-      <h5 class="hint">Use your Company ID to sign in or create one now</h5>
-    </section>
-    <div class="login-group">
-      <clr-select-container>
-        <label>User Role</label>
-        <select clrSelect name="type" formControlName="userType">
-          <option value="local">Local Users</option>
-          <option value="admin">Administrator</option>
-        </select>
-      </clr-select-container>
-      <clr-input-container>
-        <label class="clr-sr-only">Username</label>
-        <input type="text" name="username" clrInput placeholder="Username" formControlName="username"/>
-      </clr-input-container>
-      <clr-password-container>
-        <label class="clr-sr-only">Password</label>
-        <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
-      </clr-password-container>
-      <clr-checkbox-wrapper>
-        <label>Remember me</label>
-        <input type="checkbox" name="rememberMe" clrCheckbox formControlName="rememberMe"/>
-      </clr-checkbox-wrapper>
-      <div class="error active">
-        Invalid user name or password
+
+
+<div class="modal">
+  <div class="modal-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Login / Registrierung</h3>
       </div>
-      <button type="submit" class="btn btn-primary">Login</button>
-      <a href="javascript://" class="signup">Sign up for a Company ID</a>
+      <div class="modal-body">
+        <clr-checkbox-wrapper>
+          <label>Neuer User</label>
+          <input type="checkbox" name="rememberMe" clrCheckbox (change)="true" #isRegistration/>
+
+        </clr-checkbox-wrapper>
+        <p>
+        <form [formGroup]="_loginForm"
+                 (ngSubmit)="_login()"
+              *ngIf="!isRegistration.checked"
+        >
+        <div class="login-group">
+          <clr-input-container>
+            <label class="clr-sr-only">Username</label>
+            <input type="text" name="username" clrInput placeholder="Username" formControlName="username"/>
+          </clr-input-container>
+          <clr-password-container>
+            <label class="clr-sr-only">Password</label>
+            <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
+          </clr-password-container>
+
+          <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->
+          <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active" >
+            Invalid user name or password
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+      </form>
+
+        <form [formGroup]="_registrationForm"
+              (ngSubmit)="_register()"
+              *ngIf="isRegistration.checked"
+        >
+          <div class="register-group">
+            <clr-input-container>
+              <label class="clr-sr-only">Username</label>
+              <input type="text" name="username" clrInput placeholder="Username" formControlName="username"/>
+            </clr-input-container>
+            <clr-password-container>
+              <label class="clr-sr-only">Password</label>
+              <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
+            </clr-password-container>
+
+            <clr-password-container *ngIf="isRegistration.checked">
+              <label class="clr-sr-only">Password wiederholen</label>
+              <input type="password" name="password" clrPassword placeholder="Password Wiederholen" formControlName="password_wdh"/>
+            </clr-password-container>
+
+            <!-- Wenn loginform ungültig ist Fehlermeldung anzeigen-->
+            <div *ngIf="_loginForm.invalid" class="error active" >
+              Invalid user name or password
+            </div>
+            <button type="submit" class="btn btn-primary">Registrieren</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </form>
+  </div>
 </div>
+<div class="modal-backdrop" aria-hidden="true"></div>
+
+
+
+<!--<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">-->
+<<div class="login-wrapper">
+  <h1>TEST</h1>
+</div>
+<!--</clr-modal>-->
