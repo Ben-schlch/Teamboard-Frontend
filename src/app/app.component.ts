@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import { NgModule } from '@angular/core';
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import { BrowserModule } from '@angular/platform-browser';
@@ -28,7 +28,11 @@ export class AppComponent {
     password_wdh:['', [Validators.required]]
   });
   // opened: boolean = true;
-  basic:any = true;
+  //basic:any = true;
+
+  @Input()
+  dep: any;
+
 
   // @ts-ignore
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
@@ -37,14 +41,19 @@ export class AppComponent {
 
 
 
+
   _login() {
+    //DELET
+    this.closeModal();
+
     if(!this._loginForm.valid){
       return;
     }
 
     const person = this._loginForm.getRawValue();
     if(this.service.login(person)){
-      // this.opened = false;
+      
+      this.closeModal();
     }
   }
 
@@ -56,7 +65,7 @@ export class AppComponent {
     const person_register = this._registrationForm.getRawValue();
 
     if(person_register.password !== person_register.password_wdh){
-      // set form to invalid
+      // set form to invalid?
       return;
     }
 
@@ -65,8 +74,22 @@ export class AppComponent {
       password: person_register.password
     }
     if(this.service.register(person)){
-
+      
+      this.closeModal();
+    
     }
 
+  }
+
+
+  protected closeModal() {
+    
+    //remove logindialog
+    const loginDialog = document.querySelector('.modal');
+    loginDialog?.remove();
+    
+    //remove Backdrop
+    const loginBackdrop = document.querySelector('.modal-backdrop');
+    loginBackdrop?.remove();
   }
 }

@@ -7,7 +7,7 @@ export interface Person {
 }
 
 export interface Message {
-  function: string, content: any
+  function: string, person: Person, content: any
 }
 
 // Create WebSocket connection.
@@ -16,7 +16,7 @@ const socket = new WebSocket("wss://localhost:8080");
 
 // Connection opened
 socket.addEventListener("open", (event) => {
-  socket.send("Hello Server!");
+  socket.send("Initial Request");
 });
 
 // Listen for messages
@@ -39,10 +39,12 @@ export class Service {
 
       const message =  {
         function: "login",
-        content: person
+        person: person,
+        content: null
       }
       //socket api abfragen zu login
       socket.send(JSON.stringify(message));
+
 
     //return logged in ?
     return true;
@@ -51,14 +53,17 @@ export class Service {
   public register(person: Person): boolean{
     console.log(person);
 
-    //socket api abfragen zum registrieren
+    const message =  {
+      function: "register",
+      person: person,
+      content: null
+    }
+    //socket api abfragen zu registrieren
+    socket.send(JSON.stringify(message));
 
-    //return registered and logged in?
+    //todo: return registered and logged in?
     return true;
   }
-
-
-  //let socket = new WebSocket("wss://localhost:8080");
 
 
 }
