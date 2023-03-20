@@ -35,102 +35,14 @@
 
 
   <div class="header-nav clr-nav-level-1">
-<!--    <a *ngFor="let board of (_boards$ | async); let index = index" (click)="showContent(board)" class="nav-link">-->
-<!--      <span class="nav-text">{{board}}</span>-->
-<!--    </a>-->
-  </div>
-
-  <div class="settings">
-    <a href="/" class="nav-link nav-icon">
-      <cds-icon shape="cog"></cds-icon>
+    <a *ngFor="let board of (_boards$ | async); let index = index" (click)="showContent(board)" class="nav-link">
+      <span class="nav-text">{{board}}</span>
     </a>
   </div>
 
 </header>
 
-
-<!--<mat-tab-group mat-align-tabs="start">-->
-<!--  <mat-tab label="First">Content 1</mat-tab>-->
-<!--  <mat-tab label="Second">Content 2</mat-tab>-->
-<!--  <mat-tab label="Third">Content 3</mat-tab>-->
-<!--</mat-tab-group>-->
-
-
 <body>
-
-<clr-tabs>
-  <clr-tab *ngFor="let board of _boards$ | async">
-    <button clrTabLink id=board.name>{{board.name}}</button>
-    <clr-tab-content id="content1" *clrIfActive>
-      <clr-accordion clrAccordionMultiPanel="true">
-        <clr-accordion-panel *ngFor="let task of board.tasks">
-          <clr-accordion-title>
-            {{task.name}}
-
-            <button
-              type="button"
-              class="btn"
-              (click)="_addSubtask(board, task);
-                                        $event.preventDefault();
-                                        $event.stopPropagation()"
-            >
-              Button
-              <clr-icon shape="plus"></clr-icon>
-            </button>
-
-
-          </clr-accordion-title>
-          <clr-accordion-content *clrIfExpanded>
-            <div cdkDropListGroup>
-              <ng-container *ngFor="let state of task.states">
-
-                <div class="example-container">
-
-                  <div
-                    cdkDropList
-                    [id]="state.state"
-                    #{{state.state}} = "cdkDropList"
-                    [cdkDropListData]="state.subtasks"
-
-
-                    (cdkDropListDropped)="drop($event)"
-                    class="example-list">
-
-                    <h2>{{state.state}}</h2>
-
-
-                    <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
-                      <h3 class="card-header">{{subtask.name}}</h3>
-                      <div class="card-block">
-                        <h4 class="card-title">{{subtask.worker}}</h4>
-                        <div class="card-text">
-                          {{subtask.description}}
-                        </div>
-                      </div>
-                      <div class="card-footer">
-
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-              </ng-container>
-
-            </div>
-          </clr-accordion-content>
-        </clr-accordion-panel>
-
-      </clr-accordion>
-    </clr-tab-content>
-  </clr-tab>
-
-</clr-tabs>
-
-
-
-
-
 
 </body>
 
@@ -150,7 +62,7 @@
         </clr-checkbox-wrapper>
         <p>
         <form [formGroup]="_loginForm"
-              (ngSubmit)="_login()"
+                 (ngSubmit)="_login()"
               *ngIf="!isRegistration.checked"
         >
         <div class="login-group">

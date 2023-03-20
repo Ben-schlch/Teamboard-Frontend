@@ -20,6 +20,8 @@ export class AppComponent {
   private readonly _formBuilder = inject(NonNullableFormBuilder);
   title = 'Teamboard-Client';
 
+
+
   protected readonly _loginForm = this._formBuilder.group({
     email: ['', [Validators.required]],
     password:['', [Validators.required]],
@@ -39,6 +41,11 @@ export class AppComponent {
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
 
   _websocketId: number = -1;
+  protected _boards$ = this.service.getBoards().pipe();
+
+
+
+
 
   _login() {
 
@@ -118,6 +125,8 @@ export class AppComponent {
 
   protected closeModal() {
 
+  protected closeModal() {
+    
     //remove logindialog
     const loginDialog = document.querySelector('.modal');
     loginDialog?.remove();
@@ -125,5 +134,9 @@ export class AppComponent {
     //remove Backdrop
     const loginBackdrop = document.querySelector('.modal-backdrop');
     loginBackdrop?.remove();
+  }
+
+  showContent(boardName: string) {
+    console.log(boardName);
   }
 }
