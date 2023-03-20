@@ -17,6 +17,8 @@ export class AppComponent {
   private readonly _formBuilder = inject(NonNullableFormBuilder);
   title = 'Teamboard-Client';
 
+
+
   protected readonly _loginForm = this._formBuilder.group({
     username: ['', [Validators.required]],
     password:['', [Validators.required]],
@@ -34,8 +36,11 @@ export class AppComponent {
   dep: any;
 
 
+
   // @ts-ignore
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
+
+  protected _boards$ = this.service.getBoards().pipe();
 
 
 
@@ -52,7 +57,7 @@ export class AppComponent {
 
     const person = this._loginForm.getRawValue();
     if(this.service.login(person)){
-      
+
       this.closeModal();
     }
   }
@@ -65,6 +70,8 @@ export class AppComponent {
     const person_register = this._registrationForm.getRawValue();
 
     if(person_register.password !== person_register.password_wdh){
+
+      alert("Passwörter nicht identisch");
       // set form to invalid?
       return;
     }
@@ -74,22 +81,26 @@ export class AppComponent {
       password: person_register.password
     }
     if(this.service.register(person)){
-      
+
       this.closeModal();
-    
+
     }
 
   }
 
 
   protected closeModal() {
-    
+
     //remove logindialog
     const loginDialog = document.querySelector('.modal');
     loginDialog?.remove();
-    
+
     //remove Backdrop
     const loginBackdrop = document.querySelector('.modal-backdrop');
     loginBackdrop?.remove();
+  }
+
+  showContent(boardName: string) {
+    console.log(boardName);
   }
 }

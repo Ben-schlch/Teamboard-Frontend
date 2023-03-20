@@ -27,6 +27,25 @@
 
 <!-- Toolbar -->
 
+<header>
+  <div class="branding">
+    <span class="title">Projekt Boards</span>
+  </div>
+  <div class="nav-divider"></div>
+
+
+  <div class="header-nav clr-nav-level-1">
+    <a *ngFor="let board of (_boards$ | async); let index = index" (click)="showContent(board)" class="nav-link">
+      <span class="nav-text">{{board}}</span>
+    </a>
+  </div>
+
+</header>
+
+<body>
+
+</body>
+
 
 
 <div class="modal">
@@ -95,11 +114,3 @@
   </div>
 </div>
 <div class="modal-backdrop" aria-hidden="true"></div>
-
-
-
-<!--<clr-modal [(clrModalOpen)]="opened" [clrModalClosable]="false">-->
-<<div>
-  <h1>TEST</h1>
-</div>
-<!--</clr-modal>-->

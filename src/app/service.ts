@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 export interface Person {
   username: string, password: string
@@ -12,6 +12,7 @@ export interface Message {
 
 // Create WebSocket connection.
 const socket = new WebSocket("wss://localhost:8080");
+let aktualPerson: Person | null = null;
 
 
 // Connection opened
@@ -22,17 +23,24 @@ socket.addEventListener("open", (event) => {
 // Listen for messages
 socket.addEventListener("message", (event) => {
   console.log("Message from server ", event.data);
+  //todo: do something
 });
 
 @Injectable({ providedIn: 'root'})
 export class Service {
+  getBoards(): Observable<string[]> {
 
-  //declare socket
+    let boards:Observable<string[]> = of(["testboard1", "testboard2", "testboard3"]);
+    //todo: socket anfragen nach boards von person
 
 
-  //hier ist die ganze Kommunikation zum Backend
+    return boards;
+  }
 
-  //on init  open socket
+  getPerson(): Person | null{
+    return aktualPerson;
+  }
+
 
   public login(person: Person): boolean {
       console.log(person);
@@ -44,6 +52,8 @@ export class Service {
       }
       //socket api abfragen zu login
       socket.send(JSON.stringify(message));
+
+      aktualPerson = person;
 
 
     //return logged in ?
@@ -60,6 +70,8 @@ export class Service {
     }
     //socket api abfragen zu registrieren
     socket.send(JSON.stringify(message));
+
+    aktualPerson = person;
 
     //todo: return registered and logged in?
     return true;
