@@ -44,6 +44,102 @@
 
 <body>
 
+<div cdkDropListGroup>
+
+</div>
+
+<!--<div class="example-container" style="display: inline-block">-->
+<!--  <h2>To do</h2>-->
+
+<!--  <div-->
+<!--    cdkDropList-->
+<!--    #todoList="cdkDropList"-->
+<!--    [cdkDropListData]="todo"-->
+<!--    [cdkDropListConnectedTo]="[doneList]"-->
+<!--    class="example-list"-->
+<!--    (cdkDropListDropped)="drop($event)">-->
+<!--    <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<div class="example-container">-->
+<!--  <h2>Done</h2>-->
+
+<!--  <div-->
+<!--    cdkDropList-->
+<!--    #doneList="cdkDropList"-->
+<!--    [cdkDropListData]="done"-->
+<!--    [cdkDropListConnectedTo]="[todoList]"-->
+<!--    class="example-list"-->
+<!--    (cdkDropListDropped)="drop($event)">-->
+<!--    <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>-->
+<!--  </div>-->
+<!--</div>-->
+
+
+
+
+<clr-accordion clrAccordionMultiPanel="true">
+  <clr-accordion-panel *ngFor="let task of _tasks$ | async">
+    <clr-accordion-title>{{task.name}}</clr-accordion-title>
+    <clr-accordion-content *clrIfExpanded>
+      <div cdkDropListGroup>
+        <ng-container *ngFor="let state of task.states">
+
+          <div class="example-container">
+
+            <div
+              cdkDropList
+              [id]="state.state"
+              #{{state.state}} = "cdkDropList"
+              [cdkDropListData]="state.subtasks"
+
+
+              (cdkDropListDropped)="drop($event)"
+
+              class="example-list">
+
+              <h2>{{state.state}}</h2>
+
+
+                <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
+                  <h3 class="card-header">{{subtask.name}}</h3>
+                  <div class="card-block">
+                    <h4 class="card-title">{{subtask.worker}}</h4>
+                    <div class="card-text">
+                        {{subtask.description}}
+                    </div>
+                  </div>
+                  <div class="card-footer">
+
+                  </div>
+               </div>
+              </div>
+
+          </div>
+
+
+
+
+
+<!--          <div-->
+<!--            cdkDropList-->
+<!--            [cdkDropListData]="state.state"-->
+<!--            [cdkDropListConnectedTo]="[todoList]"-->
+<!--            class="example-list"-->
+<!--            (cdkDropListDropped)="drop($event)">-->
+<!--            <div class="example-box" *ngFor="let subtask of state.subtasks" cdkDrag>{{subtask.name}}</div>-->
+<!--          </div>-->
+
+
+        </ng-container>
+
+      </div>
+    </clr-accordion-content>
+  </clr-accordion-panel>
+
+</clr-accordion>
+
 </body>
 
 
