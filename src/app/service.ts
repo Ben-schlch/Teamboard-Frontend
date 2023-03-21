@@ -10,6 +10,22 @@ export interface Message {
   function: string, person: Person, content: any
 }
 
+export interface Task{
+  name: string,
+  states: State[]
+}
+
+export interface State{
+  state: string,
+  subtasks: Subtask[]
+}
+
+export interface Subtask{
+  name: string,
+  description: string,
+  worker: Person["username"]
+}
+
 // Create WebSocket connection.
 const socket = new WebSocket("wss://localhost:8080");
 let aktualPerson: Person | null = null;
@@ -28,9 +44,66 @@ socket.addEventListener("message", (event) => {
 
 @Injectable({ providedIn: 'root'})
 export class Service {
+  getTasks(): Observable<Task[]> {
+      let subtask1: Subtask = {
+        name: "Subtask1",
+        description: "test description1",
+        worker: "Testworker1"
+      }
+    let subtask2: Subtask = {
+      name: "Subtask2",
+      description: "test description2",
+      worker: "Testworker2"
+    }
+
+    let subtask11: Subtask = {
+      name: "Subtask1",
+      description: "test description1",
+      worker: "Testworker1"
+    }
+    let subtask12: Subtask = {
+      name: "Subtask2",
+      description: "test description2",
+      worker: "Testworker2"
+    }
+
+    let subtask3: Subtask = {
+      name: "Subtask3",
+      description: "test description",
+      worker: "Testworker2"
+    }
+
+    let state1: State = {
+        state: "Done",
+      subtasks: [subtask3]
+    }
+    let state2: State = {
+      state: "ToDo",
+      subtasks: [subtask1, subtask2]
+    }
+
+    let state3: State = {
+      state: "ToDo",
+      subtasks: [subtask11, subtask12]
+    }
+
+    let task1: Task = {
+        name: "Testtask1",
+      states: [state2, state1]
+    }
+
+    let task2: Task = {
+      name: "Testtask2",
+      states: [state3]
+    }
+
+    let tasksObservable: Observable<Task[]> = of([task1, task2]);
+
+    return tasksObservable;
+  }
   getBoards(): Observable<string[]> {
 
-    let boards:Observable<string[]> = of(["testboard1", "testboard2", "testboard3"]);
+    let boards:Observable<string[]> = of(["Testboard1", "Testboard2", "Testboard3"]);
     //todo: socket anfragen nach boards von person
 
 

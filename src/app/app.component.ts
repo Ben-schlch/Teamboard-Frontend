@@ -5,7 +5,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 // import { AppComponent } from './app.component';
-import {Service} from './service';
+import {Service, State, Subtask} from './service';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-root',
@@ -13,9 +14,26 @@ import {Service} from './service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
   private readonly service = inject(Service)
   private readonly _formBuilder = inject(NonNullableFormBuilder);
   title = 'Teamboard-Client';
+
+  todo = [
+    'Get to work',
+    'Pick up groceries',
+    'Go home',
+    'Fall asleep'
+  ];
+
+  done = [
+    'Get up',
+    'Brush teeth',
+    'Take a shower',
+    'Check e-mail',
+    'Walk dog'
+  ];
+
 
 
 
@@ -41,6 +59,7 @@ export class AppComponent {
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
 
   protected _boards$ = this.service.getBoards().pipe();
+  protected _tasks$ = this.service.getTasks().pipe();
 
 
 
@@ -102,5 +121,53 @@ export class AppComponent {
 
   showContent(boardName: string) {
     console.log(boardName);
+  }
+
+  drop(event: CdkDragDrop<Subtask[]>) {
+    if (event.previousContainer === event.container) {
+      console.log("if block")
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      console.log("else block")
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+    }
+  }
+
+  _getSubtasks(subtasks: Subtask[]): string[] {
+    let subtaskString = [];
+
+    for (const subtask of subtasks) {
+      subtaskString.push(subtask.name);
+    }
+    return subtaskString;
+  }
+
+  _getStates(states: State[]): string[] {
+    let statesStrings = [];
+
+    for (const state of states) {
+      statesStrings.push(state.state)
+    }
+
+    return statesStrings;
+  }
+
+  _getNextState(states: State[], state_get: State): string {
+    let _isState = false;
+
+    for (const state of states) {
+      if(_isState){
+        // @ts-ignore
+        return state.state;
+      }
+
+      if(state === state_get){
+        _isState = true;
+      }
+    }
+    return state_get.state;
   }
 }
