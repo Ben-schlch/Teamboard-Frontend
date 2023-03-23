@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 // import { AppComponent } from './app.component';
-import {Service, State, Subtask} from './service';
+import {Service, State, Subtask, Task} from './service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {Person, Service} from './service';
 import { ToastrService } from 'ngx-toastr';
@@ -39,12 +39,13 @@ export class AppComponent {
 
 
 
-
+  //todo: add Email?
   protected readonly _loginForm = this._formBuilder.group({
     email: ['', [Validators.required]],
     password:['', [Validators.required]],
   });
 
+  //todo: add Email
   protected readonly _registrationForm = this._formBuilder.group({
     username: ['', [Validators.required]],
     email: ['', [Validators.required]],
@@ -58,10 +59,14 @@ export class AppComponent {
   // @ts-ignore
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
 
+  protected _boards$ = this.service.getBoards();
+  //protected _tasks$ = this.service.getTasks().pipe();
   _websocketId: number = -1;
   protected _boards$ = this.service.getBoards().pipe();
   protected _tasks$ = this.service.getTasks().pipe();
 
+
+  protected _tasks$ = this.service.getTasks("null");
 
 
 
@@ -100,6 +105,8 @@ export class AppComponent {
     });
 
   }
+
+
 
   _register() {
     if(!this._registrationForm.valid){
@@ -157,14 +164,15 @@ export class AppComponent {
 
   showContent(boardName: string) {
     console.log(boardName);
+
+    this._tasks$ = this.service.getTasks(boardName);
+
   }
 
   drop(event: CdkDragDrop<Subtask[]>) {
     if (event.previousContainer === event.container) {
-      console.log("if block")
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      console.log("else block")
       transferArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
@@ -205,5 +213,9 @@ export class AppComponent {
       }
     }
     return state_get.state;
+  }
+
+  _addSubtask($event: MouseEvent, task: Task) {
+    //todo: open modal to add
   }
 }
