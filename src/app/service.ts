@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import {map, Observable, of } from 'rxjs';
 
 export interface Person {
   username: string, password: string
@@ -8,6 +8,11 @@ export interface Person {
 
 export interface Message {
   function: string, person: Person, content: any
+}
+
+export interface Board{
+  name: string,
+  tasks: Task[]
 }
 
 export interface Task{
@@ -27,24 +32,36 @@ export interface Subtask{
 }
 
 // Create WebSocket connection.
-const socket = new WebSocket("wss://localhost:8080");
+//const socket = new WebSocket("ws://localhost:8080");
 let aktualPerson: Person | null = null;
+let boardsString: string[]  = ["DefaultBoard"];
 
 
 // Connection opened
-socket.addEventListener("open", (event) => {
-  socket.send("Initial Request");
-});
-
-// Listen for messages
-socket.addEventListener("message", (event) => {
-  console.log("Message from server ", event.data);
-  //todo: do something
-});
+// socket.addEventListener("open", (event) => {
+//   socket.send("Initial Request");
+//
+//
+// });
+//
+// // Listen for messages
+// socket.addEventListener("message", (event) => {
+//   console.log("Message from server ", event.data);
+//
+//   if(event.data.contains("login")){
+//
+//   }else if(event.data.contains("tasks")){
+//        // Service.getTasks()
+//   }
+//   //todo: do something
+// });
 
 @Injectable({ providedIn: 'root'})
 export class Service {
-  getTasks(): Observable<Task[]> {
+
+  private readonly _http = inject(HttpClient);
+
+  getTasks(boardName: string): Observable<Task[]> {
       let subtask1: Subtask = {
         name: "Subtask1",
         description: "test description1",
@@ -99,15 +116,50 @@ export class Service {
 
     let tasksObservable: Observable<Task[]> = of([task1, task2]);
 
+    //this._service_tasks$ = tasksObservable;
+
+
+    //get Boards to iterate over them
+    this.getBoards();
+
     return tasksObservable;
+
+    // @ts-ignore
+    //return this._http.post<Task[]>('/api/getBoard/' + boardName, aktualPerson);
   }
+
+  getStringBoards(): string[]{
+    let result: string[];
+    this.getBoards().subscribe(boards => result = boards);
+
+    // @ts-ignore
+    return result;
+  }
+
+
   getBoards(): Observable<string[]> {
 
+
     let boards:Observable<string[]> = of(["Testboard1", "Testboard2", "Testboard3"]);
-    //todo: socket anfragen nach boards von person
+    // //todo: socket anfragen nach boards von person
+    //
+    //
+     return boards;
 
+    //return this._http.post<string[]>('/api/getBoardsNames/', aktualPerson);
 
-    return boards;
+    // this._http.post<string[]>('/api/getBoardsNames/', aktualPerson).subscribe({
+    //     next: (boards) => {
+    //       boardsString = boards
+    //     },
+    //     error: (error) => {
+    //       //todo: do error handling
+    //       console.log(error.status);
+    //     }
+    //   });
+    //
+    // let boards : Observable<string[]> = of(boardsString);
+    // return boards;
   }
 
   getPerson(): Person | null{
@@ -124,13 +176,15 @@ export class Service {
         content: null
       }
       //socket api abfragen zu login
-      socket.send(JSON.stringify(message));
+
 
       aktualPerson = person;
 
+    // this._http.get<boolean>('/api/login/', aktualPerson).subscribe()
+
 
     //return logged in ?
-    return true;
+    return false;
   }
 
   public register(person: Person): boolean{
@@ -142,7 +196,6 @@ export class Service {
       content: null
     }
     //socket api abfragen zu registrieren
-    socket.send(JSON.stringify(message));
 
     aktualPerson = person;
 
@@ -150,5 +203,5 @@ export class Service {
     return true;
   }
 
-
 }
+
