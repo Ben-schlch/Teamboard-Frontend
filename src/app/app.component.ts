@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 // import { AppComponent } from './app.component';
 import {Service} from './service';
+import { ToastrService } from 'ngx-toastr';
+import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +15,7 @@ import {Service} from './service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  constructor(private toastr: ToastrService) {}
   private readonly service = inject(Service)
   private readonly _formBuilder = inject(NonNullableFormBuilder);
   title = 'Teamboard-Client';
@@ -37,7 +40,7 @@ export class AppComponent {
   // @ts-ignore
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
 
-
+  _websocketId: number = -1;
 
 
 
@@ -51,10 +54,28 @@ export class AppComponent {
     }
 
     const person = this._loginForm.getRawValue();
-    if(this.service.login(person)){
-      
-      this.closeModal();
-    }
+    this.service.login(person).subscribe({
+      next: (webocketId: number) => {
+        this._websocketId = webocketId;
+        this.closeModal();
+        this.toastr.success('Logged in successfully')
+      },
+      error: (error) => {
+        switch (error.status) {
+          case HttpStatusCode.ExpectationFailed:
+            this.toastr.error('Login failed, server unreachable');
+            break;
+          case HttpStatusCode.NotAcceptable:
+            this.toastr.error('Login failed, you are not a correct User');
+            break;
+          default:
+            this.toastr.error('Login failed');
+        }
+
+        this.toastr.error(error.message);
+      },
+    });
+
   }
 
   _register() {
@@ -73,21 +94,24 @@ export class AppComponent {
       username: person_register.username,
       password: person_register.password
     }
-    if(this.service.register(person)){
-      
-      this.closeModal();
-    
+    this.service.register(person).subscribe({
+      next: (webocketId: number) => {
+        this._websocketId = webocketId;
+        this.closeModal();
+      },
+      error: (error) => {
+        this.toastr.error(error.message);
+      }
+    });
     }
-
-  }
 
 
   protected closeModal() {
-    
+
     //remove logindialog
     const loginDialog = document.querySelector('.modal');
     loginDialog?.remove();
-    
+
     //remove Backdrop
     const loginBackdrop = document.querySelector('.modal-backdrop');
     loginBackdrop?.remove();

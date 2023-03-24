@@ -6,63 +6,21 @@ export interface Person {
   username: string, password: string
 }
 
-export interface Message {
-  function: string, person: Person, content: any
-}
-
-// Create WebSocket connection.
-const socket = new WebSocket("wss://localhost:8080");
-
-
-// Connection opened
-socket.addEventListener("open", (event) => {
-  socket.send("Initial Request");
-});
-
-// Listen for messages
-socket.addEventListener("message", (event) => {
-  console.log("Message from server ", event.data);
-});
 
 @Injectable({ providedIn: 'root'})
 export class Service {
 
-  //declare socket
 
+  private readonly _http = inject(HttpClient);
 
-  //hier ist die ganze Kommunikation zum Backend
-
-  //on init  open socket
-
-  public login(person: Person): boolean {
-      console.log(person);
-
-      const message =  {
-        function: "login",
-        person: person,
-        content: null
-      }
-      //socket api abfragen zu login
-      socket.send(JSON.stringify(message));
-
-
-    //return logged in ?
-    return true;
+  public login(person: Person): Observable<number> {
+    
+      return this._http.post<number>("/login", person);
   }
 
-  public register(person: Person): boolean{
-    console.log(person);
+  public register(person: Person): Observable<number>{
 
-    const message =  {
-      function: "register",
-      person: person,
-      content: null
-    }
-    //socket api abfragen zu registrieren
-    socket.send(JSON.stringify(message));
-
-    //todo: return registered and logged in?
-    return true;
+    return this._http.post<number>("/register", person);
   }
 
 
