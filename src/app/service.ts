@@ -168,7 +168,7 @@ export class Service {
       worker: "Testworker2"
     }
 
-  private readonly _http = inject(HttpClient);
+
     let subtask3: Subtask = {
       name: "Subtask3",
       description: "test description",
@@ -204,11 +204,10 @@ export class Service {
       tasks: [task1, task2]
     }
 
-    let board2 : Board= {
+    let board2: Board = {
       name: 'Board 2',
-      tasks: [task1, task2]
+      tasks: []
     }
-
 
 
     let boardObservable: Observable<Board[]> = from([[board1, board2]]);
@@ -216,33 +215,18 @@ export class Service {
     return boardObservable;
     //return this._http.post<string[]>('/api/getBoardsNames/', aktualPerson);
 
-  public login(person: Person): Observable<number> {
-    return boards;
   }
 
+  public login(person: Person): Observable<number> {
       return this._http.post<number>("/login", person);
+      //only for tests!!!!
+      //return of(0);
   }
 
   public register(person: Person): Observable<number>{
 
     return this._http.post<number>("/register", person);
   }
-
-
-    const message =  {
-      function: "register",
-      person: person,
-      content: null
-    }
-    //socket api abfragen zu registrieren
-    socket.send(JSON.stringify(message));
-
-    aktualPerson = person;
-
-    //todo: return registered and logged in?
-    return true;
-  }
-
 
 }
 

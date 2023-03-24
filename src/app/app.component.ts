@@ -7,7 +7,7 @@ import { ClarityModule } from '@clr/angular';
 // import { AppComponent } from './app.component';
 import {Board, Service, State, Subtask, Task} from './service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {Person, Service} from './service';
+import {Person} from './service';
 import { ToastrService } from 'ngx-toastr';
 import { HttpStatusCode } from '@angular/common/http';
 import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, tap, zip } from 'rxjs';
@@ -22,25 +22,9 @@ export class AppComponent {
   private readonly service = inject(Service)
   private readonly _formBuilder = inject(NonNullableFormBuilder);
   title = 'Teamboard-Client';
+  
 
-  todo = [
-    'Get to work',
-    'Pick up groceries',
-    'Go home',
-    'Fall asleep'
-  ];
-
-  done = [
-    'Get up',
-    'Brush teeth',
-    'Take a shower',
-    'Check e-mail',
-    'Walk dog'
-  ];
-
-
-
-  //todo: add Email?
+  
   protected readonly _loginForm = this._formBuilder.group({
     email: ['', [Validators.required]],
     password:['', [Validators.required]],
@@ -56,16 +40,16 @@ export class AppComponent {
 
   @Input()
   dep: any;
-  
+
   // @ts-ignore
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
 
-  protected _boards$ = this.service.getBoards();
+  //protected _boards$ = this.service.getBoards();
   //protected _tasks$ = this.service.getTasks().pipe();
   _websocketId: number = -1;
   protected _boards$ = this.service.getBoards().pipe();
-  protected _tasks$ = this.service.getTasks().pipe();
-  protected _tasks$ = this.service.getTasks('null').pipe();
+  //protected _tasks$ = this.service.getTasks().pipe();
+  //protected _tasks$ = this.service.getTasks('null').pipe();
 
   //const subject = new Subject<number>()
   //protected _tasks$ = new Subject<Task[]>();
@@ -153,8 +137,6 @@ export class AppComponent {
 
   protected closeModal() {
 
-  protected closeModal() {
-    
     //remove logindialog
     const loginDialog = document.querySelector('.modal');
     loginDialog?.remove();
@@ -162,15 +144,15 @@ export class AppComponent {
     //remove Backdrop
     const loginBackdrop = document.querySelector('.modal-backdrop');
     loginBackdrop?.remove();
-    this._tasks$ = this.service.getTasks("null");
-  }
-
-  showContent(boardName: string) {
-    console.log(boardName);
-
-    this._tasks$ = this.service.getTasks(boardName);
 
   }
+
+  // showContent(boardName: string) {
+  //   console.log(boardName);
+  //
+  //   this._tasks$ = this.service.getTasks(boardName);
+  //
+  // }
 
   drop(event: CdkDragDrop<Subtask[]>) {
     if (event.previousContainer === event.container) {
@@ -260,8 +242,7 @@ export class AppComponent {
       name: 'new Task',
       states: []
     }
-
-
+    
     let boardsArray: Board[] = [];
 
     //move Observable to array to add subtask
