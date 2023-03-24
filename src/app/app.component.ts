@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 // import { AppComponent } from './app.component';
-import {Service} from './service';
+import {Person, Service} from './service';
 import { ToastrService } from 'ngx-toastr';
 import { HttpStatusCode } from '@angular/common/http';
 
@@ -21,12 +21,13 @@ export class AppComponent {
   title = 'Teamboard-Client';
 
   protected readonly _loginForm = this._formBuilder.group({
-    username: ['', [Validators.required]],
+    email: ['', [Validators.required]],
     password:['', [Validators.required]],
   });
 
   protected readonly _registrationForm = this._formBuilder.group({
     username: ['', [Validators.required]],
+    email: ['', [Validators.required]],
     password:['', [Validators.required]],
     password_wdh:['', [Validators.required]]
   });
@@ -46,14 +47,17 @@ export class AppComponent {
 
 
   _login() {
-    //DELET
-    this.closeModal();
 
     if(!this._loginForm.valid){
       return;
     }
 
-    const person = this._loginForm.getRawValue();
+    const person: Person = {
+      username: '',
+      email: this._loginForm.getRawValue().email,
+      password: this._loginForm.getRawValue().password
+    };
+
     this.service.login(person).subscribe({
       next: (webocketId: number) => {
         this._websocketId = webocketId;
@@ -62,7 +66,7 @@ export class AppComponent {
       },
       error: (error) => {
         switch (error.status) {
-          case HttpStatusCode.ExpectationFailed:
+          case HttpStatusCode.NotFound:
             this.toastr.error('Login failed, server unreachable');
             break;
           case HttpStatusCode.NotAcceptable:
@@ -72,7 +76,7 @@ export class AppComponent {
             this.toastr.error('Login failed');
         }
 
-        this.toastr.error(error.message);
+        //this.toastr.error(error.message);
       },
     });
 
@@ -92,6 +96,7 @@ export class AppComponent {
 
     const person = {
       username: person_register.username,
+      email: person_register.email,
       password: person_register.password
     }
     this.service.register(person).subscribe({
@@ -100,6 +105,16 @@ export class AppComponent {
         this.closeModal();
       },
       error: (error) => {
+          switch (error.status) {
+            case HttpStatusCode.NotFound:
+              this.toastr.error('Registration failed, server unreachable');
+              break;
+            case HttpStatusCode.NotAcceptable:
+              this.toastr.error('Registration failed, you are not a correct User');
+              break;
+            default:
+              this.toastr.error('Registration failed');
+          }
         this.toastr.error(error.message);
       }
     });
