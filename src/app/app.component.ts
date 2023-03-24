@@ -5,9 +5,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 // import { AppComponent } from './app.component';
-import {Board, Service, State, Subtask, Task} from './service';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, tap, zip } from 'rxjs';
+import {Service} from './service';
+import { ToastrService } from 'ngx-toastr';
+import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -15,35 +15,16 @@ import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, tap, zip
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-
+  constructor(private toastr: ToastrService) {}
   private readonly service = inject(Service)
   private readonly _formBuilder = inject(NonNullableFormBuilder);
   title = 'Teamboard-Client';
 
-  todo = [
-    'Get to work',
-    'Pick up groceries',
-    'Go home',
-    'Fall asleep'
-  ];
-
-  done = [
-    'Get up',
-    'Brush teeth',
-    'Take a shower',
-    'Check e-mail',
-    'Walk dog'
-  ];
-
-
-
-  //todo: add Email?
   protected readonly _loginForm = this._formBuilder.group({
     username: ['', [Validators.required]],
     password:['', [Validators.required]],
   });
 
-  //todo: add Email
   protected readonly _registrationForm = this._formBuilder.group({
     username: ['', [Validators.required]],
     password:['', [Validators.required]],
@@ -56,16 +37,12 @@ export class AppComponent {
   dep: any;
 
 
-
   // @ts-ignore
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
 
-  protected _boards$ = this.service.getBoards();
-  protected _tasks$ = this.service.getTasks('null').pipe();
+  _websocketId: number = -1;
 
-  //const subject = new Subject<number>()
-  //protected _tasks$ = new Subject<Task[]>();
-    //this.service.getTasks("null");
+
 
 
   _login() {
@@ -77,17 +54,29 @@ export class AppComponent {
     }
 
     const person = this._loginForm.getRawValue();
-    console.log(this.service.login(person));
-    if(this.service.login(person)){
-      this.closeModal();
-      console.log("Close modal");
-      return;
-    }else{
-      return;
-    }
+    this.service.login(person).subscribe({
+      next: (webocketId: number) => {
+        this._websocketId = webocketId;
+        this.closeModal();
+        this.toastr.success('Logged in successfully')
+      },
+      error: (error) => {
+        switch (error.status) {
+          case HttpStatusCode.ExpectationFailed:
+            this.toastr.error('Login failed, server unreachable');
+            break;
+          case HttpStatusCode.NotAcceptable:
+            this.toastr.error('Login failed, you are not a correct User');
+            break;
+          default:
+            this.toastr.error('Login failed');
+        }
+
+        this.toastr.error(error.message);
+      },
+    });
+
   }
-
-
 
   _register() {
     if(!this._registrationForm.valid){
@@ -97,8 +86,6 @@ export class AppComponent {
     const person_register = this._registrationForm.getRawValue();
 
     if(person_register.password !== person_register.password_wdh){
-
-      alert("Passwörter nicht identisch");
       // set form to invalid?
       return;
     }
@@ -107,13 +94,16 @@ export class AppComponent {
       username: person_register.username,
       password: person_register.password
     }
-    if(this.service.register(person)){
-
-      this.closeModal();
-
+    this.service.register(person).subscribe({
+      next: (webocketId: number) => {
+        this._websocketId = webocketId;
+        this.closeModal();
+      },
+      error: (error) => {
+        this.toastr.error(error.message);
+      }
+    });
     }
-
-  }
 
 
   protected closeModal() {
@@ -125,100 +115,5 @@ export class AppComponent {
     //remove Backdrop
     const loginBackdrop = document.querySelector('.modal-backdrop');
     loginBackdrop?.remove();
-    this._tasks$ = this.service.getTasks("null");
-  }
-
-  showContent(boardName: string) {
-    console.log(boardName);
-
-    this._tasks$ = this.service.getTasks(boardName);
-
-  }
-
-  drop(event: CdkDragDrop<Subtask[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
-    }
-  }
-
-  _getSubtasks(subtasks: Subtask[]): string[] {
-    let subtaskString = [];
-
-    for (const subtask of subtasks) {
-      subtaskString.push(subtask.name);
-    }
-    return subtaskString;
-  }
-
-  _getStates(states: State[]): string[] {
-    let statesStrings = [];
-
-    for (const state of states) {
-      statesStrings.push(state.state)
-    }
-
-    return statesStrings;
-  }
-
-  _getNextState(states: State[], state_get: State): string {
-    let _isState = false;
-
-    for (const state of states) {
-      if(_isState){
-        // @ts-ignore
-        return state.state;
-      }
-
-      if(state === state_get){
-        _isState = true;
-      }
-    }
-    return state_get.state;
-  }
-
-  _addSubtask(boardGet: Board, taskGet: Task) {
-    //todo: open modal to add
-
-    //add task to observable
-
-    let newTask: Task = {
-      name: 'new Task',
-      states: []
-    }
-
-    let subTask: Subtask = {
-      name: 'new Subtask',
-      description: 'holly shit it works',
-      worker: ''
-    }
-
-    let boardsArray: Board[] = [];
-
-  //move Observable to array to add subtask
-    this._boards$.subscribe( board => {
-      boardsArray = board as Board[]
-    });
-
-    //add subtask
-    for (const boardsArrayElement of boardsArray) {
-      if(boardsArrayElement === boardGet){
-        for(const tasksArrayElement of boardsArrayElement.tasks){
-          if(tasksArrayElement === taskGet){
-            if(tasksArrayElement.states.length > 0){
-              tasksArrayElement.states[0].subtasks.push(subTask);
-            }
-          }
-        }
-      }
-    }
-
-    this._boards$ = of(boardsArray);
-
-    this._boards$.subscribe((v) => console.log(`value: ${v}`));
   }
 }
