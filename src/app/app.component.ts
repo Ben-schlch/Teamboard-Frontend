@@ -43,6 +43,7 @@ export class AppComponent {
   _login() {
 
     if(!this._loginForm.valid){
+      this.toastr.error("Nicht alle Felder ausgefüllt");
       return;
     }
 
@@ -76,12 +77,14 @@ export class AppComponent {
 
   _register() {
     if(!this._registrationForm.valid){
+      this.toastr.error("Nicht alle Felder ausgefüllt");
       return;
     }
 
     const person_register = this._registrationForm.getRawValue();
 
     if(person_register.password !== person_register.password_wdh){
+      this.toastr.error("Passwörter nicht identisch");
       // set form to invalid?
       return;
     }
