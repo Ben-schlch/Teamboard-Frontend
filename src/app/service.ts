@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import {map, Observable, of } from 'rxjs';
+import {from, map, Observable, of, Subject } from 'rxjs';
 
 export interface Person {
   username: string, email: string, password: string
@@ -111,7 +111,13 @@ export class Service {
       states: [state3]
     }
 
-    let tasksObservable: Observable<Task[]> = of([task1, task2]);
+
+
+    let tasksObservable: Observable<Task[]> = from([[task1, task2]]);
+
+      //const tasksObservable = new Subject<Task[]>();
+
+      //tasksObservable.next([task1, task2]);
 
     //this._service_tasks$ = tasksObservable;
 
@@ -125,25 +131,87 @@ export class Service {
     //return this._http.post<Task[]>('/api/getBoard/' + boardName, aktualPerson);
   }
 
-  getStringBoards(): string[]{
-    let result: string[];
-    this.getBoards().subscribe(boards => result = boards);
-
-    // @ts-ignore
-    return result;
-  }
-
-
-  getBoards(): Observable<string[]> {
+  // getStringBoards(): string[]{
+  //   let result: string[];
+  //   this.getBoards().subscribe(boards => result = boards);
+  //
+  //   // @ts-ignore
+  //   return result;
+  // }
 
 
-    let boards:Observable<string[]> = of(["Testboard1", "Testboard2", "Testboard3"]);
-    // //todo: socket anfragen nach boards von person
-    //
-    //
-     return boards;
+  getBoards(): Observable<Board[]> {
+
+
+    let subtask1: Subtask = {
+      name: "Subtask1",
+      description: "test description1",
+      worker: "Testworker1"
+    }
+    let subtask2: Subtask = {
+      name: "Subtask2",
+      description: "test description2",
+      worker: "Testworker2"
+    }
+
+    let subtask11: Subtask = {
+      name: "Subtask1",
+      description: "test description1",
+      worker: "Testworker1"
+    }
+    let subtask12: Subtask = {
+      name: "Subtask2",
+      description: "test description2",
+      worker: "Testworker2"
+    }
 
   private readonly _http = inject(HttpClient);
+    let subtask3: Subtask = {
+      name: "Subtask3",
+      description: "test description",
+      worker: "Testworker2"
+    }
+
+    let state1: State = {
+      state: "Done",
+      subtasks: [subtask3]
+    }
+    let state2: State = {
+      state: "ToDo",
+      subtasks: [subtask1, subtask2]
+    }
+
+    let state3: State = {
+      state: "ToDo",
+      subtasks: [subtask11, subtask12]
+    }
+
+    let task1: Task = {
+      name: "Testtask1",
+      states: [state2, state1]
+    }
+
+    let task2: Task = {
+      name: "Testtask2",
+      states: [state3]
+    }
+
+    let board1: Board = {
+      name: 'Board 1',
+      tasks: [task1, task2]
+    }
+
+    let board2 : Board= {
+      name: 'Board 2',
+      tasks: [task1, task2]
+    }
+
+
+
+    let boardObservable: Observable<Board[]> = from([[board1, board2]]);
+
+    return boardObservable;
+    //return this._http.post<string[]>('/api/getBoardsNames/', aktualPerson);
 
   public login(person: Person): Observable<number> {
     return boards;
