@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export interface Person {
-  username: string, password: string
+  username: string, email: string, password: string
 }
 
 
@@ -14,7 +14,7 @@ export class Service {
   private readonly _http = inject(HttpClient);
 
   public login(person: Person): Observable<number> {
-    
+
       return this._http.post<number>("/login", person);
   }
 
