@@ -31,20 +31,14 @@ export class AppComponent {
     password:['', [Validators.required]],
     password_wdh:['', [Validators.required]]
   });
-  // opened: boolean = true;
-  //basic:any = true;
 
   @Input()
   dep: any;
-
-
+  
   // @ts-ignore
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
 
   _websocketId: number = -1;
-
-
-
 
   _login() {
 
@@ -75,8 +69,6 @@ export class AppComponent {
           default:
             this.toastr.error('Login failed');
         }
-
-        //this.toastr.error(error.message);
       },
     });
 
