@@ -223,11 +223,6 @@ export class AppComponent {
 
     //add task to observable
 
-    let newTask: Task = {
-      name: 'new Task',
-      states: []
-    }
-
     let subTask: Subtask = {
       name: 'new Subtask',
       description: 'holly shit it works',
@@ -257,5 +252,30 @@ export class AppComponent {
     this._boards$ = of(boardsArray);
 
     this._boards$.subscribe((v) => console.log(`value: ${v}`));
+  }
+
+  _addTask(boardGet: Board) {
+    //open modal to add
+    let newTask: Task = {
+      name: 'new Task',
+      states: []
+    }
+
+
+    let boardsArray: Board[] = [];
+
+    //move Observable to array to add subtask
+    this._boards$.subscribe( board => {
+      boardsArray = board as Board[]
+    });
+
+    //add subtask
+    for (const boardsArrayElement of boardsArray) {
+      if(boardsArrayElement === boardGet){
+        boardsArrayElement.tasks.push(newTask)
+      }
+    }
+
+    this._boards$ = of(boardsArray);
   }
 }

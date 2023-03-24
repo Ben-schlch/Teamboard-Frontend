@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {from, map, Observable, of, Subject } from 'rxjs';
+import '@cds/core/icon/register.js';
+import '@cds/core/button/register.js';
+
 
 export interface Person {
   username: string, email: string, password: string

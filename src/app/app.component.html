@@ -62,6 +62,7 @@
   <clr-tab *ngFor="let board of _boards$ | async">
     <button clrTabLink id=board.name>{{board.name}}</button>
     <clr-tab-content id="content1" *clrIfActive>
+
       <clr-accordion clrAccordionMultiPanel="true">
         <clr-accordion-panel *ngFor="let task of board.tasks">
           <clr-accordion-title>
@@ -74,8 +75,7 @@
                                         $event.preventDefault();
                                         $event.stopPropagation()"
             >
-              Button
-              <clr-icon shape="plus"></clr-icon>
+              <b>+</b>
             </button>
 
 
