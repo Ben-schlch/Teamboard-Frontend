@@ -5,8 +5,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 // import { AppComponent } from './app.component';
-import {Service, State, Subtask, Task} from './service';
+import {Board, Service, State, Subtask, Task} from './service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, tap, zip } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -60,10 +61,11 @@ export class AppComponent {
   _isChecked: any =  document.getElementById("isRegistration")?.checked;
 
   protected _boards$ = this.service.getBoards();
-  //protected _tasks$ = this.service.getTasks().pipe();
+  protected _tasks$ = this.service.getTasks('null').pipe();
 
-
-  protected _tasks$ = this.service.getTasks("null");
+  //const subject = new Subject<number>()
+  //protected _tasks$ = new Subject<Task[]>();
+    //this.service.getTasks("null");
 
 
   _login() {
@@ -123,6 +125,7 @@ export class AppComponent {
     //remove Backdrop
     const loginBackdrop = document.querySelector('.modal-backdrop');
     loginBackdrop?.remove();
+    this._tasks$ = this.service.getTasks("null");
   }
 
   showContent(boardName: string) {
@@ -178,7 +181,44 @@ export class AppComponent {
     return state_get.state;
   }
 
-  _addSubtask($event: MouseEvent, task: Task) {
+  _addSubtask(boardGet: Board, taskGet: Task) {
     //todo: open modal to add
+
+    //add task to observable
+
+    let newTask: Task = {
+      name: 'new Task',
+      states: []
+    }
+
+    let subTask: Subtask = {
+      name: 'new Subtask',
+      description: 'holly shit it works',
+      worker: ''
+    }
+
+    let boardsArray: Board[] = [];
+
+  //move Observable to array to add subtask
+    this._boards$.subscribe( board => {
+      boardsArray = board as Board[]
+    });
+
+    //add subtask
+    for (const boardsArrayElement of boardsArray) {
+      if(boardsArrayElement === boardGet){
+        for(const tasksArrayElement of boardsArrayElement.tasks){
+          if(tasksArrayElement === taskGet){
+            if(tasksArrayElement.states.length > 0){
+              tasksArrayElement.states[0].subtasks.push(subTask);
+            }
+          }
+        }
+      }
+    }
+
+    this._boards$ = of(boardsArray);
+
+    this._boards$.subscribe((v) => console.log(`value: ${v}`));
   }
 }
