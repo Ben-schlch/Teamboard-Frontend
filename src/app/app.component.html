@@ -24,13 +24,13 @@
 
 </style>
 
-
 <!-- Toolbar -->
 
 <header>
   <div class="branding">
     <span class="title">Projekt Boards</span>
   </div>
+  <clr-icon shape="floppy"></clr-icon>
   <div class="nav-divider"></div>
 
 
@@ -42,7 +42,7 @@
 
   <div class="settings">
     <a href="/" class="nav-link nav-icon">
-      <cds-icon shape="cog"></cds-icon>
+      <clr-icon shape="cog"></clr-icon>
     </a>
   </div>
 
@@ -57,7 +57,6 @@
 
 
 <body>
-
 <clr-tabs>
   <clr-tab *ngFor="let board of _boards$ | async">
     <button clrTabLink id=board.name>{{board.name}}</button>
@@ -68,6 +67,18 @@
           <clr-accordion-title>
             {{task.name}}
 
+<!--            <button-->
+<!--              type="button"-->
+<!--              class="btn btn-icon"-->
+<!--              (click)="$event.stopPropagation()"-->
+<!--            >-->
+<!--              <clr-icon shape="plus"></clr-icon>-->
+<!--            </button>-->
+
+<!--            <button type="button" class="btn btn-icon" aria-label="home">-->
+<!--              <clr-icon shape="plus"></clr-icon>-->
+<!--            </button>-->
+
             <button
               type="button"
               class="btn"
@@ -75,7 +86,8 @@
                                         $event.preventDefault();
                                         $event.stopPropagation()"
             >
-              <b>+</b>
+<!--              <cds-icon shape="plus"></cds-icon>-->
+              <h2>+</h2>
             </button>
 
 
@@ -174,6 +186,7 @@
         <form [formGroup]="_registrationForm"
               (ngSubmit)="_register()"
               *ngIf="isRegistration.checked"
+              [clrLoading]="_createButtonState"
         >
           <div class="register-group">
             <clr-input-container>
@@ -198,7 +211,7 @@
             <div *ngIf="_loginForm.invalid" class="error active" >
               Invalid user name or password
             </div>
-            <button type="submit" class="btn btn-primary">Registrieren</button>
+            <button type="submit" class="btn btn-primary" [clrLoading]="_createButtonState">Registrieren</button>
           </div>
         </form>
       </div>

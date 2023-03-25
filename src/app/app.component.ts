@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ClarityModule } from '@clr/angular';
+import { ClarityModule, ClrLoadingState } from '@clr/angular';
 // import { AppComponent } from './app.component';
 import {Board, Service, State, Subtask, Task} from './service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
@@ -11,6 +11,19 @@ import {Person} from './service';
 import { ToastrService } from 'ngx-toastr';
 import { HttpStatusCode } from '@angular/common/http';
 import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, tap, zip } from 'rxjs';
+import { ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon } from '@cds/core/icon';
+
+// import 'clarity-icons';
+// import 'clarity-icons/shapes/essential-shapes';
+// import 'clarity-icons/shapes/technology-shapes';
+
+import '@clr/icons';
+import '@clr/icons/shapes/essential-shapes';
+import '@clr/icons/shapes/media-shapes';
+import '@clr/icons/shapes/social-shapes';
+import '@clr/icons/shapes/travel-shapes';
+import '@clr/icons/shapes/technology-shapes';
+import '@clr/icons/shapes/chart-shapes';
 
 @Component({
   selector: 'app-root',
@@ -18,13 +31,14 @@ import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, tap, zip
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  protected _createButtonState: ClrLoadingState = ClrLoadingState.DEFAULT;
   constructor(private toastr: ToastrService) {}
   private readonly service = inject(Service)
   private readonly _formBuilder = inject(NonNullableFormBuilder);
   title = 'Teamboard-Client';
-  
 
-  
+
+
   protected readonly _loginForm = this._formBuilder.group({
     email: ['', [Validators.required]],
     password:['', [Validators.required]],
@@ -47,7 +61,7 @@ export class AppComponent {
   //protected _boards$ = this.service.getBoards();
   //protected _tasks$ = this.service.getTasks().pipe();
   _websocketId: number = -1;
-  protected _boards$ = this.service.getBoards().pipe();
+  protected _boards$: Observable<Board[]> = this.service.getBoards();
   //protected _tasks$ = this.service.getTasks().pipe();
   //protected _tasks$ = this.service.getTasks('null').pipe();
 
@@ -58,11 +72,14 @@ export class AppComponent {
 
 
   _login() {
+    this._createButtonState = ClrLoadingState.DEFAULT;
 
     if(!this._loginForm.valid){
       this.toastr.error("Nicht alle Felder ausgefüllt");
       return;
     }
+
+    this._createButtonState = ClrLoadingState.LOADING;
 
     const person: Person = {
       username: '',
@@ -89,12 +106,13 @@ export class AppComponent {
         }
       },
     });
-
+    this._createButtonState = ClrLoadingState.DEFAULT;
   }
 
 
 
   _register() {
+    this._createButtonState = ClrLoadingState.DEFAULT;
     if(!this._registrationForm.valid){
       this.toastr.error("Nicht alle Felder ausgefüllt");
       return;
@@ -107,6 +125,7 @@ export class AppComponent {
       // set form to invalid?
       return;
     }
+    this._createButtonState = ClrLoadingState.LOADING;
 
     const person = {
       username: person_register.username,
@@ -132,6 +151,7 @@ export class AppComponent {
         this.toastr.error(error.message);
       }
     });
+    this._createButtonState = ClrLoadingState.DEFAULT;
     }
 
 
@@ -162,6 +182,8 @@ export class AppComponent {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
+
+      //send to service
     }
   }
 
@@ -205,58 +227,64 @@ export class AppComponent {
 
     //add task to observable
 
-    let subTask: Subtask = {
-      name: 'new Subtask',
-      description: 'holly shit it works',
-      worker: ''
-    }
+    this.service.addSubtask(boardGet.name, taskGet);
 
-    let boardsArray: Board[] = [];
-
-  //move Observable to array to add subtask
-    this._boards$.subscribe( board => {
-      boardsArray = board as Board[]
-    });
-
-    //add subtask
-    for (const boardsArrayElement of boardsArray) {
-      if(boardsArrayElement === boardGet){
-        for(const tasksArrayElement of boardsArrayElement.tasks){
-          if(tasksArrayElement === taskGet){
-            if(tasksArrayElement.states.length > 0){
-              tasksArrayElement.states[0].subtasks.push(subTask);
-            }
-          }
-        }
-      }
-    }
-
-    this._boards$ = of(boardsArray);
-
-    this._boards$.subscribe((v) => console.log(`value: ${v}`));
+  //   let subTask: Subtask = {
+  //     name: 'new Subtask',
+  //     description: 'holly shit it works',
+  //     worker: ''
+  //   }
+  //
+  //   let boardsArray: Board[] = [];
+  //
+  // //move Observable to array to add subtask
+  //   this._boards$.subscribe( board => {
+  //     boardsArray = board as Board[]
+  //   });
+  //
+  //   //add subtask
+  //   for (const boardsArrayElement of boardsArray) {
+  //     if(boardsArrayElement === boardGet){
+  //       for(const tasksArrayElement of boardsArrayElement.tasks){
+  //         if(tasksArrayElement === taskGet){
+  //           if(tasksArrayElement.states.length > 0){
+  //             tasksArrayElement.states[0].subtasks.push(subTask);
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //
+  //   this._boards$ = of(boardsArray);
+  //
+  //   this._boards$.subscribe((v) => console.log(`value: ${v}`));
   }
 
   _addTask(boardGet: Board) {
+
     //open modal to add
     let newTask: Task = {
       name: 'new Task',
       states: []
     }
-    
-    let boardsArray: Board[] = [];
 
-    //move Observable to array to add subtask
-    this._boards$.subscribe( board => {
-      boardsArray = board as Board[]
-    });
+    this.service.addTask(boardGet, newTask);
 
-    //add subtask
-    for (const boardsArrayElement of boardsArray) {
-      if(boardsArrayElement === boardGet){
-        boardsArrayElement.tasks.push(newTask)
-      }
-    }
 
-    this._boards$ = of(boardsArray);
+    // let boardsArray: Board[] = [];
+    //
+    // //move Observable to array to add subtask
+    // this._boards$.subscribe( board => {
+    //   boardsArray = board as Board[]
+    // });
+    //
+    // //add subtask
+    // for (const boardsArrayElement of boardsArray) {
+    //   if(boardsArrayElement === boardGet){
+    //     boardsArrayElement.tasks.push(newTask)
+    //   }
+    // }
+    //
+    // this._boards$ = of(boardsArray);
   }
 }

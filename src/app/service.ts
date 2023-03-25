@@ -20,6 +20,7 @@ export interface Task{
   states: State[]
 }
 
+//todo: add index to sort!!!
 export interface State{
   state: string,
   subtasks: Subtask[]
@@ -33,33 +34,91 @@ export interface Subtask{
 
 // Create WebSocket connection.
 //const socket = new WebSocket("ws://localhost:8080");
+let socket: WebSocket = new WebSocket("ws://localhost:8080/0");
 let aktualPerson: Person | null = null;
 let boardsString: string[]  = ["DefaultBoard"];
 
 
-// Connection opened
-// socket.addEventListener("open", (event) => {
-//   socket.send("Initial Request");
-//
-//
-// });
-//
-// // Listen for messages
-// socket.addEventListener("message", (event) => {
-//   console.log("Message from server ", event.data);
-//
-//   if(event.data.contains("login")){
-//
-//   }else if(event.data.contains("tasks")){
-//        // Service.getTasks()
-//   }
-//   //todo: do something
-// });
+//Connection opened
+
+  // @ts-ignore
+  socket.addEventListener("open", (event) => {
+    socket.send("Initial Request");
+  });
+
+
+
+// Listen for messages
+socket.addEventListener("message", (event) => {
+  console.log("Message from server ", event.data);
+
+  //JSON.parse(event.data).function
+
+  if(event.data.contains("login")){
+
+  }else if(JSON.parse(event.data).function.toLowerCase() == "add_task".toLowerCase()){
+       // Service.getTasks()
+  }
+  //todo: do something
+});
 
 @Injectable({ providedIn: 'root'})
 export class Service {
+  addTask(boardGet: Board, newTask: Task) {
+    let boardsArray: Board[] = [];
+
+    //move Observable to array to add subtask
+    this._boardsObservable.subscribe( board => {
+      boardsArray = board as Board[]
+    });
+
+    //add subtask
+    for (const boardsArrayElement of boardsArray) {
+      if(boardsArrayElement === boardGet){
+        boardsArrayElement.tasks.push(newTask)
+      }
+    }
+
+    this._boardsObservable = of(boardsArray);
+  }
+  addSubtask(boardGet: string, taskGet: Task) {
+
+    //check wether subtask is addad bevore
+    let subTask: Subtask = {
+      name: 'new Subtask',
+      description: 'holly shit it works',
+      worker: ''
+    }
+
+    let boardsArray: Board[] = [];
+
+    //move Observable to array to add subtask
+    this._boardsObservable.subscribe( board => {
+      boardsArray = board as Board[]
+    });
+
+    //add subtask
+    for (const boardsArrayElement of boardsArray) {
+      if(boardsArrayElement.name === boardGet){
+        for(const tasksArrayElement of boardsArrayElement.tasks){
+          if(tasksArrayElement === taskGet){
+            if(tasksArrayElement.states.length > 0){
+              tasksArrayElement.states[0].subtasks.push(subTask);
+            }
+          }
+        }
+      }
+    }
+
+    this._boardsObservable = of(boardsArray);
+
+    this._boardsObservable.subscribe((v) => console.log(`value: ${v}`));
+  }
 
   private readonly _http = inject(HttpClient);
+  private socketId: number = 0;
+
+  protected _boardsObservable: Observable<Board[]> = of([]);
 
   getTasks(boardName: string): Observable<Task[]> {
       let subtask1: Subtask = {
@@ -114,8 +173,6 @@ export class Service {
       states: [state3]
     }
 
-
-
     let tasksObservable: Observable<Task[]> = from([[task1, task2]]);
 
       //const tasksObservable = new Subject<Task[]>();
@@ -143,7 +200,7 @@ export class Service {
   // }
 
 
-  getBoards(): Observable<Board[]> {
+  getBoards(){
 
 
     let subtask1: Subtask = {
@@ -210,23 +267,56 @@ export class Service {
     }
 
 
-    let boardObservable: Observable<Board[]> = from([[board1, board2]]);
+    //this._boardsObservable = this._http.get<string[]>('/api/getBoardsNames/' + socketId, aktualPerson);
+    this._boardsObservable = from([[board1, board2]]);
 
-    return boardObservable;
-    //return this._http.post<string[]>('/api/getBoardsNames/', aktualPerson);
+    return this._boardsObservable;
 
   }
 
   public login(person: Person): Observable<number> {
-      return this._http.post<number>("/login", person);
-      //only for tests!!!!
-      //return of(0);
+    const socketId =   this._http.post<number>("/login", person);
+    let socketIdNumber: number = 0;
+
+
+    socketId.subscribe( id => {
+      socketIdNumber = id as number;
+    });
+
+    socket = new WebSocket("ws://localhost:8080/" + socketIdNumber);
+
+    this.socketId = socketIdNumber;
+
+    initialiceObservable();
+
+    return socketId;
   }
 
   public register(person: Person): Observable<number>{
 
-    return this._http.post<number>("/register", person);
+    //const socketId =  this._http.post<number>("/register", person);
+
+    const socketId = of(5050);
+
+    let socketIdNumber: number = 0;
+
+    //move Observable to array to add subtask
+    socketId.subscribe( id => {
+      socketIdNumber = id as number;
+    });
+
+    this.socketId = socketIdNumber;
+
+    socket = new WebSocket("ws://localhost:8080/" + socketIdNumber);
+
+    return socketId;
   }
 
+}
+
+function initialiceObservable(): Observable<Board> {
+  //take incomming observable and take it on observable
+
+    throw new Error('Function not implemented.');
 }
 
