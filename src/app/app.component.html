@@ -81,13 +81,14 @@
 
             <button
               type="button"
-              class="btn"
+              class="btn btn-icon"
               (click)="_addSubtask(board, task);
                                         $event.preventDefault();
                                         $event.stopPropagation()"
             >
 <!--              <cds-icon shape="plus"></cds-icon>-->
-              <h2>+</h2>
+<!--              <h2>+</h2>-->
+              <clr-icon shape="plus"></clr-icon>
             </button>
 
 
@@ -103,8 +104,6 @@
                     [id]="state.state"
                     #{{state.state}} = "cdkDropList"
                     [cdkDropListData]="state.subtasks"
-
-
                     (cdkDropListDropped)="drop($event)"
                     class="example-list">
 

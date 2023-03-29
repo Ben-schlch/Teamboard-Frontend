@@ -10,7 +10,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 import {Person} from './service';
 import { ToastrService } from 'ngx-toastr';
 import { HttpStatusCode } from '@angular/common/http';
-import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, tap, zip } from 'rxjs';
+import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip } from 'rxjs';
 import { ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon } from '@cds/core/icon';
 
 // import 'clarity-icons';
@@ -32,7 +32,20 @@ import '@clr/icons/shapes/chart-shapes';
 })
 export class AppComponent {
   protected _createButtonState: ClrLoadingState = ClrLoadingState.DEFAULT;
-  constructor(private toastr: ToastrService) {}
+
+  subscriber: Subscription;
+
+  constructor(private toastr: ToastrService) {
+    this.subscriber = this.service._boardsObservable.subscribe(boards => {
+      this._boards$ = of(boards)
+    });
+    // if()
+    // this.service._boardsObservable.subscribe(board => {
+    //   console.log(board);
+    //
+    // })
+
+  }
   private readonly service = inject(Service)
   private readonly _formBuilder = inject(NonNullableFormBuilder);
   title = 'Teamboard-Client';
@@ -52,6 +65,11 @@ export class AppComponent {
     password_wdh:['', [Validators.required]]
   });
 
+  ngOnInit() {
+    this.service._boardsObservable.subscribe(d => this.boards = d);
+    this._boards$ = this.service._boardsObservable;
+  }
+
   @Input()
   dep: any;
 
@@ -61,15 +79,20 @@ export class AppComponent {
   //protected _boards$ = this.service.getBoards();
   //protected _tasks$ = this.service.getTasks().pipe();
   _websocketId: number = -1;
-  protected _boards$: Observable<Board[]> = this.service.getBoards();
+  //protected _boards$: Observable<Board[]> = this.service._boardsObservable;
+
+  _boards$ = this.service._boardsObservable.pipe(
+    map(board => board)
+  )
+
+  protected boards: Board[] = [];
+
+  // protected _boards$ = this.service._boardsObservable.pipe(
+  //   map(board => board)
+  // );
+
   //protected _tasks$ = this.service.getTasks().pipe();
   //protected _tasks$ = this.service.getTasks('null').pipe();
-
-  //const subject = new Subject<number>()
-  //protected _tasks$ = new Subject<Task[]>();
-    //this.service.getTasks("null");
-
-
 
   _login() {
     this._createButtonState = ClrLoadingState.DEFAULT;
@@ -151,6 +174,7 @@ export class AppComponent {
         this.toastr.error(error.message);
       }
     });
+    this.service._boardsObservable.subscribe(data => this._boards$ = of(data));
     this._createButtonState = ClrLoadingState.DEFAULT;
     }
 
