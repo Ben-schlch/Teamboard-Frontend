@@ -70,6 +70,8 @@ let boardsString: string[]  = ["DefaultBoard"];
 @Injectable({ providedIn: 'root'})
 export class Service {
 
+
+
   private readonly _http = inject(HttpClient);
   private socketId: number = 0;
   //public _boardsObservable: Observable<Board[]> = this.getBoards().pipe(switchAll());
@@ -80,6 +82,20 @@ export class Service {
 
   private subject: any;
 
+  addBoard(newBoard: Board) {
+    let boardsArray: Board[] = [];
+
+    if(this._boardsObservable !== undefined){
+      //move Observable to array to add subtask
+      this._boardsObservable.subscribe( board => {
+        boardsArray = board as Board[]
+      });
+    }
+
+    boardsArray.push(newBoard);
+
+    this._boardsObservable = of(boardsArray);
+  }
 
   //add Task to Observable
   addTask(boardGet: Board, newTask: Task) {
@@ -104,7 +120,7 @@ export class Service {
   }
 
   //add Subtask to Observable
-  addSubtask(boardGet: string, taskGet: Task) {
+  addSubtask(boardGet: string, taskGet: Task, stateGet: State) {
 
     //check wether subtask is addad bevore
     let subTask: Subtask = {
@@ -128,11 +144,15 @@ export class Service {
     //add subtask
     for (const boardsArrayElement of boardsArray) {
       if(boardsArrayElement.name === boardGet){
+
         for(const tasksArrayElement of boardsArrayElement.tasks){
           if(tasksArrayElement === taskGet){
-            if(tasksArrayElement.states.length > 0){
-              tasksArrayElement.states[0].subtasks.push(subTask);
-              console.log("Push task");
+
+            for (const state of tasksArrayElement.states) {
+              if(state === stateGet){
+                state.subtasks.push(subTask);
+                console.log("Push task");
+              }
             }
           }
         }
@@ -142,6 +162,53 @@ export class Service {
     this._boardsObservable = of(boardsArray);
 
     this._boardsObservable.subscribe((v) => console.log(`value: ${v}`));
+  }
+
+  addState(boardGet: Board, taskGet: Task, newState: State) {
+    let boardsArray: Board[] = [];
+
+    console.log("parse task");
+    //move Observable to array to add subtask
+    if(this._boardsObservable !== undefined){
+      // @ts-ignore
+      this._boardsObservable.subscribe( board => {
+        boardsArray = board as Board[]
+      });
+    }
+
+
+    //add subtask
+    for (const boardsArrayElement of boardsArray) {
+      if(boardsArrayElement === boardGet){
+
+        for(const tasksArrayElement of boardsArrayElement.tasks){
+          if(tasksArrayElement === taskGet){
+
+            tasksArrayElement.states.push(newState);
+          }
+        }
+      }
+    }
+
+    this._boardsObservable = of(boardsArray);
+  }
+
+
+  deleteBoard(getBoard: Board) {
+    let boardsArray: Board[] = [];
+
+    if(this._boardsObservable !== undefined){
+      //move Observable to array to add subtask
+      this._boardsObservable.subscribe( board => {
+        boardsArray = board as Board[]
+      });
+    }
+
+    const index = boardsArray.indexOf(getBoard);
+
+    if(index !== -1){
+      boardsArray.splice(index, 1);
+    }
   }
 
   //initial request to get all boards?
@@ -185,6 +252,11 @@ export class Service {
       subtasks: [subtask1, subtask2]
     }
 
+    let state4: State = {
+      state: "In Progress",
+      subtasks: []
+    }
+
     let state3: State = {
       state: "ToDo",
       subtasks: [subtask11, subtask12]
@@ -192,11 +264,16 @@ export class Service {
 
     let task1: Task = {
       name: "Testtask1",
-      states: [state2, state1]
+      states: [state2, state1, state4]
     }
 
     let task2: Task = {
       name: "Testtask2",
+      states: [state3, state4]
+    }
+
+    let task3: Task = {
+      name: "Testtask3",
       states: [state3]
     }
 

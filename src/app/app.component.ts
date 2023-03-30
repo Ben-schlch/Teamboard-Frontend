@@ -211,6 +211,12 @@ export class AppComponent {
     }
   }
 
+  dropState(event: CdkDragDrop<State[]>) {
+    moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+    //send to service
+  }
+
   _getSubtasks(subtasks: Subtask[]): string[] {
     let subtaskString = [];
 
@@ -246,12 +252,12 @@ export class AppComponent {
     return state_get.state;
   }
 
-  _addSubtask(boardGet: Board, taskGet: Task) {
+  _addSubtask(boardGet: Board, taskGet: Task, stateGet: State) {
     //todo: open modal to add
 
     //add task to observable
 
-    this.service.addSubtask(boardGet.name, taskGet);
+    this.service.addSubtask(boardGet.name, taskGet, stateGet);
 
   //   let subTask: Subtask = {
   //     name: 'new Subtask',
@@ -284,31 +290,43 @@ export class AppComponent {
   //   this._boards$.subscribe((v) => console.log(`value: ${v}`));
   }
 
-  _addTask(boardGet: Board) {
+  _addTask(taskName: string, boardGet: Board) {
 
     //open modal to add
     let newTask: Task = {
-      name: 'new Task',
+      name: taskName,
       states: []
     }
 
     this.service.addTask(boardGet, newTask);
 
+  }
 
-    // let boardsArray: Board[] = [];
-    //
-    // //move Observable to array to add subtask
-    // this._boards$.subscribe( board => {
-    //   boardsArray = board as Board[]
-    // });
-    //
-    // //add subtask
-    // for (const boardsArrayElement of boardsArray) {
-    //   if(boardsArrayElement === boardGet){
-    //     boardsArrayElement.tasks.push(newTask)
-    //   }
-    // }
-    //
-    // this._boards$ = of(boardsArray);
+
+
+  _addState(boardGet: Board, taskGet: Task, stateName: string) {
+  //todo: add state
+
+
+    let newState: State = {
+      state: stateName,
+      subtasks: []
+    }
+
+    this.service.addState(boardGet, taskGet, newState);
+    
+  }
+
+  _addBoard(boardName: string) {
+    let newBoard: Board = {
+      name: boardName,
+      tasks: []
+    }
+    
+    this.service.addBoard(newBoard);
+  }
+
+  _deleteBoard(board: Board) {
+    this.service.deleteBoard(board);
   }
 }
