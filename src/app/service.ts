@@ -5,32 +5,38 @@ import '@cds/core/icon/register.js';
 import '@cds/core/button/register.js';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 // interface for logged in Person
 export interface Person {
-  name: string, email: string, pwd: string
+  name: string,
+  email: string,
+  pwd: string
 }
 
 //interfaces for Datastruckture
-export interface Board{
+export interface Board {
   id: number,
   name: string,
   tasks: Task[]
 }
-export interface Task{
+
+export interface Task {
   id: number,
   //position: number,
   name: string,
   states: State[]
 }
-export interface State{
+
+export interface State {
   id: number,
 
   position: number,
   state: string,
   subtasks: Subtask[]
 }
-export interface Subtask{
+
+export interface Subtask {
   id: number,
   position: number,
   name: string,
@@ -39,25 +45,28 @@ export interface Subtask{
 }
 
 //add interfaces for communication
-export interface MessageAddBoard{
+export interface MessageAddBoard {
   kind_of_object: string,
   type_of_edit: string,
   teamboard: Board,
 }
-export interface MessageAddTask{
+
+export interface MessageAddTask {
   kind_of_object: string,
   type_of_edit: string,
   teamboard: number,
   task: Task
 }
-export interface MessageAddState{
+
+export interface MessageAddState {
   kind_of_object: string,
   type_of_edit: string,
   teamboard: number,
   task: number,
   column: State
 }
-export interface MessageAddSubtask{
+
+export interface MessageAddSubtask {
   kind_of_object: string,
   type_of_edit: string,
   teamboard: number,
@@ -67,17 +76,19 @@ export interface MessageAddSubtask{
 }
 
 //delete interfaces for communication
-export interface MessageDeleteBoard{
+export interface MessageDeleteBoard {
   kind_of_object: string,
   type_of_edit: string,
   teamboard: Board,
 }
+
 export interface MessageDeleteTask {
   kind_of_object: string,
   type_of_edit: string,
   teamboard: number,
   task: Task
 }
+
 export interface MessageDeleteState {
   kind_of_object: string,
   type_of_edit: string,
@@ -85,6 +96,7 @@ export interface MessageDeleteState {
   task: number,
   column: State
 }
+
 export interface MessageDeleteSubtask {
   kind_of_object: string,
   type_of_edit: string,
@@ -104,6 +116,8 @@ export interface MessageMoveState {
   newPosition: number,
   column: State
 }
+
+//move ein subtask zw. States oder in einem State!!
 export interface MessageMoveSubtask {
   kind_of_object: string,
   type_of_edit: string,
@@ -121,7 +135,7 @@ const SOCKET_URL = "ws://localhost:8000/";
 let socket = webSocket('0.0.0.0');
 
 let aktualPerson: Person | null = null;
-let boardsString: string[]  = ["DefaultBoard"];
+let boardsString: string[] = ["DefaultBoard"];
 
 // get message from server
 socket.subscribe(
@@ -139,9 +153,8 @@ socket.complete();
 //close connection after sending server error message
 socket.error({code: 4000, reason: 'Some error, close connection'});
 
-@Injectable({ providedIn: 'root'})
+@Injectable({providedIn: 'root'})
 export class Service {
-
   private readonly _http = inject(HttpClient);
   private socketAuthentification: string = '';
   //public _boardsObservable: Observable<Board[]> = this.getBoards().pipe(switchAll());
@@ -339,7 +352,7 @@ export class Service {
       stateIndex = boardsArray.at(boardIndex).tasks.at(taskIndex).states.indexOf(stateGet);
       boardsArray.at(boardIndex).tasks.at(taskIndex).states.splice(stateIndex, 1);
     }
-    
+
     const message: MessageDeleteState = {
       kind_of_object: 'column',
       type_of_edit: 'delet',
@@ -352,6 +365,61 @@ export class Service {
     this._boardsObservable = of(boardsArray);
   }
 
+
+  dropState(event: CdkDragDrop<State[], State[], any>, boardGet: Board, taskGet: Task) {
+    moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+    const message: MessageMoveState = {
+      kind_of_object: 'state',
+      type_of_edit: 'move',
+      teamboard: boardGet.id,
+      task: taskGet.id,
+      oldPosition: event.previousIndex,
+      newPosition: event.currentIndex,
+      column: event.container.data.at(event.currentIndex)
+    }
+    console.log(JSON.stringify(message));
+    socket.next(JSON.stringify(message));
+  }
+
+  moveSubtask(event: CdkDragDrop<Subtask[], Subtask[], any>, boardGet: Board, taskGet: Task, stateGet: State) {
+
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      const message : MessageMoveSubtask = {
+        kind_of_object: 'state',
+        type_of_edit: 'moveSubtaskInState',
+        teamboard: boardGet.id,
+        task: taskGet.id,
+        column: stateGet.id,
+        oldPosition: event.previousIndex,
+        newPosition: event.currentIndex,
+        subtask: event.container.data.at(event.currentIndex)
+      }
+      console.log(JSON.stringify(message));
+      socket.next(JSON.stringify(message));
+    } else {
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+
+      const message : MessageMoveSubtask = {
+        kind_of_object: 'state',
+        type_of_edit: 'moveSubtaskBetweenStates',
+        teamboard: boardGet.id,
+        task: taskGet.id,
+        column: stateGet.id,
+        oldPosition: event.previousIndex,
+        newPosition: event.currentIndex,
+        subtask: event.container.data.at(event.currentIndex)
+      }
+      console.log(JSON.stringify(message));
+      socket.next(JSON.stringify(message));
+      //send to service
+    }
+
+  }
 
   //initial request to get all boards?
   getBoards(){

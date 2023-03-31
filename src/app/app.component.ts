@@ -198,21 +198,25 @@ export class AppComponent {
   //
   // }
 
-  drop(event: CdkDragDrop<Subtask[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex);
-
-      //send to service
-    }
+  drop(event: CdkDragDrop<Subtask[]>, boardGet: Board, taskGet: Task, stateGet: State) {
+    
+    this.service.moveSubtask(event, boardGet, taskGet, stateGet);
+    
+    // if (event.previousContainer === event.container) {
+    //   moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    // } else {
+    //   transferArrayItem(event.previousContainer.data,
+    //     event.container.data,
+    //     event.previousIndex,
+    //     event.currentIndex);
+    //
+    //   //send to service
+    // }
   }
 
-  dropState(event: CdkDragDrop<State[]>) {
-    moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+  dropState(event: CdkDragDrop<State[]>, boardGet: Board, taskGet: Task) {
+    this.service.dropState(event, boardGet, taskGet);
+    // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
     //send to service
   }
@@ -282,8 +286,7 @@ export class AppComponent {
     this.service.addTask(boardGet, newTask);
   }
 
-
-
+  
   _addState(boardGet: Board, taskGet: Task, stateName: string) {
   //todo: add state
 
