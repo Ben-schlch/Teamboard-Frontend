@@ -54,15 +54,15 @@ export class AppComponent {
 
   protected readonly _loginForm = this._formBuilder.group({
     email: ['', [Validators.required]],
-    password:['', [Validators.required]],
+    pwd:['', [Validators.required]],
   });
 
   //todo: add Email
   protected readonly _registrationForm = this._formBuilder.group({
-    username: ['', [Validators.required]],
+    name: ['', [Validators.required]],
     email: ['', [Validators.required]],
-    password:['', [Validators.required]],
-    password_wdh:['', [Validators.required]]
+    pwd:['', [Validators.required]],
+    pwd_wdh:['', [Validators.required]]
   });
 
   ngOnInit() {
@@ -78,7 +78,7 @@ export class AppComponent {
 
   //protected _boards$ = this.service.getBoards();
   //protected _tasks$ = this.service.getTasks().pipe();
-  _websocketId: number = -1;
+  _websocketAuthentification: string = '';
   //protected _boards$: Observable<Board[]> = this.service._boardsObservable;
 
   _boards$ = this.service._boardsObservable.pipe(
@@ -105,14 +105,14 @@ export class AppComponent {
     this._createButtonState = ClrLoadingState.LOADING;
 
     const person: Person = {
-      username: '',
+      name: '',
       email: this._loginForm.getRawValue().email,
-      password: this._loginForm.getRawValue().password
+      pwd: this._loginForm.getRawValue().pwd
     };
 
     this.service.login(person).subscribe({
-      next: (webocketId: number) => {
-        this._websocketId = webocketId;
+      next: (websocketAuthentification: string) => {
+        this._websocketAuthentification = websocketAuthentification;
         this.closeModal();
         this.toastr.success('Logged in successfully')
       },
@@ -143,7 +143,7 @@ export class AppComponent {
 
     const person_register = this._registrationForm.getRawValue();
 
-    if(person_register.password !== person_register.password_wdh){
+    if(person_register.pwd !== person_register.pwd_wdh){
       this.toastr.error("Passwörter nicht identisch");
       // set form to invalid?
       return;
@@ -151,13 +151,13 @@ export class AppComponent {
     this._createButtonState = ClrLoadingState.LOADING;
 
     const person = {
-      username: person_register.username,
+      name: person_register.name,
       email: person_register.email,
-      password: person_register.password
+      pwd: person_register.pwd
     }
     this.service.register(person).subscribe({
-      next: (webocketId: number) => {
-        this._websocketId = webocketId;
+      next: (websocketAuthentification: string) => {
+        this._websocketAuthentification = websocketAuthentification;
         this.closeModal();
       },
       error: (error) => {
@@ -252,42 +252,22 @@ export class AppComponent {
     return state_get.state;
   }
 
-  _addSubtask(boardGet: Board, taskGet: Task, stateGet: State) {
+  _addSubtask(boardGet: Board, taskGet: Task, stateGet: State, taskName: string) {
     //todo: open modal to add
 
     //add task to observable
 
-    this.service.addSubtask(boardGet.name, taskGet, stateGet);
+    let newSubtask: Subtask = {
+      name: taskName,
+      description: '',
+      worker: '',
+      id: -1,
+      position: stateGet.subtasks.length
+    }
 
-  //   let subTask: Subtask = {
-  //     name: 'new Subtask',
-  //     description: 'holly shit it works',
-  //     worker: ''
-  //   }
-  //
-  //   let boardsArray: Board[] = [];
-  //
-  // //move Observable to array to add subtask
-  //   this._boards$.subscribe( board => {
-  //     boardsArray = board as Board[]
-  //   });
-  //
-  //   //add subtask
-  //   for (const boardsArrayElement of boardsArray) {
-  //     if(boardsArrayElement === boardGet){
-  //       for(const tasksArrayElement of boardsArrayElement.tasks){
-  //         if(tasksArrayElement === taskGet){
-  //           if(tasksArrayElement.states.length > 0){
-  //             tasksArrayElement.states[0].subtasks.push(subTask);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //
-  //   this._boards$ = of(boardsArray);
-  //
-  //   this._boards$.subscribe((v) => console.log(`value: ${v}`));
+    this.service.addSubtask(boardGet, taskGet, stateGet, newSubtask);
+
+  
   }
 
   _addTask(taskName: string, boardGet: Board) {
@@ -295,7 +275,8 @@ export class AppComponent {
     //open modal to add
     let newTask: Task = {
       name: taskName,
-      states: []
+      states: [],
+      id: -1
     }
 
     this.service.addTask(boardGet, newTask);
@@ -309,24 +290,32 @@ export class AppComponent {
 
 
     let newState: State = {
+      id: -1,
       state: stateName,
-      subtasks: []
+      subtasks: [],
+      position: 0
     }
 
     this.service.addState(boardGet, taskGet, newState);
-    
+
   }
 
   _addBoard(boardName: string) {
     let newBoard: Board = {
+      id: -1,
       name: boardName,
       tasks: []
     }
-    
+
     this.service.addBoard(newBoard);
   }
 
   _deleteBoard(board: Board) {
     this.service.deleteBoard(board);
+  }
+
+  _deleteState(boardGet: Board, taskGet: Task, stateGet: State) {
+    console.log("Delete state", stateGet);
+    this.service.deleteState(boardGet, taskGet, stateGet);
   }
 }

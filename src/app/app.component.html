@@ -35,9 +35,26 @@
 
 
   <div class="header-nav clr-nav-level-1">
-<!--    <a *ngFor="let board of (_boards$ | async); let index = index" (click)="showContent(board)" class="nav-link">-->
-<!--      <span class="nav-text">{{board}}</span>-->
-<!--    </a>-->
+    <input
+      #input
+      clrInput
+      type="text"
+      placeholder="Add Board"
+      (click)="
+        input.value = '';
+          $event.preventDefault();
+          $event.stopPropagation()
+          "
+      (keydown.enter)="
+        _addBoard(input.value);
+        input.value = '';
+         $event.preventDefault();
+        $event.stopPropagation()
+        "
+      (keydown.space)="
+        $event.preventDefault();
+        $event.stopPropagation()"
+    />
   </div>
 
   <div class="settings">
@@ -49,48 +66,22 @@
 </header>
 
 
-<!--<mat-tab-group mat-align-tabs="start">-->
-<!--  <mat-tab label="First">Content 1</mat-tab>-->
-<!--  <mat-tab label="Second">Content 2</mat-tab>-->
-<!--  <mat-tab label="Third">Content 3</mat-tab>-->
-<!--</mat-tab-group>-->
-
-
 <body>
-<input
-  #input
-  clrInput
-  type="text"
-  placeholder="Add Board"
-  (click)="
 
-                                        input.value = '';
-                                        $event.preventDefault();
-                                        $event.stopPropagation()
-                                    "
-  (keydown.enter)="
-                                        _addBoard(input.value);
-                                        input.value = '';
-                                        $event.preventDefault();
-                                        $event.stopPropagation()
-                                    "
-/>
 <clr-tabs>
-
   <clr-tab *ngFor="let board of _boards$ | async">
     <button clrTabLink id=board.name>
       {{board.name}}
       <button
       type="button"
-      class="btn btn-icon"
+      class="btn"
       (click)="_deleteBoard(board);
-                                        $event.preventDefault();
-                                        $event.stopPropagation()"
+            $event.preventDefault();
+            $event.stopPropagation()"
     >
-      <!--              <cds-icon shape="plus"></cds-icon>-->
-      <!--              <h2>+</h2>-->
-      <clr-icon shape="plus"></clr-icon>
-    </button></button>
+      <b>🗑</b>
+    </button>
+    </button>
     <clr-tab-content id="content1" *clrIfActive>
 
       <clr-accordion clrAccordionMultiPanel="true">
@@ -138,6 +129,7 @@
                                         $event.preventDefault();
                                         $event.stopPropagation()
                                     "
+
             />
             </clr-input-container>
             </form>
@@ -160,21 +152,45 @@
                     [cdkDropListData]="state.subtasks"
                     (cdkDropListDropped)="drop($event)"
                     class="example-list">
+                    <div style="display: inline-flex">
+                      <h4>
+                        {{state.state}}
+                      </h4>
+                        <input
+                          #input
+                          clrInput
+                          type="text"
+                          placeholder="Add new Subtask"
+                          (click)="
 
-                    <h2>{{state.state}}
-<!--                      //todo: spacer-->
-                      <button
-                        type="button"
-                        class="btn btn-icon"
-                        (click)="_addSubtask(board, task, state);
+                                        input.value = '';
+                                        $event.preventDefault();
+                                        $event.stopPropagation()
+                                    "
+                          (keydown.enter)="
+                                        _addSubtask(board, task, state, input.value);
+                                        input.value = '';
+                                        $event.preventDefault();
+                                        $event.stopPropagation()
+                                    "
+
+                        />
+
+                        <!--                      //todo: spacer-->
+
+                        <button
+                          type="button"
+                          class="btn"
+                          (click)="_deleteState(board, task, state);
                                         $event.preventDefault();
                                         $event.stopPropagation()"
-                      >
-                        <!--              <cds-icon shape="plus"></cds-icon>-->
-                        <!--              <h2>+</h2>-->
-                        <clr-icon shape="plus"></clr-icon>
-                      </button>
-                    </h2>
+                        >
+                          🗑
+                        </button>
+
+                    </div>
+
+
 
 
                     <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
@@ -239,7 +255,7 @@
           </clr-input-container>
           <clr-password-container>
             <label class="clr-sr-only">Password</label>
-            <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
+            <input type="password" name="password" clrPassword placeholder="Password" formControlName="pwd"/>
           </clr-password-container>
 
           <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->
@@ -258,7 +274,7 @@
           <div class="register-group">
             <clr-input-container>
               <label class="clr-sr-only">Username</label>
-              <input type="text" name="username" clrInput placeholder="Username" formControlName="username"/>
+              <input type="text" name="username" clrInput placeholder="Username" formControlName="name"/>
             </clr-input-container>
             <clr-input-container>
               <label class="clr-sr-only">Email</label>
@@ -266,12 +282,12 @@
             </clr-input-container>
             <clr-password-container>
               <label class="clr-sr-only">Password</label>
-              <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
+              <input type="password" name="password" clrPassword placeholder="Password" formControlName="pwd"/>
             </clr-password-container>
 
             <clr-password-container *ngIf="isRegistration.checked">
               <label class="clr-sr-only">Password wiederholen</label>
-              <input type="password" name="password" clrPassword placeholder="Password Wiederholen" formControlName="password_wdh"/>
+              <input type="password" name="password" clrPassword placeholder="Password Wiederholen" formControlName="pwd_wdh"/>
             </clr-password-container>
 
             <!-- Wenn loginform ungültig ist Fehlermeldung anzeigen-->
