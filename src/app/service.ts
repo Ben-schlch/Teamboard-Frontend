@@ -38,7 +38,7 @@ export interface Subtask{
   worker: Person["name"]
 }
 
-//interfaces for communication
+//add interfaces for communication
 export interface MessageAddBoard{
   kind_of_object: string,
   type_of_edit: string,
@@ -66,6 +66,54 @@ export interface MessageAddSubtask{
   subtask: Subtask
 }
 
+//delete interfaces for communication
+export interface MessageDeleteBoard{
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard: Board,
+}
+export interface MessageDeleteTask {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard: number,
+  task: Task
+}
+export interface MessageDeleteState {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard: number,
+  task: number,
+  column: State
+}
+export interface MessageDeleteSubtask {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard: number,
+  task: number,
+  column: number,
+  subtask: Subtask
+}
+
+//move interfaces for communication
+export interface MessageMoveState {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard: number,
+  task: number,
+  oldPosition: number,
+  newPosition: number,
+  column: State
+}
+export interface MessageMoveSubtask {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard: number,
+  task: number,
+  column: number,
+  oldPosition: number,
+  newPosition: number,
+  subtask: Subtask
+}
 
 
 //socketComponents
@@ -228,8 +276,8 @@ export class Service {
         }
       }
     }
-    
-    
+
+
     let message: MessageAddState = {
       kind_of_object: 'board',
       type_of_edit: 'add',
@@ -258,6 +306,13 @@ export class Service {
     if(index !== -1){
       boardsArray.splice(index, 1);
     }
+
+    const message: MessageDeleteBoard = {
+      kind_of_object: 'board',
+      type_of_edit: 'delete',
+      teamboard: getBoard
+    }
+    socket.next(JSON.stringify(message));
 
     this._boardsObservable = of(boardsArray);
   }
