@@ -6,25 +6,23 @@ import '@cds/core/button/register.js';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
 
-
+// interface for logged in Person
 export interface Person {
   name: string, email: string, pwd: string
 }
 
+//interfaces for Datastruckture
 export interface Board{
   id: number,
   name: string,
   tasks: Task[]
 }
-
 export interface Task{
   id: number,
   //position: number,
   name: string,
   states: State[]
 }
-
-//todo: add index to sort!!!
 export interface State{
   id: number,
 
@@ -32,7 +30,6 @@ export interface State{
   state: string,
   subtasks: Subtask[]
 }
-
 export interface Subtask{
   id: number,
   position: number,
@@ -41,7 +38,25 @@ export interface Subtask{
   worker: Person["name"]
 }
 
-
+//interfaces for communication
+export interface MessageAddBoard{
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard: Board,
+}
+export interface MessageAddTask{
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard: number,
+  task: Task
+}
+export interface MessageAddState{
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard: number,
+  task: number,
+  column: State
+}
 export interface MessageAddSubtask{
   kind_of_object: string,
   type_of_edit: string,
@@ -50,23 +65,13 @@ export interface MessageAddSubtask{
   column: number,
   subtask: Subtask
 }
-export interface MessageAddTask{
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard: number,
-  task: Task
-}
 
 
+
+//socketComponents
 const SOCKET_URL = "ws://localhost:8000/";
-//const SOCKET_PORT = ":8080/";
-// Create WebSocket connection.
-//const socket = new WebSocket("ws://localhost:8080");
-//let socket: WebSocket = new WebSocket("ws://localhost:8080/0");
+let socket = webSocket('0.0.0.0');
 
-let socket = webSocket('');
-
-//let socket: WebSocket | null = null;
 let aktualPerson: Person | null = null;
 let boardsString: string[]  = ["DefaultBoard"];
 
@@ -78,36 +83,13 @@ socket.subscribe(
 );
 
 //send message to server
-socket.next({message: 'somemessage'});
+socket.next({message: 'thats an testmessage.'});
 
 //close connection
 socket.complete();
 
 //close connection after sending server error message
 socket.error({code: 4000, reason: 'Some error, close connection'});
-
-
-//Connection opened
-  // @ts-ignore
-//   socket.addEventListener("open", (event) => {
-//     socket.send("Initial Request");
-//   });
-//
-//
-//
-// // Listen for messages
-// socket.addEventListener("message", (event) => {
-//   console.log("Message from server ", event.data);
-//
-//   //JSON.parse(event.data).function
-//
-//   if(event.data.contains("login")){
-//
-//   }else if(JSON.parse(event.data).function.toLowerCase() == "add_task".toLowerCase()){
-//        // Service.getTasks()
-//   }
-//   //todo: do something
-// });
 
 @Injectable({ providedIn: 'root'})
 export class Service {
@@ -131,6 +113,13 @@ export class Service {
         boardsArray = board as Board[]
       });
     }
+
+    let message: MessageAddBoard = {
+      kind_of_object: 'board',
+      type_of_edit: 'add',
+      teamboard: newBoard
+    }
+    socket.next(JSON.stringify(message))
 
     boardsArray.push(newBoard);
 
@@ -162,7 +151,7 @@ export class Service {
       teamboard: boardGet.id,
       task: newTask
     }
-    socket.next(JSON.stringify(message))
+    socket.next(JSON.stringify(message));
 
     this._boardsObservable = of(boardsArray);
   }
@@ -227,7 +216,6 @@ export class Service {
       });
     }
 
-
     //add subtask
     for (const boardsArrayElement of boardsArray) {
       if(boardsArrayElement === boardGet){
@@ -240,6 +228,16 @@ export class Service {
         }
       }
     }
+    
+    
+    let message: MessageAddState = {
+      kind_of_object: 'board',
+      type_of_edit: 'add',
+      teamboard: boardGet.id,
+      task: taskGet.id,
+      column: newState
+    }
+    socket.next(JSON.stringify(message))
 
     this._boardsObservable = of(boardsArray);
   }
