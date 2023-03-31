@@ -267,7 +267,7 @@ export class AppComponent {
 
     this.service.addSubtask(boardGet, taskGet, stateGet, newSubtask);
 
-  
+
   }
 
   _addTask(taskName: string, boardGet: Board) {
@@ -280,7 +280,6 @@ export class AppComponent {
     }
 
     this.service.addTask(boardGet, newTask);
-
   }
 
 

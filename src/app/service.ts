@@ -54,9 +54,7 @@ export interface MessageAddTask{
   kind_of_object: string,
   type_of_edit: string,
   teamboard: number,
-  task: number,
-  column: number,
-  subtask: Subtask
+  task: Task
 }
 
 
@@ -157,6 +155,14 @@ export class Service {
         boardsArrayElement.tasks.push(newTask)
       }
     }
+
+    let message: MessageAddTask = {
+      kind_of_object: 'task',
+      type_of_edit: 'add',
+      teamboard: boardGet.id,
+      task: newTask
+    }
+    socket.next(JSON.stringify(message))
 
     this._boardsObservable = of(boardsArray);
   }
