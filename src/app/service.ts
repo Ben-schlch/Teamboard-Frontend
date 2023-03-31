@@ -339,6 +339,15 @@ export class Service {
       stateIndex = boardsArray.at(boardIndex).tasks.at(taskIndex).states.indexOf(stateGet);
       boardsArray.at(boardIndex).tasks.at(taskIndex).states.splice(stateIndex, 1);
     }
+    
+    const message: MessageDeleteState = {
+      kind_of_object: 'column',
+      type_of_edit: 'delet',
+      teamboard: boardGet.id,
+      task: taskGet.id,
+      column: stateGet
+    }
+    socket.next(JSON.stringify(message));
 
     this._boardsObservable = of(boardsArray);
   }
