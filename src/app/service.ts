@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import {from, map, Observable, Observer, of, Subject, switchAll } from 'rxjs';
+import {filter, from, map, Observable, Observer, of, Subject, switchAll } from 'rxjs';
 import '@cds/core/icon/register.js';
 import '@cds/core/button/register.js';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
@@ -116,8 +116,6 @@ export interface MessageMoveState {
   newPosition: number,
   column: State
 }
-
-//move ein subtask zw. States oder in einem State!!
 export interface MessageMoveSubtask {
   kind_of_object: string,
   type_of_edit: string,
@@ -132,20 +130,84 @@ export interface MessageMoveSubtask {
 
 //socketComponents
 const SOCKET_URL = "ws://localhost:8000/";
-let socket = webSocket('0.0.0.0');
+let socket: Subject<string> = webSocket('');
+//: Subject<string>
+//MessageAddState | MessageMoveState |
 
 let aktualPerson: Person | null = null;
 let boardsString: string[] = ["DefaultBoard"];
 
+// let statesObservable: Observable<MessageAddState> =  socket.pipe(filter((msg) => msg.kind_of_object === 'state')).pipe(filter((msg) => msg.type_of_edit === 'add'));
+
+// const statesObservable = socket.multiplex(
+//   () => ({ subscribe: 'state'}),
+//   () => ({ unsubscribe: 'state'}),
+//     msg => msg.kind_of_object === 'state');
+
+//const statesAddObservable = statesObservable.pipe(filter((msg) => msg.type_of_edit === 'add'));
+
+//const statesAddObservable = statesObservable.pipe(map((msg: MessageAddState | MessageMoveState) => msg.type_of_edit === 'add'));
+
+
+// socket.pipe(map(response => response[""]))
+//
+//
+// statesObservable.subscribe(msg => console.log(msg));
+
+//const observable = socket.next(map((response: string)));
+
+//const observabel2: Observable <MessageAddState | MessageMoveState> = socket.pipe(map((response) => response.json()));
+
+//observabel2.pipe(filter((message => message.type_of_edit == 'add'))).pipe(filter((message => message.kind_of_object == 'state')));
+
+let socketToJson = socket.pipe(
+  map(input => JSON.parse(input))
+);
+
+//filter add statements to observables
+let socketAdd = socketToJson.pipe(
+  filter(input => input.type_of_edit === 'add'),
+);
+
+//only for tests
+socketAdd.subscribe(
+  msg => console.log("Socket add: ", msg)
+);
+
+let socketAddBoard = socketAdd.pipe(
+  filter(input => input.kind_of_object === 'board')
+);
+
+let socketAddTask = socketAdd.pipe(
+  filter(input => input.kind_of_object === 'task')
+);
+
+let socketAddState = socketAdd.pipe(
+  filter(input => input.kind_of_object === 'state')
+);
+
+let socketAddSubtask = socketAdd.pipe(
+  filter(input => input.kind_of_object === 'subtask')
+);
+
+
+
+socketAddBoard.subscribe(
+  input => addBoard(input)
+);
+
 // get message from server
 socket.subscribe(
-  msg => console.log(msg),
-  error => console.log(error),
+  msg =>
+    console.log(msg?.toString()),
+
+      error => console.log(error),
   () => console.log('completed')
 );
 
+
 //send message to server
-socket.next({message: 'thats an testmessage.'});
+//socket.next({message: 'thats an testmessage.'});
 
 //close connection
 socket.complete();
@@ -656,5 +718,28 @@ export class Service {
     };
     return new AnonymousSubject<MessageEvent>(observer, observable);
   }
+}
+
+function addBoard(this: any, _input: any): void {
+    let addBoard = JSON.parse(_input);
+
+    let newBoard: Board = {
+      id: addBoard.board.id,
+      name: addBoard.board.name,
+      tasks: addBoard.board.tasks
+    }
+
+  let boardsArray: Board[] = [];
+
+  if(this._boardsObservable !== undefined){
+    //move Observable to array to add subtask
+    this._boardsObservable.subscribe( (board: Board[]) => {
+      boardsArray = board as Board[]
+    });
+  }
+
+  boardsArray.push(newBoard);
+
+  this._boardsObservable = of(boardsArray);
 }
 
