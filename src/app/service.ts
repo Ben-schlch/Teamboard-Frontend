@@ -145,12 +145,12 @@ let boardsString: string[] = ["DefaultBoard"];
 
 @Injectable({providedIn: 'root'})
 export class Service {
-  
+
   private readonly _http = inject(HttpClient);
   private socketAuthentification: string = '';
-  
+
   public _boardsObservable: Observable<Board[]> = of([]);
-  
+
   private subject: any;
 
   addBoard(newBoard: Board) {
@@ -599,8 +599,8 @@ export class Service {
 
   //
   //Observable
+  //Communication
   //
-
 
   initialiceObservable() {
 
@@ -721,6 +721,15 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
 
 
     case 'task':
+      switch (JSONObject.type_of_edit) {
+        case 'add':
+          addTask(JSONObject.teamboard, JSONObject.task, _boardsObservabel);
+          break;
+        case 'delete':
+          deleteTask(JSONObject.teamboard, JSONObject.task, _boardsObservabel);
+          break;
+      }
+      break;
 
   }
 }
@@ -781,7 +790,47 @@ function deleteBoard(deleteBoard: any, _boardsObservable: Observable<Board[]>) {
   //wenn nicht gefunden nichts machen
   if (index !== -1) {
     boardsArray.splice(index, 1);
-  } 
+  }
+
+  _boardsObservable = of(boardsArray);
+}
+
+function addTask(teamboard: number, newTask: Task, _boardsObservable: Observable<Board[]>) {
+  let boardsArray: Board[] = [];
+
+  if (_boardsObservable !== undefined) {
+    //move Observable to array to add subtask
+    _boardsObservable.subscribe(board => {
+      boardsArray = board as Board[]
+    });
+  }
+
+  const taskIndex: number = boardsArray[teamboard].tasks.findIndex((task) => task.name === newTask.name);
+
+  if(taskIndex === -1){
+    boardsArray[teamboard].tasks.push(newTask);
+  }else{
+    boardsArray[teamboard].tasks[taskIndex].id = newTask.id;
+  }
+
+  _boardsObservable = of(boardsArray);
+}
+
+function deleteTask(teamboard: number, taskGet: Task, _boardsObservable: Observable<Board[]>) {
+  let boardsArray: Board[] = [];
+
+  if (_boardsObservable !== undefined) {
+    //move Observable to array to add subtask
+    _boardsObservable.subscribe(board => {
+      boardsArray = board as Board[]
+    });
+  }
+
+  const taskIndex: number = boardsArray[teamboard].tasks.findIndex((task) => task.name === taskGet.name);
+
+  if(taskIndex !== -1){
+    boardsArray[teamboard].tasks.splice(taskIndex, 1);
+  }
 
   _boardsObservable = of(boardsArray);
 }
