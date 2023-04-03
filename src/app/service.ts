@@ -1,11 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import {filter, from, map, Observable, Observer, of, Subject, switchAll } from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {inject, Injectable} from '@angular/core';
+import {filter, from, map, Observable, Observer, of, Subject, switchAll} from 'rxjs';
 import '@cds/core/icon/register.js';
 import '@cds/core/button/register.js';
-import { AnonymousSubject } from 'rxjs/internal/Subject';
+import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 // interface for logged in Person
 export interface Person {
@@ -116,6 +116,7 @@ export interface MessageMoveState {
   newPosition: number,
   column: State
 }
+
 export interface MessageMoveSubtask {
   kind_of_object: string,
   type_of_edit: string,
@@ -129,110 +130,35 @@ export interface MessageMoveSubtask {
 
 
 //socketComponents
-const SOCKET_URL = "ws://localhost:8000/";
-let socket: Subject<string> = webSocket('');
-//: Subject<string>
-//MessageAddState | MessageMoveState |
+const SOCKET_URL = "ws://localhost:8000";
+
+//https://www.piesocket.com/blog/python-websocket
+
+let socket: WebSocket | undefined = undefined;
+
+
 
 let aktualPerson: Person | null = null;
 let boardsString: string[] = ["DefaultBoard"];
 
-// let statesObservable: Observable<MessageAddState> =  socket.pipe(filter((msg) => msg.kind_of_object === 'state')).pipe(filter((msg) => msg.type_of_edit === 'add'));
 
-// const statesObservable = socket.multiplex(
-//   () => ({ subscribe: 'state'}),
-//   () => ({ unsubscribe: 'state'}),
-//     msg => msg.kind_of_object === 'state');
-
-//const statesAddObservable = statesObservable.pipe(filter((msg) => msg.type_of_edit === 'add'));
-
-//const statesAddObservable = statesObservable.pipe(map((msg: MessageAddState | MessageMoveState) => msg.type_of_edit === 'add'));
-
-
-// socket.pipe(map(response => response[""]))
-//
-//
-// statesObservable.subscribe(msg => console.log(msg));
-
-//const observable = socket.next(map((response: string)));
-
-//const observabel2: Observable <MessageAddState | MessageMoveState> = socket.pipe(map((response) => response.json()));
-
-//observabel2.pipe(filter((message => message.type_of_edit == 'add'))).pipe(filter((message => message.kind_of_object == 'state')));
-
-let socketToJson = socket.pipe(
-  map(input => JSON.parse(input))
-);
-
-//filter add statements to observables
-let socketAdd = socketToJson.pipe(
-  filter(input => input.type_of_edit === 'add'),
-);
-
-//only for tests
-socketAdd.subscribe(
-  msg => console.log("Socket add: ", msg)
-);
-
-let socketAddBoard = socketAdd.pipe(
-  filter(input => input.kind_of_object === 'board')
-);
-
-let socketAddTask = socketAdd.pipe(
-  filter(input => input.kind_of_object === 'task')
-);
-
-let socketAddState = socketAdd.pipe(
-  filter(input => input.kind_of_object === 'state')
-);
-
-let socketAddSubtask = socketAdd.pipe(
-  filter(input => input.kind_of_object === 'subtask')
-);
-
-
-
-socketAddBoard.subscribe(
-  input => addBoard(input)
-);
-
-// get message from server
-socket.subscribe(
-  msg =>
-    console.log(msg?.toString()),
-
-      error => console.log(error),
-  () => console.log('completed')
-);
-
-
-//send message to server
-//socket.next({message: 'thats an testmessage.'});
-
-//close connection
-socket.complete();
-
-//close connection after sending server error message
-socket.error({code: 4000, reason: 'Some error, close connection'});
 
 @Injectable({providedIn: 'root'})
 export class Service {
+  
   private readonly _http = inject(HttpClient);
   private socketAuthentification: string = '';
-  //public _boardsObservable: Observable<Board[]> = this.getBoards().pipe(switchAll());
-
+  
   public _boardsObservable: Observable<Board[]> = of([]);
-
-  //public _boardsObservable: Observable<Board[]> = this.getBoards();
-
+  
   private subject: any;
 
   addBoard(newBoard: Board) {
     let boardsArray: Board[] = [];
 
-    if(this._boardsObservable !== undefined){
+    if (this._boardsObservable !== undefined) {
       //move Observable to array to add subtask
-      this._boardsObservable.subscribe( board => {
+      this._boardsObservable.subscribe(board => {
         boardsArray = board as Board[]
       });
     }
@@ -242,7 +168,12 @@ export class Service {
       type_of_edit: 'add',
       teamboard: newBoard
     }
-    socket.next(JSON.stringify(message))
+
+    sendMessageToServer(JSON.stringify(message));
+
+    //socket.addEventListener('message', function (event) {
+    //socket.next(JSON.stringify(message));
+    //});
 
     boardsArray.push(newBoard);
 
@@ -253,9 +184,9 @@ export class Service {
   addTask(boardGet: Board, newTask: Task) {
     let boardsArray: Board[] = [];
 
-    if(this._boardsObservable !== undefined){
+    if (this._boardsObservable !== undefined) {
       //move Observable to array to add subtask
-      this._boardsObservable.subscribe( board => {
+      this._boardsObservable.subscribe(board => {
         boardsArray = board as Board[]
       });
     }
@@ -263,7 +194,7 @@ export class Service {
 
     //add subtask
     for (const boardsArrayElement of boardsArray) {
-      if(boardsArrayElement === boardGet){
+      if (boardsArrayElement === boardGet) {
         boardsArrayElement.tasks.push(newTask)
       }
     }
@@ -274,7 +205,8 @@ export class Service {
       teamboard: boardGet.id,
       task: newTask
     }
-    socket.next(JSON.stringify(message));
+
+    sendMessageToServer(JSON.stringify(message));
 
     this._boardsObservable = of(boardsArray);
   }
@@ -286,22 +218,22 @@ export class Service {
 
     console.log("parse task");
     //move Observable to array to add subtask
-    if(this._boardsObservable !== undefined){
+    if (this._boardsObservable !== undefined) {
       // @ts-ignore
-      this._boardsObservable.subscribe( board => {
+      this._boardsObservable.subscribe(board => {
         boardsArray = board as Board[]
       });
     }
 
     //add subtask
     for (const boardsArrayElement of boardsArray) {
-      if(boardsArrayElement.name === boardGet.name){
+      if (boardsArrayElement.name === boardGet.name) {
 
-        for(const tasksArrayElement of boardsArrayElement.tasks){
-          if(tasksArrayElement === taskGet){
+        for (const tasksArrayElement of boardsArrayElement.tasks) {
+          if (tasksArrayElement === taskGet) {
 
             for (const state of tasksArrayElement.states) {
-              if(state === stateGet){
+              if (state === stateGet) {
                 state.subtasks.push(subtask);
                 console.log("Push task");
               }
@@ -319,8 +251,8 @@ export class Service {
       column: stateGet.id,
       subtask: subtask
     }
-    console.log("Send to Server: ", JSON.stringify(messageAddSubtask));
-    socket.next(JSON.stringify(messageAddSubtask));
+
+    sendMessageToServer(JSON.stringify(messageAddSubtask));
 
     this._boardsObservable = of(boardsArray);
 
@@ -332,19 +264,19 @@ export class Service {
 
     console.log("parse task");
     //move Observable to array to add subtask
-    if(this._boardsObservable !== undefined){
+    if (this._boardsObservable !== undefined) {
       // @ts-ignore
-      this._boardsObservable.subscribe( board => {
+      this._boardsObservable.subscribe(board => {
         boardsArray = board as Board[]
       });
     }
 
     //add subtask
     for (const boardsArrayElement of boardsArray) {
-      if(boardsArrayElement === boardGet){
+      if (boardsArrayElement === boardGet) {
 
-        for(const tasksArrayElement of boardsArrayElement.tasks){
-          if(tasksArrayElement === taskGet){
+        for (const tasksArrayElement of boardsArrayElement.tasks) {
+          if (tasksArrayElement === taskGet) {
 
             tasksArrayElement.states.push(newState);
           }
@@ -360,7 +292,9 @@ export class Service {
       task: taskGet.id,
       column: newState
     }
-    socket.next(JSON.stringify(message))
+
+    sendMessageToServer(JSON.stringify(message));
+    //socket.send(JSON.stringify(message))
 
     this._boardsObservable = of(boardsArray);
   }
@@ -369,16 +303,16 @@ export class Service {
   deleteBoard(getBoard: Board) {
     let boardsArray: Board[] = [];
 
-    if(this._boardsObservable !== undefined){
+    if (this._boardsObservable !== undefined) {
       //move Observable to array to add subtask
-      this._boardsObservable.subscribe( board => {
+      this._boardsObservable.subscribe(board => {
         boardsArray = board as Board[]
       });
     }
 
     const index = boardsArray.indexOf(getBoard);
 
-    if(index !== -1){
+    if (index !== -1) {
       boardsArray.splice(index, 1);
     }
 
@@ -387,7 +321,9 @@ export class Service {
       type_of_edit: 'delete',
       teamboard: getBoard
     }
-    socket.next(JSON.stringify(message));
+
+    sendMessageToServer(JSON.stringify(message));
+    //socket.send(JSON.stringify(message));
 
     this._boardsObservable = of(boardsArray);
   }
@@ -395,9 +331,9 @@ export class Service {
   deleteState(boardGet: Board, taskGet: Task, stateGet: State) {
     let boardsArray: Board[] = [];
 
-    if(this._boardsObservable !== undefined){
+    if (this._boardsObservable !== undefined) {
       //move Observable to array to add subtask
-      this._boardsObservable.subscribe( board => {
+      this._boardsObservable.subscribe(board => {
         boardsArray = board as Board[]
       });
     }
@@ -405,12 +341,12 @@ export class Service {
     const boardIndex = boardsArray.indexOf(boardGet);
 
     let taskIndex = -1;
-    if(boardIndex !== -1){
+    if (boardIndex !== -1) {
       taskIndex = boardsArray.at(boardIndex).tasks.indexOf(taskGet);
     }
 
     let stateIndex = -1;
-    if (taskIndex !== -1){
+    if (taskIndex !== -1) {
       stateIndex = boardsArray.at(boardIndex).tasks.at(taskIndex).states.indexOf(stateGet);
       boardsArray.at(boardIndex).tasks.at(taskIndex).states.splice(stateIndex, 1);
     }
@@ -422,7 +358,9 @@ export class Service {
       task: taskGet.id,
       column: stateGet
     }
-    socket.next(JSON.stringify(message));
+
+    sendMessageToServer(JSON.stringify(message));
+    //socket.send(JSON.stringify(message));
 
     this._boardsObservable = of(boardsArray);
   }
@@ -440,15 +378,15 @@ export class Service {
       newPosition: event.currentIndex,
       column: event.container.data.at(event.currentIndex)
     }
-    console.log(JSON.stringify(message));
-    socket.next(JSON.stringify(message));
+
+    sendMessageToServer(JSON.stringify(message));
   }
 
   moveSubtask(event: CdkDragDrop<Subtask[], Subtask[], any>, boardGet: Board, taskGet: Task, stateGet: State) {
 
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      const message : MessageMoveSubtask = {
+      const message: MessageMoveSubtask = {
         kind_of_object: 'state',
         type_of_edit: 'moveSubtaskInState',
         teamboard: boardGet.id,
@@ -458,15 +396,14 @@ export class Service {
         newPosition: event.currentIndex,
         subtask: event.container.data.at(event.currentIndex)
       }
-      console.log(JSON.stringify(message));
-      socket.next(JSON.stringify(message));
+      sendMessageToServer(JSON.stringify(message));
     } else {
       transferArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex);
 
-      const message : MessageMoveSubtask = {
+      const message: MessageMoveSubtask = {
         kind_of_object: 'state',
         type_of_edit: 'moveSubtaskBetweenStates',
         teamboard: boardGet.id,
@@ -476,15 +413,13 @@ export class Service {
         newPosition: event.currentIndex,
         subtask: event.container.data.at(event.currentIndex)
       }
-      console.log(JSON.stringify(message));
-      socket.next(JSON.stringify(message));
-      //send to service
+      sendMessageToServer(JSON.stringify(message));
     }
 
   }
 
   //initial request to get all boards?
-  getBoards(){
+  getBoards() {
 
     let subtask1: Subtask = {
       name: "Subtask1",
@@ -591,11 +526,11 @@ export class Service {
   }
 
   public login(person: Person): Observable<string> {
-    const socketAuthentificationObservable =   this._http.post<string>("/login", person);
+    const socketAuthentificationObservable = this._http.post<string>("/login", person);
     let socketAuth: string = '';
     aktualPerson = person;
 
-    socketAuthentificationObservable.subscribe( id => {
+    socketAuthentificationObservable.subscribe(id => {
       socketAuth = id as string;
     });
 
@@ -604,10 +539,10 @@ export class Service {
     this.socketAuthentification = socketAuth;
 
     //open websocket
-    socket = webSocket(SOCKET_URL + this.socketAuthentification);
+    getWebSocket(socketAuth, this._boardsObservable);
 
 
-    if(this.socketAuthentification !== ''){
+    if (this.socketAuthentification !== '') {
       this.initialiceObservable();
     }
 
@@ -618,44 +553,46 @@ export class Service {
   }
 
 
-
-  public register(person: Person): Observable<string>{
+  public register(person: Person): Observable<string> {
 
     //const socketAuth =  this._http.post<string>("/register", person);
 
-    const socketAuth = of('hylkfjahfkjhsfhslzdhxcnvvn');
+    const socketAuth = of('');
 
     let socketAuthentification: string = '';
 
     //move Observable to array to add subtask
-    socketAuth.subscribe( id => {
+    socketAuth.subscribe(id => {
       socketAuthentification = id as string;
     });
 
     this.socketAuthentification = socketAuthentification;
+    // //delete!!!
+    //   this.initialiceObservable();
 
-    if(this.socketAuthentification !== ''){
+    if (this.socketAuthentification !== '') {
       //this.initialiceObservable();
     }
 
     //delete
-    this._boardsObservable =  this.getBoards();
+    this._boardsObservable = this.getBoards();
 
-  //delete
+    //delete
     let boardsArray: Board[] = [];
 //delete
-    if(this._boardsObservable !== undefined){
+    if (this._boardsObservable !== undefined) {
       //move Observable to array to add subtask
-      this._boardsObservable.subscribe( board => {
+      this._boardsObservable.subscribe(board => {
         boardsArray = board as Board[]
       });
     }
-  //delete
+    //delete
     console.log(JSON.stringify(boardsArray));
 
 
     this._boardsObservable.subscribe((v) => console.log(`value: ${v}`));
-    //socket = new WebSocket("ws://localhost:8080/" + socketIdNumber);
+
+    getWebSocket(socketAuthentification, this._boardsObservable);
 
     return socketAuth;
   }
@@ -672,7 +609,7 @@ export class Service {
         let data = JSON.parse(response.data)
 
         console.log(data);
-        if(data.function != null){
+        if (data.function != null) {
           switch (data.function) {
             case "addSubtask":
               console.log('addSubtask');
@@ -680,9 +617,10 @@ export class Service {
               break;
             case 'addBoard':
               console.log('addBoard');
-            // parse board and add to
+              // parse board and add to
               break;
-            default: console.error('No case found: ', data);
+            default:
+              console.error('No case found: ', data);
           }
         }
 
@@ -720,26 +658,131 @@ export class Service {
   }
 }
 
-function addBoard(this: any, _input: any): void {
-    let addBoard = JSON.parse(_input);
+function getWebSocket(socketAuthentification: string, _boardsObservable: Observable<Board[]>) {
+  const webSocket = new WebSocket(SOCKET_URL + socketAuthentification);
 
-    let newBoard: Board = {
-      id: addBoard.board.id,
-      name: addBoard.board.name,
-      tasks: addBoard.board.tasks
+
+  webSocket.addEventListener("open", (event: any) => {
+    // @ts-ignore
+    webSocket.send("Hello");
+  });
+
+  // @ts-ignore
+  webSocket.addEventListener("message", (event) => {
+    console.log("Message from server ", event.data);
+    try {
+      parseData(JSON.parse(event.data.toString()), _boardsObservable);
+    } catch (error) {
+      console.log(error);
     }
+
+  });
+
+  // @ts-ignore
+  webSocket.addEventListener("error", event => {
+    console.log("error from server: ", event.type);
+  });
+
+  // @ts-ignore
+  webSocket.onmessage = (event) => {
+    console.log(event.data);
+  };
+
+  socket = webSocket;
+}
+
+function sendMessageToServer(message: string) {
+  console.log("Sending data to server: ", JSON.stringify(message));
+  if (socket !== undefined) {
+    socket.send(message);
+  }
+
+}
+
+function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
+  // if(JSONObject.kind_of_object === 'board' && JSONObject.type_of_edit === 'add'){
+  //   let teamboard = JSONObject.teamboard;
+  //   addBoard(teamboard, _boardsObservabel);
+  // }
+
+  switch (JSONObject.kind_of_object) {
+
+
+    case 'board':
+      switch (JSONObject.type_of_edit) {
+        case 'add':
+          addBoard(JSONObject.teamboard, _boardsObservabel);
+          break;
+        case 'delete':
+          deleteBoard(JSONObject.teamboard, _boardsObservabel);
+          break;
+      }
+      break;
+
+
+    case 'task':
+
+  }
+}
+
+
+
+
+function addBoard(addBoard: any, _boardsObservable: Observable<Board[]>): void {
+  //let addBoard = JSON.parse(boardInput);
+
+  let newBoard: Board = {
+    id: addBoard.id,
+    name: addBoard.name,
+    tasks: addBoard.tasks
+  }
+
 
   let boardsArray: Board[] = [];
 
-  if(this._boardsObservable !== undefined){
+  if (_boardsObservable !== undefined) {
     //move Observable to array to add subtask
-    this._boardsObservable.subscribe( (board: Board[]) => {
+    _boardsObservable.subscribe((board: Board[]) => {
       boardsArray = board as Board[]
     });
   }
 
-  boardsArray.push(newBoard);
+  const index = boardsArray.findIndex((board) => board.name === newBoard.name);
 
-  this._boardsObservable = of(boardsArray);
+  //wenn board noch nicht vorhanden hinzufügen, sonst nur index hinzufügen
+  if (index === -1) {
+    boardsArray.push(newBoard);
+  } else {
+    boardsArray[index].id = newBoard.id;
+  }
+
+  //observable aktualisieren
+  _boardsObservable = of(boardsArray);
+}
+
+function deleteBoard(deleteBoard: any, _boardsObservable: Observable<Board[]>) {
+  let boardsArray: Board[] = [];
+
+  let newBoard: Board = {
+    id: deleteBoard.id,
+    name: deleteBoard.name,
+    tasks: deleteBoard.tasks
+  }
+
+  if (_boardsObservable !== undefined) {
+    //move Observable to array to add subtask
+    _boardsObservable.subscribe(board => {
+      boardsArray = board as Board[]
+    });
+  }
+
+  const index = boardsArray.findIndex((board) => board.name === newBoard.name);
+
+  //wenn nicht gefunden nichts machen
+  if (index !== -1) {
+    boardsArray.splice(index, 1);
+  } 
+
+  _boardsObservable = of(boardsArray);
 }
 
