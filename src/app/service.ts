@@ -875,7 +875,7 @@ function moveState(teamboard: number, task: number, column: State, _boardsObserv
   const stateIndex = boardsArray[teamboard].tasks[task].states.findIndex(state => state === column);
 
   boardsArray[teamboard].tasks[task].states[stateIndex].position = column.position;
-  
+
   //todo: sort the array!!!???
 
   _boardsObservable = of(boardsArray);
@@ -893,6 +893,4 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
 
   return boardsArray;
 }
-
-
 
