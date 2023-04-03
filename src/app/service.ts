@@ -286,7 +286,7 @@ export class Service {
 
 
     let message: MessageAddState = {
-      kind_of_object: 'board',
+      kind_of_object: 'state',
       type_of_edit: 'add',
       teamboard: boardGet.id,
       task: taskGet.id,
@@ -368,6 +368,9 @@ export class Service {
 
   dropState(event: CdkDragDrop<State[], State[], any>, boardGet: Board, taskGet: Task) {
     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+    //position aktualisieren
+    event.container.data.at(event.currentIndex).position = event.currentIndex;
 
     const message: MessageMoveState = {
       kind_of_object: 'state',
@@ -706,8 +709,6 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
   // }
 
   switch (JSONObject.kind_of_object) {
-
-
     case 'board':
       switch (JSONObject.type_of_edit) {
         case 'add':
@@ -731,6 +732,20 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
       }
       break;
 
+
+    case 'state':
+      switch (JSONObject.type_of_edit) {
+        case 'add':
+          addState(JSONObject.teamboard, JSONObject.task, JSONObject.column, _boardsObservabel);
+          break;
+        case 'delete':
+          deleteState(JSONObject.teamboard, JSONObject.task, JSONObject.column, _boardsObservabel);
+          break;
+        case 'move':
+          moveState(JSONObject.teamboard, JSONObject.task, JSONObject.column, _boardsObservabel);
+          break;
+      }
+      break;
   }
 }
 
@@ -796,14 +811,7 @@ function deleteBoard(deleteBoard: any, _boardsObservable: Observable<Board[]>) {
 }
 
 function addTask(teamboard: number, newTask: Task, _boardsObservable: Observable<Board[]>) {
-  let boardsArray: Board[] = [];
-
-  if (_boardsObservable !== undefined) {
-    //move Observable to array to add subtask
-    _boardsObservable.subscribe(board => {
-      boardsArray = board as Board[]
-    });
-  }
+  let boardsArray: Board[] = getBoardsArray(_boardsObservable);
 
   const taskIndex: number = boardsArray[teamboard].tasks.findIndex((task) => task.name === newTask.name);
 
@@ -834,4 +842,57 @@ function deleteTask(teamboard: number, taskGet: Task, _boardsObservable: Observa
 
   _boardsObservable = of(boardsArray);
 }
+
+function addState(teamboard: number, task: number, column: State, _boardsObservable: Observable<Board[]>) {
+  let boardsArray: Board[] = getBoardsArray(_boardsObservable);
+
+  const stateIndex = boardsArray[teamboard].tasks[task].states.findIndex(state => state.state === column.state);
+
+  if(stateIndex === -1){
+    boardsArray[teamboard].tasks[task].states.push(column);
+  }else {
+    boardsArray[teamboard].tasks[task].states[stateIndex].id = column.id;
+  }
+
+  _boardsObservable = of(boardsArray);
+}
+
+function deleteState(teamboard: number, task: number, column: State, _boardsObservable: Observable<Board[]>) {
+  let boardsArray: Board[] = getBoardsArray(_boardsObservable);
+
+  const stateIndex = boardsArray[teamboard].tasks[task].states.findIndex(state => state === column);
+
+  if(stateIndex !== -1){
+    boardsArray[teamboard].tasks[task].states.splice(stateIndex, 1);
+  }
+
+  _boardsObservable = of(boardsArray);
+}
+
+function moveState(teamboard: number, task: number, column: State, _boardsObservable: Observable<Board[]>) {
+  let boardsArray: Board[] = getBoardsArray(_boardsObservable);
+
+  const stateIndex = boardsArray[teamboard].tasks[task].states.findIndex(state => state === column);
+
+  boardsArray[teamboard].tasks[task].states[stateIndex].position = column.position;
+  
+  //todo: sort the array!!!???
+
+  _boardsObservable = of(boardsArray);
+}
+
+function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
+  let boardsArray: Board[] = [];
+
+  if (_boardsObservable !== undefined) {
+    //move Observable to array to add subtask
+    _boardsObservable.subscribe(board => {
+      boardsArray = board as Board[]
+    });
+  }
+
+  return boardsArray;
+}
+
+
 
