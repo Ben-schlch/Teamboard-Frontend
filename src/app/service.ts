@@ -61,17 +61,17 @@ export interface MessageAddTask {
 export interface MessageAddState {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard: number,
-  task: number,
-  column: State
+  teamboard_id: number,
+  task_id: number,
+  state: State
 }
 
 export interface MessageAddSubtask {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard: number,
-  task: number,
-  column: number,
+  teamboard_id: number,
+  task_id: number,
+  state_id: number,
   subtask: Subtask
 }
 
@@ -85,24 +85,24 @@ export interface MessageDeleteBoard {
 export interface MessageDeleteTask {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard: number,
+  teamboard_id: number,
   task: Task
 }
 
 export interface MessageDeleteState {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard: number,
-  task: number,
-  column: State
+  teamboard_id: number,
+  task_id: number,
+  state: State
 }
 
 export interface MessageDeleteSubtask {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard: number,
-  task: number,
-  column: number,
+  teamboard_id: number,
+  task_id: number,
+  state_id: number,
   subtask: Subtask
 }
 
@@ -110,19 +110,19 @@ export interface MessageDeleteSubtask {
 export interface MessageMoveState {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard: number,
-  task: number,
+  teamboard_id: number,
+  task_id: number,
   oldPosition: number,
   newPosition: number,
-  column: State
+  state: State
 }
 
 export interface MessageMoveSubtask {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard: number,
-  task: number,
-  column: number,
+  teamboard_id: number,
+  task_id: number,
+  state_id: number,
   oldPosition: number,
   newPosition: number,
   subtask: Subtask
@@ -247,9 +247,9 @@ export class Service {
     const messageAddSubtask: MessageAddSubtask = {
       kind_of_object: 'subtask',
       type_of_edit: 'add',
-      teamboard: boardGet.id,
-      task: taskGet.id,
-      column: stateGet.id,
+      teamboard_id: boardGet.id,
+      task_id: taskGet.id,
+      state_id: stateGet.id,
       subtask: subtask
     }
 
@@ -289,9 +289,9 @@ export class Service {
     let message: MessageAddState = {
       kind_of_object: 'state',
       type_of_edit: 'add',
-      teamboard: boardGet.id,
-      task: taskGet.id,
-      column: newState
+      teamboard_id: boardGet.id,
+      task_id: taskGet.id,
+      state: newState
     }
 
     sendMessageToServer(JSON.stringify(message));
@@ -353,11 +353,11 @@ export class Service {
     }
 
     const message: MessageDeleteState = {
-      kind_of_object: 'column',
-      type_of_edit: 'delet',
-      teamboard: boardGet.id,
-      task: taskGet.id,
-      column: stateGet
+      kind_of_object: 'state',
+      type_of_edit: 'delete',
+      teamboard_id: boardGet.id,
+      task_id: taskGet.id,
+      state: stateGet
     }
 
     sendMessageToServer(JSON.stringify(message));
@@ -376,11 +376,11 @@ export class Service {
     const message: MessageMoveState = {
       kind_of_object: 'state',
       type_of_edit: 'move',
-      teamboard: boardGet.id,
-      task: taskGet.id,
+      teamboard_id: boardGet.id,
+      task_id: taskGet.id,
       oldPosition: event.previousIndex,
       newPosition: event.currentIndex,
-      column: event.container.data.at(event.currentIndex)
+      state: event.container.data.at(event.currentIndex)
     }
 
     sendMessageToServer(JSON.stringify(message));
@@ -393,9 +393,9 @@ export class Service {
       const message: MessageMoveSubtask = {
         kind_of_object: 'state',
         type_of_edit: 'moveSubtaskInState',
-        teamboard: boardGet.id,
-        task: taskGet.id,
-        column: stateGet.id,
+        teamboard_id: boardGet.id,
+        task_id: taskGet.id,
+        state_id: stateGet.id,
         oldPosition: event.previousIndex,
         newPosition: event.currentIndex,
         subtask: event.container.data.at(event.currentIndex)
@@ -410,9 +410,9 @@ export class Service {
       const message: MessageMoveSubtask = {
         kind_of_object: 'state',
         type_of_edit: 'moveSubtaskBetweenStates',
-        teamboard: boardGet.id,
-        task: taskGet.id,
-        column: stateGet.id,
+        teamboard_id: boardGet.id,
+        task_id: taskGet.id,
+        state_id: stateGet.id,
         oldPosition: event.previousIndex,
         newPosition: event.currentIndex,
         subtask: event.container.data.at(event.currentIndex)
@@ -436,23 +436,23 @@ export class Service {
       name: "Subtask2",
       description: "test description2",
       worker: "Testworker2",
-      id: 0,
-      position: 0
+      id: 1,
+      position: 1
     }
 
     let subtask11: Subtask = {
       name: "Subtask1",
       description: "test description1",
       worker: "Testworker1",
-      id: 0,
+      id: 3,
       position: 0
     }
     let subtask12: Subtask = {
       name: "Subtask2",
       description: "test description2",
       worker: "Testworker2",
-      id: 0,
-      position: 0
+      id: 4,
+      position: 1
     }
 
 
@@ -460,65 +460,65 @@ export class Service {
       name: "Subtask3",
       description: "test description",
       worker: "Testworker2",
-      id: 0,
+      id: 5,
       position: 0
     }
 
     let state1: State = {
       state: "Done",
       subtasks: [subtask3],
-      id: 0,
+      id: 6,
       position: 0
     }
     let state2: State = {
       state: "ToDo",
       subtasks: [subtask1, subtask2],
-      id: 0,
+      id: 7,
       position: 0
     }
 
     let state4: State = {
       state: "In Progress",
       subtasks: [],
-      id: 0,
+      id: 8,
       position: 0
     }
 
     let state3: State = {
       state: "ToDo",
       subtasks: [subtask11, subtask12],
-      id: 0,
+      id: 9,
       position: 0
     }
 
     let task1: Task = {
       name: "Testtask1",
       states: [state2, state1, state4],
-      id: 0
+      id: 10
     }
 
     let task2: Task = {
       name: "Testtask2",
       states: [state3, state4],
-      id: 0
+      id: 11
     }
 
     let task3: Task = {
       name: "Testtask3",
       states: [state3],
-      id: 0
+      id: 12
     }
 
     let board1: Board = {
       name: 'Board 1',
       tasks: [task1, task2],
-      id: 0
+      id: 13
     }
 
     let board2: Board = {
       name: 'Board 2',
       tasks: [],
-      id: 0
+      id: 14
     }
 
 
@@ -711,10 +711,10 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
     case 'task':
       switch (JSONObject.type_of_edit) {
         case 'add':
-          addTask(JSONObject.teamboard, JSONObject.task, _boardsObservabel);
+          addTask(JSONObject.teamboard_id, JSONObject.task, _boardsObservabel);
           break;
         case 'delete':
-          deleteTask(JSONObject.teamboard, JSONObject.task, _boardsObservabel);
+          deleteTask(JSONObject.teamboard_id, JSONObject.task, _boardsObservabel);
           break;
       }
       break;
@@ -723,13 +723,13 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
     case 'state':
       switch (JSONObject.type_of_edit) {
         case 'add':
-          addState(JSONObject.teamboard, JSONObject.task, JSONObject.column, _boardsObservabel);
+          addState(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state, _boardsObservabel);
           break;
         case 'delete':
-          deleteState(JSONObject.teamboard, JSONObject.task, JSONObject.column, _boardsObservabel);
+          deleteState(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state, _boardsObservabel);
           break;
         case 'move':
-          moveState(JSONObject.teamboard, JSONObject.task, JSONObject.column, _boardsObservabel);
+          moveState(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state, _boardsObservabel);
           break;
       }
       break;
@@ -737,10 +737,10 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
     case 'subtask':
       switch (JSONObject.type_of_edit) {
         case 'add':
-          addSubtask(JSONObject.teamboard, JSONObject.task, JSONObject.column, JSONObject.subtask, _boardsObservabel);
+          addSubtask(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state_id, JSONObject.subtask, _boardsObservabel);
           break;
         case 'delete':
-          deleteSubtask(JSONObject.teamboard, JSONObject.task, JSONObject.column, JSONObject.subtask, _boardsObservabel);
+          deleteSubtask(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state_id, JSONObject.subtask, _boardsObservabel);
           break;
 
         // case 'move':
@@ -871,18 +871,19 @@ function addState(boardId: number, taskId: number, column: State, _boardsObserva
   _boardsObservable = of(boardsArray);
 }
 
-function deleteState(boardId: number, taskId: number, column: State, _boardsObservable: Observable<Board[]>) {
+function deleteState(boardId: number, taskId: number, stateGet: State, _boardsObservable: Observable<Board[]>) {
   let boardsArray: Board[] = getBoardsArray(_boardsObservable);
 
   const boardIndex = boardsArray.findIndex(board => board.id === boardId);
   const taskIndex = boardsArray[boardIndex].tasks.findIndex(task => task.id = taskId);
 
-  const stateIndex = boardsArray[boardId].tasks[taskId].states.findIndex(state => state === column);
+  const stateIndex = boardsArray[boardIndex].tasks[taskIndex].states.findIndex(state => state.id === stateGet.id);
 
   if(stateIndex !== -1){
-    boardsArray[boardId].tasks[taskId].states.splice(stateIndex, 1);
+    console.log("Delete Board");
+    boardsArray[boardIndex].tasks[taskIndex].states.splice(stateIndex, 1);
   }
-
+  console.log("initalice observable new..");
   _boardsObservable = of(boardsArray);
 }
 
