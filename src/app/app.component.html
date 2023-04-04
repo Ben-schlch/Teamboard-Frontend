@@ -1,12 +1,3 @@
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
-<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
-<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
-<!-- * * * * * * * to get started with your project! * * * * * * * * -->
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-
 <style>
   :host {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -240,7 +231,7 @@
       <div class="modal-body">
         <clr-checkbox-wrapper>
           <label>Neuer User</label>
-          <input type="checkbox" name="rememberMe" clrCheckbox (change)="true" #isRegistration/>
+          <input type="checkbox" name="rememberMe" (change)="true" clrCheckbox  #isRegistration/>
 
         </clr-checkbox-wrapper>
         <p>
@@ -255,7 +246,7 @@
           </clr-input-container>
           <clr-password-container>
             <label class="clr-sr-only">Password</label>
-            <input type="password" name="password" clrPassword placeholder="Password" formControlName="pwd"/>
+            <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
           </clr-password-container>
 
           <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->

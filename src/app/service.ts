@@ -529,7 +529,15 @@ export class Service {
   }
 
   public login(person: Person): Observable<string> {
-    const socketAuthentificationObservable = this._http.post<string>("/login", person);
+    let socketAuthentificationObservable = of('-1');
+
+    //delete if statement
+    if((person.email !== 'CodeMonkey')){
+      console.log('Not debug!', person.email, person.pwd);
+      socketAuthentificationObservable = this._http.post<string>("/login", person);
+    }else{
+      console.log(' debug!', person.email, person.pwd);
+    }
     let socketAuth: string = '';
     aktualPerson = person;
 
@@ -537,67 +545,47 @@ export class Service {
       socketAuth = id as string;
     });
 
-    //socket = new WebSocket("ws://localhost:8080/" + socketIdNumber);
-
-    this.socketAuthentification = socketAuth;
-
-    //open websocket
-    getWebSocket(socketAuth, this._boardsObservable);
-
-
-    if (this.socketAuthentification !== '') {
-      this.initialiceObservable();
+    //DELETE!!!
+    if(person.email === 'CodeMonkey'){
+      socketAuth = 'testAuth';
+      console.log(' debug!', socketAuth);
     }
 
+    if(socketAuth === ''){
+      console.log('Early return..')
+      return socketAuthentificationObservable;
+    }
 
-    //this.getBoards();
+    //hier wift er einen fehler
+    //this.socketAuthentification = socketAuth;
 
+
+    console.log(' debug! initialiced socket');
+
+    //DELETE Firstpart!!!
+    if(person.email === 'CodeMonkey'){
+      this._boardsObservable = this.getBoards();
+
+      console.log('initialice observable', getBoardsArray(this._boardsObservable));
+    }else{
+      //dont delete!!
+      this._boardsObservable = this._http.get<Board[]>('/getBoards/' + socketAuth);
+    }
+
+    console.log(' debug! socket: ', socketAuth);
+
+    //open websocket -> throws error?!!
+    //getWebSocket(socketAuth, this._boardsObservable);
+
+    console.log("return", socketAuthentificationObservable)
     return socketAuthentificationObservable;
   }
 
 
-  public register(person: Person): Observable<string> {
+  public register(person: Person): Observable<boolean> {
 
-    //const socketAuth =  this._http.post<string>("/register", person);
-
-    const socketAuth = of('');
-
-    let socketAuthentification: string = '';
-
-    //move Observable to array to add subtask
-    socketAuth.subscribe(id => {
-      socketAuthentification = id as string;
-    });
-
-    this.socketAuthentification = socketAuthentification;
-    // //delete!!!
-    //   this.initialiceObservable();
-
-    if (this.socketAuthentification !== '') {
-      //this.initialiceObservable();
-    }
-
-    //delete
-    this._boardsObservable = this.getBoards();
-
-    //delete
-    let boardsArray: Board[] = [];
-//delete
-    if (this._boardsObservable !== undefined) {
-      //move Observable to array to add subtask
-      this._boardsObservable.subscribe(board => {
-        boardsArray = board as Board[]
-      });
-    }
-    //delete
-    console.log(JSON.stringify(boardsArray));
-
-
-    this._boardsObservable.subscribe((v) => console.log(`value: ${v}`));
-
-    getWebSocket(socketAuthentification, this._boardsObservable);
-
-    return socketAuth;
+    const isRegistered =  this._http.post<boolean>('/register', person);
+    return isRegistered;
   }
 
   //

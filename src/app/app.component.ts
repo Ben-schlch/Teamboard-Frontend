@@ -39,11 +39,6 @@ export class AppComponent {
     this.subscriber = this.service._boardsObservable.subscribe(boards => {
       this._boards$ = of(boards)
     });
-    // if()
-    // this.service._boardsObservable.subscribe(board => {
-    //   console.log(board);
-    //
-    // })
 
   }
   private readonly service = inject(Service)
@@ -54,7 +49,7 @@ export class AppComponent {
 
   protected readonly _loginForm = this._formBuilder.group({
     email: ['', [Validators.required]],
-    pwd:['', [Validators.required]],
+    password:['', [Validators.required]],
   });
 
   //todo: add Email
@@ -68,31 +63,23 @@ export class AppComponent {
   ngOnInit() {
     this.service._boardsObservable.subscribe(d => this.boards = d);
     this._boards$ = this.service._boardsObservable;
+
+    this._boards$.subscribe();
   }
 
   @Input()
   dep: any;
 
-  // @ts-ignore
-  _isChecked: any =  document.getElementById("isRegistration")?.checked;
 
-  //protected _boards$ = this.service.getBoards();
-  //protected _tasks$ = this.service.getTasks().pipe();
+  // // @ts-ignore
+  // _isChecked: any =  document.getElementById("isRegistration")?.checked;
   _websocketAuthentification: string = '';
-  //protected _boards$: Observable<Board[]> = this.service._boardsObservable;
 
   _boards$ = this.service._boardsObservable.pipe(
     map(board => board)
   )
 
   protected boards: Board[] = [];
-
-  // protected _boards$ = this.service._boardsObservable.pipe(
-  //   map(board => board)
-  // );
-
-  //protected _tasks$ = this.service.getTasks().pipe();
-  //protected _tasks$ = this.service.getTasks('null').pipe();
 
   _login() {
     this._createButtonState = ClrLoadingState.DEFAULT;
@@ -107,11 +94,22 @@ export class AppComponent {
     const person: Person = {
       name: '',
       email: this._loginForm.getRawValue().email,
-      pwd: this._loginForm.getRawValue().pwd
+      pwd: this._loginForm.getRawValue().password
     };
 
     this.service.login(person).subscribe({
       next: (websocketAuthentification: string) => {
+        console.log("Websocketauthentification: ", websocketAuthentification);
+        console.log("Observable in component: ", getBoardsArray(this._boards$));
+
+        //this._boards$
+        this._boards$ = this.service._boardsObservable.pipe(
+          map(board => board)
+        );
+
+        console.log("Observable in component: ", getBoardsArray(this._boards$));
+
+
         this._websocketAuthentification = websocketAuthentification;
         this.closeModal();
         this.toastr.success('Logged in successfully')
@@ -156,9 +154,13 @@ export class AppComponent {
       pwd: person_register.pwd
     }
     this.service.register(person).subscribe({
-      next: (websocketAuthentification: string) => {
-        this._websocketAuthentification = websocketAuthentification;
-        this.closeModal();
+      next: (isRegistered: boolean) => {
+        if(isRegistered){
+          this.toastr.info('You will get an Email to validate');
+        }else{
+          this.toastr.error('Registration failed.');
+        }
+        this._createButtonState = ClrLoadingState.DEFAULT;
       },
       error: (error) => {
           switch (error.status) {
@@ -171,11 +173,8 @@ export class AppComponent {
             default:
               this.toastr.error('Registration failed');
           }
-        this.toastr.error(error.message);
       }
     });
-    this.service._boardsObservable.subscribe(data => this._boards$ = of(data));
-    this._createButtonState = ClrLoadingState.DEFAULT;
     }
 
 
@@ -191,34 +190,13 @@ export class AppComponent {
 
   }
 
-  // showContent(boardName: string) {
-  //   console.log(boardName);
-  //
-  //   this._tasks$ = this.service.getTasks(boardName);
-  //
-  // }
-
   drop(event: CdkDragDrop<Subtask[]>, boardGet: Board, taskGet: Task, stateGet: State) {
-    
+
     this.service.moveSubtask(event, boardGet, taskGet, stateGet);
-    
-    // if (event.previousContainer === event.container) {
-    //   moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    // } else {
-    //   transferArrayItem(event.previousContainer.data,
-    //     event.container.data,
-    //     event.previousIndex,
-    //     event.currentIndex);
-    //
-    //   //send to service
-    // }
   }
 
   dropState(event: CdkDragDrop<State[]>, boardGet: Board, taskGet: Task) {
     this.service.dropState(event, boardGet, taskGet);
-    // moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-
-    //send to service
   }
 
   _getSubtasks(subtasks: Subtask[]): string[] {
@@ -257,7 +235,7 @@ export class AppComponent {
   }
 
   _addSubtask(boardGet: Board, taskGet: Task, stateGet: State, taskName: string) {
-    //todo: open modal to add
+    //todo: open modal to add??
 
     //add task to observable
 
@@ -270,8 +248,6 @@ export class AppComponent {
     }
 
     this.service.addSubtask(boardGet, taskGet, stateGet, newSubtask);
-
-
   }
 
   _addTask(taskName: string, boardGet: Board) {
@@ -286,10 +262,9 @@ export class AppComponent {
     this.service.addTask(boardGet, newTask);
   }
 
-  
+
   _addState(boardGet: Board, taskGet: Task, stateName: string) {
   //todo: add state
-
 
     let newState: State = {
       id: -1,
@@ -299,7 +274,6 @@ export class AppComponent {
     }
 
     this.service.addState(boardGet, taskGet, newState);
-
   }
 
   _addBoard(boardName: string) {
@@ -320,4 +294,20 @@ export class AppComponent {
     console.log("Delete state", stateGet);
     this.service.deleteState(boardGet, taskGet, stateGet);
   }
+}
+// function getBoardsArray(_boards$: Observable<Board[]>): any {
+//     throw new Error('Function not implemented.');
+// }
+
+function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
+  let boardsArray: Board[] = [];
+
+  if (_boardsObservable !== undefined) {
+    //move Observable to array to add subtask
+    _boardsObservable.subscribe(board => {
+      boardsArray = board as Board[]
+    });
+  }
+
+  return boardsArray;
 }
