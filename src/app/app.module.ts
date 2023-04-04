@@ -4,6 +4,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {ClarityModule} from "@clr/angular";
 import { HttpClientModule, HttpClient } from '@angular/common/http';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+
 import { AppComponent } from './app.component';
 import { ToastrModule } from 'ngx-toastr';
 
@@ -17,8 +19,9 @@ import { ToastrModule } from 'ngx-toastr';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
+    DragDropModule,
     HttpClientModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot()
   ],
   providers: [HttpClient],
   bootstrap: [AppComponent]
