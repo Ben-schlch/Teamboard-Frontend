@@ -529,7 +529,7 @@ export class Service {
   }
 
   public login(person: Person): Observable<string> {
-    let socketAuthentificationObservable = of('-1');
+    let socketAuthentificationObservable = of('');
 
     //delete if statement
     if((person.email !== 'CodeMonkey')){
@@ -565,6 +565,7 @@ export class Service {
     //DELETE Firstpart!!!
     if(person.email === 'CodeMonkey'){
       this._boardsObservable = this.getBoards();
+      getWebSocket('', this._boardsObservable);
 
       console.log('initialice observable', getBoardsArray(this._boardsObservable));
     }else{
