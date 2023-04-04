@@ -61,9 +61,9 @@ export interface MessageAddTask {
 export interface MessageAddState {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard: number,
-  task: number,
-  column: State
+  teamboard_id: number,
+  task_id: number,
+  state: State
 }
 
 export interface MessageAddSubtask {
@@ -289,9 +289,9 @@ export class Service {
     let message: MessageAddState = {
       kind_of_object: 'state',
       type_of_edit: 'add',
-      teamboard: boardGet.id,
-      task: taskGet.id,
-      column: newState
+      teamboard_id: boardGet.id,
+      task_id: taskGet.id,
+      state: newState
     }
 
     sendMessageToServer(JSON.stringify(message));
