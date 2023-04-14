@@ -130,6 +130,8 @@ export interface MessageMoveSubtask {
 
 
 //socketComponents
+// für PROD: "ws://195.201.94.44:8000"
+
 const SOCKET_URL = "ws://localhost:8000";
 
 //https://www.piesocket.com/blog/python-websocket
@@ -570,8 +572,9 @@ export class Service {
 
       console.log('initialice observable', getBoardsArray(this._boardsObservable));
     }else{
-      //dont delete!!
+      //dont delete!! Boards in richtiger reihenfolge ohne positionen
       this._boardsObservable = this._http.get<Board[]>('/getBoards/' + socketAuth);
+      getWebSocket(socketAuth, this._boardsObservable);
     }
 
     console.log(' debug! socket: ', socketAuth);
