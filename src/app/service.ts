@@ -129,10 +129,15 @@ export interface MessageMoveSubtask {
 }
 
 
+export interface Token {
+  token: string
+}
+
 //socketComponents
 // für PROD: "ws://195.201.94.44:8000"
 
-const SOCKET_URL = "ws://localhost:8000";
+//const SOCKET_URL = "ws://localhost:8000";
+const SOCKET_URL = "wss://teamboard.server-welt.com:8000/ws/";
 
 //https://www.piesocket.com/blog/python-websocket
 
@@ -544,63 +549,43 @@ export class Service {
   }
 
   public login(person: Person): Observable<string> {
-    let socketAuthentificationObservable = of('');
+    let socketAuth: string = '';
 
     //delete if statement
-    if((person.email !== 'CodeMonkey')){
+    //if((person.email !== 'CodeMonkey')){
       const headers = { 'content-type': 'application/json'};
       const body=JSON.stringify(person);
 
       console.log('Not debug!', person.email, person.pwd);
       console.log("Sending data to server: ", body);
-      //socketAuthentificationObservable = this._http.post<string>(this.baseURL + "/login", body, {'headers':headers});
-      socketAuthentificationObservable = this._http.post<string>("/api/login", person);
-    }else{
-      console.log(' debug!', person.email, person.pwd);
-    }
-    let socketAuth: string = '';
+      let socketAuthentificationObservable = this._http.post<Token>("/api/login", person).subscribe({
+        next: (token) => {
+          socketAuth = token.token;
+          console.log("SocketAuth: ", socketAuth);
+
+          this.socketAuthentification = token.token;
+
+          this._http.get<Board[]>('/api/getBoards/' + socketAuth).subscribe({
+            next: (boards) => {
+              if (boards.length == 0){
+                this._boardsObservable = of([]);
+              }else {
+                this._boardsObservable = of(boards);
+              }
+            }
+          });
+
+          this._boardsObservable.subscribe( board => console.log(board));
+
+          getWebSocket(socketAuth, this._boardsObservable);
+        }
+      });
+
     aktualPerson = person;
-
-    socketAuthentificationObservable.subscribe(id => {
-      socketAuth = id as string;
-    });
-
-    //DELETE!!!
-    if(person.email === 'CodeMonkey'){
-      socketAuth = 'testAuth';
-      console.log(' debug!', socketAuth);
-    }
-
-    if(socketAuth === ''){
-      console.log('Early return..')
-      return socketAuthentificationObservable;
-    }
-
-    //hier wift er einen fehler
-    //this.socketAuthentification = socketAuth;
-
-
+    console.log("Socketauth: ", this.socketAuthentification);
     console.log(' debug! initialiced socket');
 
-    //DELETE Firstpart!!!
-    if(person.email === 'CodeMonkey'){
-      this._boardsObservable = this.getBoards();
-      getWebSocket('', this._boardsObservable);
-
-      console.log('initialice observable', getBoardsArray(this._boardsObservable));
-    }else{
-      //dont delete!! Boards in richtiger reihenfolge ohne positionen
-      this._boardsObservable = this._http.get<Board[]>('api/getBoards/' + socketAuth);
-      getWebSocket(socketAuth, this._boardsObservable);
-    }
-
-    console.log(' debug! socket: ', socketAuth);
-
-    //open websocket -> throws error?!!
-    //getWebSocket(socketAuth, this._boardsObservable);
-
-    console.log("return", socketAuthentificationObservable)
-    return socketAuthentificationObservable;
+    return of(this.socketAuthentification);
   }
 
 
