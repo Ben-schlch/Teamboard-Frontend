@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --ssl=true --proxy-config src/proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -22,8 +22,8 @@
     "@clr/angular": "^15.0.3",
     "@clr/icons": "^13.0.2",
     "@clr/ui": "^15.0.3",
-    "ngx-toastr": "^16.1.0",
     "@webcomponents/custom-elements": "^1.0.0",
+    "http-proxy-middelware": "^0.0.1-security",
     "ngx-toastr": "^16.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

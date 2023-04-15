@@ -149,6 +149,18 @@ let boardsString: string[] = ["DefaultBoard"];
 export class Service {
 
   private readonly _http = inject(HttpClient);
+
+  //private _http = HttpClient;
+
+  // constructor(private _http: HttpClient) {
+  // }
+
+
+  //https://195.201.94.44:8000/login
+  //baseURL: string = "https://195.201.94.44:8000";
+  //baseURL: string = "https://teamboard.server-welt.com:8000";
+  //baseURL: string = "api";
+
   private socketAuthentification: string = '';
 
   public _boardsObservable: Observable<Board[]> = of([]);
@@ -536,8 +548,13 @@ export class Service {
 
     //delete if statement
     if((person.email !== 'CodeMonkey')){
+      const headers = { 'content-type': 'application/json'};
+      const body=JSON.stringify(person);
+
       console.log('Not debug!', person.email, person.pwd);
-      socketAuthentificationObservable = this._http.post<string>("/login", person);
+      console.log("Sending data to server: ", body);
+      //socketAuthentificationObservable = this._http.post<string>(this.baseURL + "/login", body, {'headers':headers});
+      socketAuthentificationObservable = this._http.post<string>("/api/login", person);
     }else{
       console.log(' debug!', person.email, person.pwd);
     }
@@ -573,7 +590,7 @@ export class Service {
       console.log('initialice observable', getBoardsArray(this._boardsObservable));
     }else{
       //dont delete!! Boards in richtiger reihenfolge ohne positionen
-      this._boardsObservable = this._http.get<Board[]>('/getBoards/' + socketAuth);
+      this._boardsObservable = this._http.get<Board[]>('api/getBoards/' + socketAuth);
       getWebSocket(socketAuth, this._boardsObservable);
     }
 
