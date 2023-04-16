@@ -5,9 +5,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule, ClrLoadingState } from '@clr/angular';
 // import { AppComponent } from './app.component';
-import {Board, Service, State, Subtask, Task} from './service';
+import {Service} from './service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {Person} from './service';
 import { ToastrService } from 'ngx-toastr';
 import { HttpStatusCode } from '@angular/common/http';
 import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip } from 'rxjs';
@@ -24,6 +23,7 @@ import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/travel-shapes';
 import '@clr/icons/shapes/technology-shapes';
 import '@clr/icons/shapes/chart-shapes';
+import { Board, Task, State, Subtask, Person } from './models/boards';
 
 @Component({
   selector: 'app-root',
