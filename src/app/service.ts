@@ -7,132 +7,15 @@ import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-// interface for logged in Person
-export interface Person {
-  name: string,
-  email: string,
-  pwd: string
-}
-
-//interfaces for Datastruckture
-export interface Board {
-  id: number,
-  name: string,
-  tasks: Task[]
-}
-
-export interface Task {
-  id: number,
-  //position: number,
-  name: string,
-  states: State[]
-}
-
-export interface State {
-  id: number,
-
-  position: number,
-  state: string,
-  subtasks: Subtask[]
-}
-
-export interface Subtask {
-  id: number,
-  position: number,
-  name: string,
-  description: string,
-  worker: Person["name"]
-}
-
-//add interfaces for communication
-export interface MessageAddBoard {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard: Board,
-}
-
-export interface MessageAddTask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task: Task
-}
-
-export interface MessageAddState {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state: State
-}
-
-export interface MessageAddSubtask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state_id: number,
-  subtask: Subtask
-}
-
-//delete interfaces for communication
-export interface MessageDeleteBoard {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard: Board,
-}
-
-export interface MessageDeleteTask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task: Task
-}
-
-export interface MessageDeleteState {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state: State
-}
-
-export interface MessageDeleteSubtask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state_id: number,
-  subtask: Subtask
-}
-
-//move interfaces for communication
-export interface MessageMoveState {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  oldPosition: number,
-  newPosition: number,
-  state: State
-}
-
-export interface MessageMoveSubtask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state_id: number,
-  oldPosition: number,
-  newPosition: number,
-  subtask: Subtask
-}
+import {MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, Token} from './models/communication';
+import {Board, Person, State, Subtask, Task } from './models/boards';
 
 
 //socketComponents
 // für PROD: "ws://195.201.94.44:8000"
 
-const SOCKET_URL = "ws://localhost:8000";
+//const SOCKET_URL = "ws://localhost:8000";
+const SOCKET_URL = "wss://teamboard.server-welt.com:8000/ws/";
 
 //https://www.piesocket.com/blog/python-websocket
 
@@ -149,6 +32,18 @@ let boardsString: string[] = ["DefaultBoard"];
 export class Service {
 
   private readonly _http = inject(HttpClient);
+
+  //private _http = HttpClient;
+
+  // constructor(private _http: HttpClient) {
+  // }
+
+
+  //https://195.201.94.44:8000/login
+  //baseURL: string = "https://195.201.94.44:8000";
+  //baseURL: string = "https://teamboard.server-welt.com:8000";
+  //baseURL: string = "api";
+
   private socketAuthentification: string = '';
 
   public _boardsObservable: Observable<Board[]> = of([]);
@@ -532,64 +427,52 @@ export class Service {
   }
 
   public login(person: Person): Observable<string> {
-    let socketAuthentificationObservable = of('');
+    let socketAuth: string = '';
 
     //delete if statement
-    if((person.email !== 'CodeMonkey')){
-      console.log('Not debug!', person.email, person.pwd);
-      socketAuthentificationObservable = this._http.post<string>("/login", person);
-    }else{
-      console.log(' debug!', person.email, person.pwd);
-    }
-    let socketAuth: string = '';
-    aktualPerson = person;
+    //if((person.email !== 'CodeMonkey')){
+      const headers = { 'content-type': 'application/json'};
+      const body=JSON.stringify(person);
 
-    socketAuthentificationObservable.subscribe(id => {
-      socketAuth = id as string;
+      console.log('Not debug!', person.email, person.pwd);
+      console.log("Sending data to server: ", body);
+      let socketAuthentificationObservable = this._http.post<Token>("/api/login", person).subscribe({
+        next: (token) => {
+          socketAuth = token.token;
+          console.log("SocketAuth: ", socketAuth);
+
+          this.socketAuthentification = token.token;
+
+          this._http.get<Board[]>('/api/getBoards/' + socketAuth).subscribe({
+            next: (boards) => {
+              if (boards.length == 0){
+                this._boardsObservable = of([]);
+              }else {
+                this._boardsObservable = of(boards);
+              }
+            }
+          });
+
+          this._boardsObservable.subscribe( board => console.log(board));
+
+          getWebSocket(socketAuth, this._boardsObservable);
+        }, error: (error) => {
+          this.socketAuthentification = '';
+        }
+
     });
 
-    //DELETE!!!
-    if(person.email === 'CodeMonkey'){
-      socketAuth = 'testAuth';
-      console.log(' debug!', socketAuth);
-    }
-
-    if(socketAuth === ''){
-      console.log('Early return..')
-      return socketAuthentificationObservable;
-    }
-
-    //hier wift er einen fehler
-    //this.socketAuthentification = socketAuth;
-
-
+    aktualPerson = person;
+    console.log("Socketauth: ", this.socketAuthentification);
     console.log(' debug! initialiced socket');
 
-    //DELETE Firstpart!!!
-    if(person.email === 'CodeMonkey'){
-      this._boardsObservable = this.getBoards();
-      getWebSocket('', this._boardsObservable);
-
-      console.log('initialice observable', getBoardsArray(this._boardsObservable));
-    }else{
-      //dont delete!! Boards in richtiger reihenfolge ohne positionen
-      this._boardsObservable = this._http.get<Board[]>('/getBoards/' + socketAuth);
-      getWebSocket(socketAuth, this._boardsObservable);
-    }
-
-    console.log(' debug! socket: ', socketAuth);
-
-    //open websocket -> throws error?!!
-    //getWebSocket(socketAuth, this._boardsObservable);
-
-    console.log("return", socketAuthentificationObservable)
-    return socketAuthentificationObservable;
+    return of(this.socketAuthentification);
   }
 
 
   public register(person: Person): Observable<boolean> {
 
-    const isRegistered =  this._http.post<boolean>('/register', person);
+    const isRegistered =  this._http.post<boolean>('/api/register', person);
     return isRegistered;
   }
 
