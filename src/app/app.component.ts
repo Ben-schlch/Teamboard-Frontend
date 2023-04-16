@@ -111,8 +111,14 @@ export class AppComponent {
 
 
         this._websocketAuthentification = websocketAuthentification;
-        this.closeModal();
-        this.toastr.success('Logged in successfully')
+
+        if(websocketAuthentification !== ""){
+          this.closeModal();
+          this.toastr.success('Logged in successfully')
+        }else {
+          this.toastr.error('Login failed');
+        }
+
       },
       error: (error) => {
         switch (error.status) {

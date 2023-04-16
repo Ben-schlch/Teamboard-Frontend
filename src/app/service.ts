@@ -578,8 +578,11 @@ export class Service {
           this._boardsObservable.subscribe( board => console.log(board));
 
           getWebSocket(socketAuth, this._boardsObservable);
+        }, error: (error) => {
+          this.socketAuthentification = '';
         }
-      });
+
+    });
 
     aktualPerson = person;
     console.log("Socketauth: ", this.socketAuthentification);
@@ -591,7 +594,7 @@ export class Service {
 
   public register(person: Person): Observable<boolean> {
 
-    const isRegistered =  this._http.post<boolean>('/register', person);
+    const isRegistered =  this._http.post<boolean>('/api/register', person);
     return isRegistered;
   }
 
