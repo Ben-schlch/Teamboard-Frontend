@@ -436,14 +436,14 @@ export class Service {
 
       console.log('Not debug!', person.email, person.pwd);
       console.log("Sending data to server: ", body);
-      let socketAuthentificationObservable = this._http.post<Token>("/api/login", person).subscribe({
+      let socketAuthentificationObservable = this._http.post<Token>('/api/login', person).subscribe({
         next: (token) => {
           socketAuth = token.token;
           console.log("SocketAuth: ", socketAuth);
 
           this.socketAuthentification = token.token;
 
-          this._http.get<Board[]>('/api/getBoards/' + socketAuth).subscribe({
+          this._http.get<Board[]>('/api/getBoards' + socketAuth).subscribe({
             next: (boards) => {
               if (boards.length == 0){
                 this._boardsObservable = of([]);
@@ -472,8 +472,18 @@ export class Service {
 
   public register(person: Person): Observable<boolean> {
 
-    const isRegistered =  this._http.post<boolean>('/api/register', person);
-    return isRegistered;
+    let isRegistered = false;
+    let registerObservable = this._http.post<boolean>('/api/register/', person).subscribe({
+      next: (getIsRegistered) => {
+        isRegistered = getIsRegistered;
+      },
+      error: (error) => {
+        console.log("ERROR!!");
+        isRegistered = false;
+      }
+      }
+    );
+    return of(isRegistered);
   }
 
   //
