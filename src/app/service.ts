@@ -374,10 +374,6 @@ export class Service {
     this._boardsObservable = of(boardsArray);
   }
 
-  addUserToBoard(board: Board, email: string){
-    //TODO: implement function
-  }
-
   dropState(event: CdkDragDrop<State[], State[], any>, boardGet: Board, taskGet: Task) {
     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
