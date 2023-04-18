@@ -443,7 +443,7 @@ export class Service {
 
           this.socketAuthentification = token.token;
 
-          this._http.get<Board[]>('/api/getBoards' + socketAuth).subscribe({
+          this._http.get<Board[]>('/api/getBoards/' + socketAuth).subscribe({
             next: (boards) => {
               if (boards.length == 0){
                 this._boardsObservable = of([]);
