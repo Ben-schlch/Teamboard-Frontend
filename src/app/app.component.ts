@@ -294,6 +294,14 @@ export class AppComponent {
     console.log("Delete state", stateGet);
     this.service.deleteState(boardGet, taskGet, stateGet);
   }
+
+  _addUserToBoard(board: Board) {
+    //TODO: show modal id: addUserModal
+    //$('#addUserModal').modal('show');
+    this._createButtonState = ClrLoadingState.DEFAULT;
+
+    //this.service.addUserToBoard(board, email);
+  }
 }
 // function getBoardsArray(_boards$: Observable<Board[]>): any {
 //     throw new Error('Function not implemented.');

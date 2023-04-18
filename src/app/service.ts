@@ -360,12 +360,17 @@ export class Service {
       state: stateGet
     }
 
+
+
     sendMessageToServer(JSON.stringify(message));
     //socket.send(JSON.stringify(message));
 
     this._boardsObservable = of(boardsArray);
   }
 
+  addUserToBoard(board: Board, email: string){
+    //TODO: implement function
+  }
 
   dropState(event: CdkDragDrop<State[], State[], any>, boardGet: Board, taskGet: Task) {
     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);

@@ -66,13 +66,25 @@
       <button
       type="button"
       class="btn"
+      style="font-size: x-large"
       (click)="_deleteBoard(board);
             $event.preventDefault();
             $event.stopPropagation()"
     >
       <b>🗑</b>
     </button>
+      <button
+        type="button"
+        class="btn"
+        style="font-size: x-large"
+        (click)="_addUserToBoard(board);
+            $event.preventDefault();
+            $event.stopPropagation()"
+      >
+        <b>+</b>
+      </button>
     </button>
+
     <clr-tab-content id="content1" *clrIfActive>
 
       <clr-accordion clrAccordionMultiPanel="true">
@@ -297,3 +309,4 @@
   </div>
 </div>
 <div class="modal-backdrop" aria-hidden="true"></div>
+
