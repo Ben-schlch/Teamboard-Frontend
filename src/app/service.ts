@@ -128,6 +128,12 @@ export interface MessageMoveSubtask {
   subtask: Subtask
 }
 
+export interface CheckEmailAddUser {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard_id: number,
+  email: string
+}
 
 //socketComponents
 const SOCKET_URL = "ws://localhost:8000";
@@ -653,6 +659,16 @@ export class Service {
       }
     };
     return new AnonymousSubject<MessageEvent>(observer, observable);
+  }
+
+  checkEmailAddUser(email: string, boardID: number) {
+    const message: CheckEmailAddUser = {
+      kind_of_object: "email",
+      type_of_edit: "addUser",
+      teamboard_id: boardID,
+      email: email
+    }
+    sendMessageToServer(JSON.stringify(message));
   }
 }
 

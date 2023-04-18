@@ -1,17 +1,17 @@
 import {Component, inject, Input} from '@angular/core';
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ClarityModule, ClrLoadingState } from '@clr/angular';
+import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ClarityModule, ClrLoadingState} from '@clr/angular';
 // import { AppComponent } from './app.component';
 import {Board, Service, State, Subtask, Task} from './service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {Person} from './service';
-import { ToastrService } from 'ngx-toastr';
-import { HttpStatusCode } from '@angular/common/http';
-import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip } from 'rxjs';
-import { ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon } from '@cds/core/icon';
+import {ToastrService} from 'ngx-toastr';
+import {HttpStatusCode} from '@angular/common/http';
+import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip} from 'rxjs';
+import {ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon} from '@cds/core/icon';
 
 // import 'clarity-icons';
 // import 'clarity-icons/shapes/essential-shapes';
@@ -41,23 +41,23 @@ export class AppComponent {
     });
 
   }
+
   private readonly service = inject(Service)
   private readonly _formBuilder = inject(NonNullableFormBuilder);
   title = 'Teamboard-Client';
 
 
-
   protected readonly _loginForm = this._formBuilder.group({
     email: ['', [Validators.required]],
-    password:['', [Validators.required]],
+    password: ['', [Validators.required]],
   });
 
   //todo: add Email
   protected readonly _registrationForm = this._formBuilder.group({
     name: ['', [Validators.required]],
     email: ['', [Validators.required]],
-    pwd:['', [Validators.required]],
-    pwd_wdh:['', [Validators.required]]
+    pwd: ['', [Validators.required]],
+    pwd_wdh: ['', [Validators.required]]
   });
 
   ngOnInit() {
@@ -84,7 +84,7 @@ export class AppComponent {
   _login() {
     this._createButtonState = ClrLoadingState.DEFAULT;
 
-    if(!this._loginForm.valid){
+    if (!this._loginForm.valid) {
       this.toastr.error("Nicht alle Felder ausgefüllt");
       return;
     }
@@ -131,17 +131,16 @@ export class AppComponent {
   }
 
 
-
   _register() {
     this._createButtonState = ClrLoadingState.DEFAULT;
-    if(!this._registrationForm.valid){
+    if (!this._registrationForm.valid) {
       this.toastr.error("Nicht alle Felder ausgefüllt");
       return;
     }
 
     const person_register = this._registrationForm.getRawValue();
 
-    if(person_register.pwd !== person_register.pwd_wdh){
+    if (person_register.pwd !== person_register.pwd_wdh) {
       this.toastr.error("Passwörter nicht identisch");
       // set form to invalid?
       return;
@@ -155,27 +154,27 @@ export class AppComponent {
     }
     this.service.register(person).subscribe({
       next: (isRegistered: boolean) => {
-        if(isRegistered){
+        if (isRegistered) {
           this.toastr.info('You will get an Email to validate');
-        }else{
+        } else {
           this.toastr.error('Registration failed.');
         }
         this._createButtonState = ClrLoadingState.DEFAULT;
       },
       error: (error) => {
-          switch (error.status) {
-            case HttpStatusCode.NotFound:
-              this.toastr.error('Registration failed, server unreachable');
-              break;
-            case HttpStatusCode.NotAcceptable:
-              this.toastr.error('Registration failed, you are not a correct User');
-              break;
-            default:
-              this.toastr.error('Registration failed');
-          }
+        switch (error.status) {
+          case HttpStatusCode.NotFound:
+            this.toastr.error('Registration failed, server unreachable');
+            break;
+          case HttpStatusCode.NotAcceptable:
+            this.toastr.error('Registration failed, you are not a correct User');
+            break;
+          default:
+            this.toastr.error('Registration failed');
+        }
       }
     });
-    }
+  }
 
 
   protected closeModal() {
@@ -222,12 +221,12 @@ export class AppComponent {
     let _isState = false;
 
     for (const state of states) {
-      if(_isState){
+      if (_isState) {
         // @ts-ignore
         return state.state;
       }
 
-      if(state === state_get){
+      if (state === state_get) {
         _isState = true;
       }
     }
@@ -264,7 +263,7 @@ export class AppComponent {
 
 
   _addState(boardGet: Board, taskGet: Task, stateName: string) {
-  //todo: add state
+    //todo: add state
 
     let newState: State = {
       id: -1,
@@ -296,13 +295,18 @@ export class AppComponent {
   }
 
   _addUserToBoard(board: Board) {
-    //TODO: show modal id: addUserModal
-    //$('#addUserModal').modal('show');
-    this._createButtonState = ClrLoadingState.DEFAULT;
+    var email = prompt("Geben Sie die E-Mail ein", "example@mail.com");
 
-    //this.service.addUserToBoard(board, email);
+    if (validateEmail(email) && email) {
+      this.toastr.success('E-Mail valid!')
+      this.service.checkEmailAddUser(email, board.id);
+    } else {
+      this.toastr.error('E-Mail not valid!')
+    }
   }
+//TODO: was sendet alwin zurück, wie kommt die Antwort?
 }
+
 // function getBoardsArray(_boards$: Observable<Board[]>): any {
 //     throw new Error('Function not implemented.');
 // }
@@ -318,4 +322,10 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
   }
 
   return boardsArray;
+}
+
+
+function validateEmail(email: string | null) {
+  const res = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  return res.test(String(email).toLowerCase());
 }
