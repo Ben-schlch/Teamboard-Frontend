@@ -100,24 +100,28 @@ export class AppComponent {
     this.service.login(person).subscribe({
       next: (websocketAuthentification: string) => {
         console.log("Websocketauthentification: ", websocketAuthentification);
-        console.log("Observable in component: ", getBoardsArray(this._boards$));
+        //console.log("Observable in component: ", getBoardsArray(this._boards$));
 
         //this._boards$
-        this._boards$ = this.service._boardsObservable.pipe(
-          map(board => board)
-        );
+        // this._boards$ = this.service._boardsObservable.pipe(
+        //   map(board => board)
+        // );
 
-        console.log("Observable in component: ", getBoardsArray(this._boards$));
+        //console.log("Observable in component: ", getBoardsArray(this._boards$));
 
 
         this._websocketAuthentification = websocketAuthentification;
 
-        if(websocketAuthentification !== ""){
+        //if(websocketAuthentification !== ""){
           this.closeModal();
           this.toastr.success('Logged in successfully')
-        }else {
-          this.toastr.error('Login failed');
-        }
+       // }else {
+       //   this.toastr.error('Login failed');
+       // }
+        //while (this._boards$ == null){
+          this.service.loadBoards();
+        //}
+
 
       },
       error: (error) => {
@@ -133,6 +137,7 @@ export class AppComponent {
         }
       },
     });
+
     this._createButtonState = ClrLoadingState.DEFAULT;
   }
 
@@ -244,6 +249,10 @@ export class AppComponent {
     //todo: open modal to add??
 
     //add task to observable
+
+    if(taskName == ""){
+      return;
+    }
 
     let newSubtask: Subtask = {
       name: taskName,
