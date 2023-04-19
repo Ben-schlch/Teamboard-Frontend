@@ -122,6 +122,8 @@ export class AppComponent {
           this.service.loadBoards();
         //}
 
+        this._boards$ = sortBoards(this._boards$);
+
 
       },
       error: (error) => {
@@ -309,10 +311,11 @@ export class AppComponent {
     console.log("Delete state", stateGet);
     this.service.deleteState(boardGet, taskGet, stateGet);
   }
+
+  // changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
+  //   this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
+  // }
 }
-// function getBoardsArray(_boards$: Observable<Board[]>): any {
-//     throw new Error('Function not implemented.');
-// }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
   let boardsArray: Board[] = [];
@@ -326,3 +329,13 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
 
   return boardsArray;
 }
+
+
+function sortBoards(_boards$: Observable<Board[]>): Observable<Board[]> {
+  let boardsArray: Board[] = getBoardsArray(_boards$);
+
+  //todo: sort boards
+
+  return of(boardsArray);
+}
+

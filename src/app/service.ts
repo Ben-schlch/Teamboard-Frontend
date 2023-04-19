@@ -30,6 +30,7 @@ let boardsString: string[] = ["DefaultBoard"];
 
 @Injectable({providedIn: 'root'})
 export class Service {
+  
   loadBoards() {
       //throw new Error('Method not implemented.');
 
@@ -613,6 +614,10 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
         case 'delete':
           deleteBoard(JSONObject.teamboard, _boardsObservabel);
           break;
+        case 'load': {
+          //loadBoards(JSONObject, _boardsObservabel);
+          break;
+        }
       }
       break;
 
@@ -871,4 +876,10 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
 }
 
 
+function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
+
+  //JSONObject.
+
+    throw new Error('Function not implemented.');
+}
 
