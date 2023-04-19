@@ -91,6 +91,6 @@ export interface MessageMoveSubtask {
 }
 
 
-export interface Token {
+export interface MessageToken {
   token: string
 }

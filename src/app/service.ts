@@ -7,7 +7,7 @@ import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-import {MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, Token, MessageLoadBoards} from './models/communication';
+import {MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, MessageLoadBoards, MessageToken} from './models/communication';
 import {Board, Person, State, Subtask, Task } from './models/boards';
 
 
@@ -33,6 +33,7 @@ export class Service {
   loadBoards() {
       //throw new Error('Method not implemented.');
 
+    //boardload
     const message: MessageLoadBoards = {
       kind_of_object: 'board',
       type_of_edit: 'load'
@@ -450,51 +451,25 @@ export class Service {
 
       console.log('Not debug!', person.email, person.pwd);
       console.log("Sending data to server: ", body);
-      let socketAuthentificationObservable = this._http.post<Token>('/api/login', person).subscribe({
+      let socketAuthentificationObservable = this._http.post<MessageToken>('/api/login', person).subscribe({
         next: (token) => {
           socketAuth = token.token;
           console.log("SocketAuth: ", socketAuth);
 
           this.socketAuthentification = token.token;
 
-          // this._http.get<Board[]>('/api/getBoards/' + socketAuth).subscribe({
-          //   next: (boards) => {
-          //     if (boards.length == 0){
-          //       this._boardsObservable = of([]);
-          //     }else {
-          //       this._boardsObservable = of(boards);
-          //     }
-          //   }
-          // });
-
-
-
           this._boardsObservable.subscribe( board => console.log(board));
 
           getWebSocket(socketAuth, this._boardsObservable);
 
-
-          // const message: MessageLoadBoards = {
-          //   kind_of_object: 'board',
-          //   type_of_edit: 'load'
-          // }
-          //
-          // console.log("Sending Get boards...");
-          //
-          // sendMessageToServer(JSON.stringify(message));
-
         }, error: (error) => {
           this.socketAuthentification = '';
         }
-
-
     });
 
     aktualPerson = person;
     console.log("Socketauth: ", this.socketAuthentification);
     console.log(' debug! initialiced socket');
-
-
 
     return of(this.socketAuthentification);
   }
@@ -626,6 +601,8 @@ function sendMessageToServer(message: string) {
 
 function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
 //incomming numbers (ID, Position) can be <0 -> ERROR!!!
+
+  console.log(JSON.stringify(JSONObject));
 
   switch (JSONObject.kind_of_object) {
     case 'board':
