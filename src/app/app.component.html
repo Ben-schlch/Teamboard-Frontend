@@ -187,9 +187,14 @@
                     <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
                       <h3 class="card-header">{{subtask.name}}</h3>
                       <div class="card-block">
-                        <h4 class="card-title">{{subtask.worker}}</h4>
+                        <div class="card-title">
+<!--                          <textarea clrTextarea #textArea [value]=subtask.description (change)="changeDescription(board, task, state, subtask, textArea.value)"></textarea>-->
+<!--                          {{subtask.description}}-->
+                        </div>
                         <div class="card-text">
-                          {{subtask.description}}
+                          <span class="label label-info">
+                            {{subtask.worker}}
+                          </span>
                         </div>
                       </div>
                       <div class="card-footer">

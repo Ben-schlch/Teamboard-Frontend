@@ -1,6 +1,12 @@
 import {Board, State, Subtask, Task } from "./boards"
 
 //add interfaces for communication
+export interface MessageLoadBoards {
+  kind_of_object: string,
+  type_of_edit: string,
+}
+
+
 export interface MessageAddBoard {
   kind_of_object: string,
   type_of_edit: string,
@@ -85,6 +91,6 @@ export interface MessageMoveSubtask {
 }
 
 
-export interface Token {
+export interface MessageToken {
   token: string
 }
