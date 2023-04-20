@@ -7,126 +7,8 @@ import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-// interface for logged in Person
-export interface Person {
-  name: string,
-  email: string,
-  pwd: string
-}
-
-//interfaces for Datastruckture
-export interface Board {
-  id: number,
-  name: string,
-  tasks: Task[]
-}
-
-export interface Task {
-  id: number,
-  //position: number,
-  name: string,
-  states: State[]
-}
-
-export interface State {
-  id: number,
-
-  position: number,
-  state: string,
-  subtasks: Subtask[]
-}
-
-export interface Subtask {
-  id: number,
-  position: number,
-  name: string,
-  description: string,
-  worker: Person["name"]
-}
-
-//add interfaces for communication
-export interface MessageAddBoard {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard: Board,
-}
-
-export interface MessageAddTask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task: Task
-}
-
-export interface MessageAddState {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state: State
-}
-
-export interface MessageAddSubtask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state_id: number,
-  subtask: Subtask
-}
-
-//delete interfaces for communication
-export interface MessageDeleteBoard {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard: Board,
-}
-
-export interface MessageDeleteTask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task: Task
-}
-
-export interface MessageDeleteState {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state: State
-}
-
-export interface MessageDeleteSubtask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state_id: number,
-  subtask: Subtask
-}
-
-//move interfaces for communication
-export interface MessageMoveState {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  oldPosition: number,
-  newPosition: number,
-  state: State
-}
-
-export interface MessageMoveSubtask {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  task_id: number,
-  state_id: number,
-  oldPosition: number,
-  newPosition: number,
-  subtask: Subtask
-}
+import {MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, MessageLoadBoards, MessageToken} from './models/communication';
+import {Board, Person, State, Subtask, Task } from './models/boards';
 
 export interface CheckEmailAddUser {
   kind_of_object: string,
@@ -136,7 +18,10 @@ export interface CheckEmailAddUser {
 }
 
 //socketComponents
-const SOCKET_URL = "ws://localhost:8000";
+// für PROD: "ws://195.201.94.44:8000"
+
+//const SOCKET_URL = "ws://localhost:8000";
+const SOCKET_URL = "wss://teamboard.server-welt.com:8000/ws/";
 
 //https://www.piesocket.com/blog/python-websocket
 
@@ -151,8 +36,55 @@ let boardsString: string[] = ["DefaultBoard"];
 
 @Injectable({providedIn: 'root'})
 export class Service {
+  initWebsocket(token: string) {
+    this.socketAuthentification = token;
+
+          this._boardsObservable.subscribe( board => console.log(board));
+
+          getWebSocket(token, this._boardsObservable);
+    //
+    //     }, error: (error) => {
+    //       this.socketAuthentification = '';
+    //     }
+    // });
+
+    // aktualPerson = person;
+    // console.log("Socketauth: ", this.socketAuthentification);
+    // console.log(' debug! initialiced socket');
+    //
+    // this._boardsObservable.subscribe( board => console.log(board));
+    //
+    // return of(this.socketAuthentification);
+  }
+
+
+  loadBoards() {
+      //throw new Error('Method not implemented.');
+
+    //boardload
+    const message: MessageLoadBoards = {
+      kind_of_object: 'board',
+      type_of_edit: 'load'
+    }
+
+    console.log("Sending Get boards...");
+
+    sendMessageToServer(JSON.stringify(message));
+  }
 
   private readonly _http = inject(HttpClient);
+
+  //private _http = HttpClient;
+
+  // constructor(private _http: HttpClient) {
+  // }
+
+
+  //https://195.201.94.44:8000/login
+  //baseURL: string = "https://195.201.94.44:8000";
+  //baseURL: string = "https://teamboard.server-welt.com:8000";
+  //baseURL: string = "api";
+
   private socketAuthentification: string = '';
 
   public _boardsObservable: Observable<Board[]> = of([]);
@@ -184,6 +116,41 @@ export class Service {
     boardsArray.push(newBoard);
 
     this._boardsObservable = of(boardsArray);
+  }
+
+  changeDescriptionFromSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
+
+    let boardsArray: Board[] = getBoardsArray(this._boardsObservable);
+
+    for (const boardsArrayElement of boardsArray) {
+      if (boardsArrayElement.id === boardGet.id) {
+
+        for (const tasksArrayElement of boardsArrayElement.tasks) {
+          if (tasksArrayElement === taskGet) {
+
+            for (const state of tasksArrayElement.states) {
+              if (state === stateGet) {
+
+                for (const subtask of state.subtasks){
+                  if(subtask.id == subtaskGet.id){
+                    subtask.description = inputValue;
+
+
+
+                    //todo: send message to server
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+
+
+
+    //throw new Error('Method not implemented.');
   }
 
   //add Task to Observable
@@ -221,6 +188,8 @@ export class Service {
   addSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtask: Subtask) {
 
     let boardsArray: Board[] = [];
+
+    subtask.worker = aktualPerson!.email;
 
     console.log("parse task");
     //move Observable to array to add subtask
@@ -429,172 +398,36 @@ export class Service {
 
   }
 
-  //initial request to get all boards?
-  getBoards() {
 
-    let subtask1: Subtask = {
-      name: "Subtask1",
-      description: "test description1",
-      worker: "Testworker1",
-      id: 0,
-      position: 0
-    }
-    let subtask2: Subtask = {
-      name: "Subtask2",
-      description: "test description2",
-      worker: "Testworker2",
-      id: 1,
-      position: 1
-    }
-
-    let subtask11: Subtask = {
-      name: "Subtask1",
-      description: "test description1",
-      worker: "Testworker1",
-      id: 3,
-      position: 0
-    }
-    let subtask12: Subtask = {
-      name: "Subtask2",
-      description: "test description2",
-      worker: "Testworker2",
-      id: 4,
-      position: 1
-    }
-
-
-    let subtask3: Subtask = {
-      name: "Subtask3",
-      description: "test description",
-      worker: "Testworker2",
-      id: 5,
-      position: 0
-    }
-
-    let state1: State = {
-      state: "Done",
-      subtasks: [subtask3],
-      id: 6,
-      position: 0
-    }
-    let state2: State = {
-      state: "ToDo",
-      subtasks: [subtask1, subtask2],
-      id: 7,
-      position: 0
-    }
-
-    let state4: State = {
-      state: "In Progress",
-      subtasks: [],
-      id: 8,
-      position: 0
-    }
-
-    let state3: State = {
-      state: "ToDo",
-      subtasks: [subtask11, subtask12],
-      id: 9,
-      position: 0
-    }
-
-    let task1: Task = {
-      name: "Testtask1",
-      states: [state2, state1, state4],
-      id: 10
-    }
-
-    let task2: Task = {
-      name: "Testtask2",
-      states: [state3, state4],
-      id: 11
-    }
-
-    let task3: Task = {
-      name: "Testtask3",
-      states: [state3],
-      id: 12
-    }
-
-    let board1: Board = {
-      name: 'Board 1',
-      tasks: [task1, task2],
-      id: 13
-    }
-
-    let board2: Board = {
-      name: 'Board 2',
-      tasks: [],
-      id: 14
-    }
-
-
-    //this._boardsObservable = this._http.get<string[]>('/api/getBoardsNames/' + socketId, aktualPerson);
-    this._boardsObservable = from([[board1, board2]]);
-
-    return this._boardsObservable;
-
-  }
-
-  public login(person: Person): Observable<string> {
-    let socketAuthentificationObservable = of('');
-
-    //delete if statement
-    if((person.email !== 'CodeMonkey')){
-      console.log('Not debug!', person.email, person.pwd);
-      socketAuthentificationObservable = this._http.post<string>("/login", person);
-    }else{
-      console.log(' debug!', person.email, person.pwd);
-    }
+  public login(person: Person): Observable<MessageToken> {
     let socketAuth: string = '';
-    aktualPerson = person;
 
-    socketAuthentificationObservable.subscribe(id => {
-      socketAuth = id as string;
-    });
+      const headers = { 'content-type': 'application/json'};
+      const body=JSON.stringify(person);
 
-    //DELETE!!!
-    if(person.email === 'CodeMonkey'){
-      socketAuth = 'testAuth';
-      console.log(' debug!', socketAuth);
-    }
+      console.log('Not debug!', person.email, person.pwd);
+      console.log("Sending data to server: ", body);
 
-    if(socketAuth === ''){
-      console.log('Early return..')
-      return socketAuthentificationObservable;
-    }
+      aktualPerson = person;
 
-    //hier wift er einen fehler
-    //this.socketAuthentification = socketAuth;
-
-
-    console.log(' debug! initialiced socket');
-
-    //DELETE Firstpart!!!
-    if(person.email === 'CodeMonkey'){
-      this._boardsObservable = this.getBoards();
-      getWebSocket('', this._boardsObservable);
-
-      console.log('initialice observable', getBoardsArray(this._boardsObservable));
-    }else{
-      //dont delete!!
-      this._boardsObservable = this._http.get<Board[]>('/getBoards/' + socketAuth);
-    }
-
-    console.log(' debug! socket: ', socketAuth);
-
-    //open websocket -> throws error?!!
-    //getWebSocket(socketAuth, this._boardsObservable);
-
-    console.log("return", socketAuthentificationObservable)
-    return socketAuthentificationObservable;
+      return this._http.post<MessageToken>('/api/login', person);
   }
 
 
   public register(person: Person): Observable<boolean> {
 
-    const isRegistered =  this._http.post<boolean>('/register', person);
-    return isRegistered;
+    let isRegistered = false;
+    let registerObservable = this._http.post<boolean>('/api/register/', person).subscribe({
+      next: (getIsRegistered) => {
+        isRegistered = getIsRegistered;
+      },
+      error: (error) => {
+        console.log("ERROR!!");
+        isRegistered = false;
+      }
+      }
+    );
+    return of(isRegistered);
   }
 
   //
@@ -681,10 +514,16 @@ export class Service {
 function getWebSocket(socketAuthentification: string, _boardsObservable: Observable<Board[]>) {
   const webSocket = new WebSocket(SOCKET_URL + socketAuthentification);
 
+  const message: MessageLoadBoards = {
+    kind_of_object: 'board',
+    type_of_edit: 'load'
+  }
+
+  console.log("Sending Get boards...", JSON.stringify(message));
 
   webSocket.addEventListener("open", (event: any) => {
     // @ts-ignore
-    webSocket.send("Hello");
+    webSocket.send(JSON.stringify(message));
   });
 
   // @ts-ignore
@@ -722,6 +561,8 @@ function sendMessageToServer(message: string) {
 function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
 //incomming numbers (ID, Position) can be <0 -> ERROR!!!
 
+  console.log(JSON.stringify(JSONObject));
+
   switch (JSONObject.kind_of_object) {
     case 'board':
       switch (JSONObject.type_of_edit) {
@@ -731,6 +572,10 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
         case 'delete':
           deleteBoard(JSONObject.teamboard, _boardsObservabel);
           break;
+        case 'load': {
+          _boardsObservabel = loadBoards(JSONObject.teamboard, _boardsObservabel);
+          break;
+        }
       }
       break;
 
@@ -779,6 +624,8 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
       }
       break;
   }
+
+  loadBoards(JSONObject, _boardsObservabel);
 }
 
 
@@ -989,4 +836,67 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
 }
 
 
+function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Observable<Board[]> {
+
+  console.log("load boards..", JSONObject);
+
+  let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
+
+  for (let i = 0; i < JSONObject.length; i++) {
+    //parseTasks
+    let tasks: Task[] = [];
+    for (let j = 0; j < JSONObject[i].tasks.length; j++) {
+      //pares states
+      let states: State[] = [];
+      for (let k = 0; k < JSONObject[i].tasks[j].states.length; k++) {
+        //parse subtasks
+        let subtasks: Subtask[] = [];
+        for (let l = 0; l < JSONObject[i].tasks[j].states[k].subtasks.length; l++) {
+
+          let newSubtask: Subtask = {
+            //TODO: add subtaskID
+            id: JSONObject[i].tasks[j].states[k].subtasks[l].subtask_id,
+            position: l,
+            name: JSONObject[i].tasks[j].states[k].subtasks[l].name,
+            description: JSONObject[i].tasks[j].states[k].subtasks[l].description,
+            worker: JSONObject[i].tasks[j].states[k].subtasks[l].worker
+          }
+
+          subtasks.push(newSubtask);
+
+        }
+
+
+        let newState: State = {
+          id: JSONObject[i].tasks[j].states[k].state_id,
+          position: k,
+          state: JSONObject[i].tasks[j].states[k].name,
+          subtasks: subtasks,
+        }
+
+        states.push(newState);
+      }
+
+      let newTask: Task = {
+        id: JSONObject[i].tasks[j].task_id,
+        name: JSONObject[i].tasks[j].name,
+        states: states
+      }
+      tasks.push(newTask);
+    }
+
+    let newBoard: Board = {
+      id: JSONObject[i].teamboard_id,
+      name: JSONObject[i].teamboard_name,
+      tasks: tasks
+    }
+
+    boardsArray.push(newBoard);
+  }
+  console.log(boardsArray);
+
+  _boardsObservabel = of(boardsArray);
+
+  return _boardsObservabel;
+}
 

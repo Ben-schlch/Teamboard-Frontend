@@ -5,13 +5,14 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ClarityModule, ClrLoadingState} from '@clr/angular';
 // import { AppComponent } from './app.component';
-import {Board, Service, State, Subtask, Task} from './service';
+import {Service} from './service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {Person} from './service';
 import {ToastrService} from 'ngx-toastr';
 import {HttpStatusCode} from '@angular/common/http';
 import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip} from 'rxjs';
 import {ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon} from '@cds/core/icon';
+
 
 // import 'clarity-icons';
 // import 'clarity-icons/shapes/essential-shapes';
@@ -24,6 +25,8 @@ import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/travel-shapes';
 import '@clr/icons/shapes/technology-shapes';
 import '@clr/icons/shapes/chart-shapes';
+import { Board, Task, State, Subtask, Person } from './models/boards';
+import { MessageToken } from './models/communication';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +34,7 @@ import '@clr/icons/shapes/chart-shapes';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  protected _createButtonState: ClrLoadingState = ClrLoadingState.DEFAULT;
+   _createButtonState: ClrLoadingState = ClrLoadingState.DEFAULT;
 
   subscriber: Subscription;
 
@@ -98,21 +101,11 @@ export class AppComponent {
     };
 
     this.service.login(person).subscribe({
-      next: (websocketAuthentification: string) => {
-        console.log("Websocketauthentification: ", websocketAuthentification);
-        console.log("Observable in component: ", getBoardsArray(this._boards$));
-
-        //this._boards$
-        this._boards$ = this.service._boardsObservable.pipe(
-          map(board => board)
-        );
-
-        console.log("Observable in component: ", getBoardsArray(this._boards$));
-
-
-        this._websocketAuthentification = websocketAuthentification;
+      next: (tokenmessage: MessageToken) =>{
         this.closeModal();
-        this.toastr.success('Logged in successfully')
+        this.toastr.success('Logged in successfully');
+
+        this.service.initWebsocket(tokenmessage.token);
       },
       error: (error) => {
         switch (error.status) {
@@ -127,6 +120,7 @@ export class AppComponent {
         }
       },
     });
+
     this._createButtonState = ClrLoadingState.DEFAULT;
   }
 
@@ -238,6 +232,10 @@ export class AppComponent {
 
     //add task to observable
 
+    if(taskName == ""){
+      return;
+    }
+
     let newSubtask: Subtask = {
       name: taskName,
       description: '',
@@ -294,6 +292,7 @@ export class AppComponent {
     this.service.deleteState(boardGet, taskGet, stateGet);
   }
 
+
   _addUserToBoard(board: Board) {
     var email = prompt("Geben Sie die E-Mail ein, die zum Teamboard \"" + board.name + "\" hinzugefügt werden soll:", "example@mail.com");
 
@@ -322,6 +321,12 @@ export class AppComponent {
 //     throw new Error('Function not implemented.');
 // }
 
+  changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
+    this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
+  }
+
+}
+
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
   let boardsArray: Board[] = [];
 
@@ -336,7 +341,16 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
 }
 
 
+
 function validateEmail(email: string | null) {
   const res = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
   return res.test(String(email).toLowerCase());
+}
+
+function sortBoards(_boards$: Observable<Board[]>): Observable<Board[]> {
+  let boardsArray: Board[] = getBoardsArray(_boards$);
+
+  //todo: sort boards
+
+  return of(boardsArray);
 }
