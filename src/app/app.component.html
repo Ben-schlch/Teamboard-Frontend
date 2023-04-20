@@ -66,13 +66,35 @@
       <button
       type="button"
       class="btn"
+      style="font-size: x-large"
       (click)="_deleteBoard(board);
             $event.preventDefault();
             $event.stopPropagation()"
     >
       <b>🗑</b>
     </button>
+      <button
+        type="button"
+        class="btn"
+        style="font-size: x-large"
+        (click)="_addUserToBoard(board);
+            $event.preventDefault();
+            $event.stopPropagation()"
+      >
+        <b>+</b>
+      </button>
+      <button
+        type="button"
+        class="btn"
+        style="font-size: x-large"
+        (click)="_deleteUserFromBoard(board);
+            $event.preventDefault();
+            $event.stopPropagation()"
+      >
+        <b>-</b>
+      </button>
     </button>
+
     <clr-tab-content id="content1" *clrIfActive>
 
       <clr-accordion clrAccordionMultiPanel="true">
@@ -232,7 +254,7 @@
 
 
 
-<div class="modal">
+<div class="modal" id="modalLoggin">
   <div class="modal-dialog" role="dialog" aria-hidden="true">
     <div class="modal-content">
       <div class="modal-header">

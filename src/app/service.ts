@@ -10,6 +10,12 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 import {MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, MessageLoadBoards, MessageToken} from './models/communication';
 import {Board, Person, State, Subtask, Task } from './models/boards';
 
+export interface CheckEmailAddUser {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard_id: number,
+  email: string
+}
 
 //socketComponents
 // für PROD: "ws://195.201.94.44:8000"
@@ -329,12 +335,13 @@ export class Service {
       state: stateGet
     }
 
+
+
     sendMessageToServer(JSON.stringify(message));
     //socket.send(JSON.stringify(message));
 
     this._boardsObservable = of(boardsArray);
   }
-
 
   dropState(event: CdkDragDrop<State[], State[], any>, boardGet: Board, taskGet: Task) {
     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -481,6 +488,26 @@ export class Service {
       }
     };
     return new AnonymousSubject<MessageEvent>(observer, observable);
+  }
+
+  addEmailToBoard(email: string, boardID: number) {
+    const message: CheckEmailAddUser = {
+      kind_of_object: "teamboard",
+      type_of_edit: "addUser",
+      teamboard_id: boardID,
+      email: email
+    }
+    sendMessageToServer(JSON.stringify(message));
+  }
+
+  deleteEmailFromBoard(email: string, boardID: number) {
+    const message: CheckEmailAddUser = {
+      kind_of_object: "teamboard",
+      type_of_edit: "deleteUser",
+      teamboard_id: boardID,
+      email: email
+    }
+    sendMessageToServer(JSON.stringify(message));
   }
 }
 
