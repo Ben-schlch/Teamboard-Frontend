@@ -295,11 +295,22 @@ export class AppComponent {
   }
 
   _addUserToBoard(board: Board) {
-    var email = prompt("Geben Sie die E-Mail ein", "example@mail.com");
+    var email = prompt("Geben Sie die E-Mail ein, die zum Teamboard \"" + board.name + "\" hinzugefügt werden soll:", "example@mail.com");
 
     if (validateEmail(email) && email) {
       this.toastr.success('E-Mail valid!')
-      this.service.checkEmailAddUser(email, board.id);
+      this.service.addEmailToBoard(email, board.id);
+    } else {
+      this.toastr.error('E-Mail not valid!')
+    }
+  }
+
+  _deleteUserFromBoard(board: Board) {
+    var email = prompt("Geben Sie die E-Mail ein, die vom Teamboard \"" + board.name + "\" gelöscht werden soll:", "example@mail.com");
+
+    if (validateEmail(email) && email) {
+      this.toastr.success('E-Mail valid!')
+      this.service.deleteEmailFromBoard(email, board.id);
     } else {
       this.toastr.error('E-Mail not valid!')
     }

@@ -83,7 +83,16 @@
       >
         <b>+</b>
       </button>
-      <!--TODO: delete user from board with button-->
+      <button
+        type="button"
+        class="btn"
+        style="font-size: x-large"
+        (click)="_deleteUserFromBoard(board);
+            $event.preventDefault();
+            $event.stopPropagation()"
+      >
+        <b>-</b>
+      </button>
     </button>
 
     <clr-tab-content id="content1" *clrIfActive>

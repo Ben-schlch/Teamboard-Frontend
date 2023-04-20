@@ -657,10 +657,20 @@ export class Service {
     return new AnonymousSubject<MessageEvent>(observer, observable);
   }
 
-  checkEmailAddUser(email: string, boardID: number) {
+  addEmailToBoard(email: string, boardID: number) {
     const message: CheckEmailAddUser = {
-      kind_of_object: "email",
+      kind_of_object: "teamboard",
       type_of_edit: "addUser",
+      teamboard_id: boardID,
+      email: email
+    }
+    sendMessageToServer(JSON.stringify(message));
+  }
+
+  deleteEmailFromBoard(email: string, boardID: number) {
+    const message: CheckEmailAddUser = {
+      kind_of_object: "teamboard",
+      type_of_edit: "deleteUser",
       teamboard_id: boardID,
       email: email
     }
