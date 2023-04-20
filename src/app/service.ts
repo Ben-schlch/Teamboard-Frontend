@@ -36,24 +36,11 @@ export class Service {
           this._boardsObservable.subscribe( board => console.log(board));
 
           getWebSocket(token, this._boardsObservable);
-    //
-    //     }, error: (error) => {
-    //       this.socketAuthentification = '';
-    //     }
-    // });
 
-    // aktualPerson = person;
-    // console.log("Socketauth: ", this.socketAuthentification);
-    // console.log(' debug! initialiced socket');
-    //
-    // this._boardsObservable.subscribe( board => console.log(board));
-    //
-    // return of(this.socketAuthentification);
   }
 
 
   loadBoards() {
-      //throw new Error('Method not implemented.');
 
     //boardload
     const message: MessageLoadBoards = {
@@ -67,11 +54,6 @@ export class Service {
   }
 
   private readonly _http = inject(HttpClient);
-
-  //private _http = HttpClient;
-
-  // constructor(private _http: HttpClient) {
-  // }
 
 
   //https://195.201.94.44:8000/login
@@ -102,10 +84,6 @@ export class Service {
     }
 
     sendMessageToServer(JSON.stringify(message));
-
-    //socket.addEventListener('message', function (event) {
-    //socket.next(JSON.stringify(message));
-    //});
 
     boardsArray.push(newBoard);
 
@@ -140,11 +118,6 @@ export class Service {
         }
       }
     }
-
-
-
-
-    //throw new Error('Method not implemented.');
   }
 
   //add Task to Observable
@@ -872,4 +845,3 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
 
   return _boardsObservabel;
 }
-
