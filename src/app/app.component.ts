@@ -114,7 +114,7 @@ export class AppComponent {
 
         //if(websocketAuthentification !== ""){
           this.closeModal();
-          this.toastr.success('Logged in successfully')
+          this.toastr.success('Logged in successfully');
        // }else {
        //   this.toastr.error('Login failed');
        // }

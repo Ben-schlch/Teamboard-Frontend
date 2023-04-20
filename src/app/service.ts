@@ -30,7 +30,7 @@ let boardsString: string[] = ["DefaultBoard"];
 
 @Injectable({providedIn: 'root'})
 export class Service {
-  
+
   loadBoards() {
       //throw new Error('Method not implemented.');
 
@@ -472,6 +472,8 @@ export class Service {
     console.log("Socketauth: ", this.socketAuthentification);
     console.log(' debug! initialiced socket');
 
+    this._boardsObservable.subscribe( board => console.log(board));
+
     return of(this.socketAuthentification);
   }
 
@@ -615,7 +617,7 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
           deleteBoard(JSONObject.teamboard, _boardsObservabel);
           break;
         case 'load': {
-          //loadBoards(JSONObject, _boardsObservabel);
+          _boardsObservabel = loadBoards(JSONObject.teamboard, _boardsObservabel);
           break;
         }
       }
@@ -666,6 +668,8 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
       }
       break;
   }
+
+  loadBoards(JSONObject, _boardsObservabel);
 }
 
 
@@ -876,10 +880,67 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
 }
 
 
-function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
+function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Observable<Board[]> {
 
-  //JSONObject.
+  console.log("load boards..", JSONObject);
 
-    throw new Error('Function not implemented.');
+  let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
+
+  for (let i = 0; i < JSONObject.length; i++) {
+    //parseTasks
+    let tasks: Task[] = [];
+    for (let j = 0; j < JSONObject[i].tasks.length; j++) {
+      //pares states
+      let states: State[] = [];
+      for (let k = 0; k < JSONObject[i].tasks[j].states.length; k++) {
+        //parse subtasks
+        let subtasks: Subtask[] = [];
+        for (let l = 0; l < JSONObject[i].tasks[j].states[k].subtasks.length; l++) {
+
+          let newSubtask: Subtask = {
+            //todo: add subtaskID
+            id: 0,
+            position: l,
+            name: JSONObject[i].tasks[j].states[k].subtasks[l].name,
+            description: JSONObject[i].tasks[j].states[k].subtasks[l].description,
+            worker: JSONObject[i].tasks[j].states[k].subtasks[l].worker
+          }
+
+          subtasks.push(newSubtask);
+
+        }
+
+
+        let newState: State = {
+          id: JSONObject[i].tasks[j].states[k].state_id,
+          position: k,
+          state: JSONObject[i].tasks[j].states[k].name,
+          subtasks: subtasks,
+        }
+
+        states.push(newState);
+      }
+
+      let newTask: Task = {
+        id: JSONObject[i].tasks[j].task_id,
+        name: JSONObject[i].tasks[j].name,
+        states: states
+      }
+      tasks.push(newTask);
+    }
+
+    let newBoard: Board = {
+      id: JSONObject[i].teamboard_id,
+      name: JSONObject[i].teamboard_name,
+      tasks: tasks
+    }
+
+    boardsArray.push(newBoard);
+  }
+  console.log(boardsArray);
+
+  _boardsObservabel = of(boardsArray);
+
+  return _boardsObservabel;
 }
 
