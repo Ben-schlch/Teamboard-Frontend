@@ -298,7 +298,7 @@ export class AppComponent {
     var email = prompt("Geben Sie die E-Mail ein, die zum Teamboard \"" + board.name + "\" hinzugefügt werden soll:", "example@mail.com");
 
     if (validateEmail(email) && email) {
-      this.toastr.success('E-Mail valid!')
+      this.toastr.success('E-Mail valid, user was invited to the teamboard!')
       this.service.addEmailToBoard(email, board.id);
     } else {
       this.toastr.error('E-Mail not valid!')
@@ -309,7 +309,7 @@ export class AppComponent {
     var email = prompt("Geben Sie die E-Mail ein, die vom Teamboard \"" + board.name + "\" gelöscht werden soll:", "example@mail.com");
 
     if (validateEmail(email) && email) {
-      this.toastr.success('E-Mail valid!')
+      this.toastr.success('E-Mail valid, user was removed from teamboard!')
       this.service.deleteEmailFromBoard(email, board.id);
     } else {
       this.toastr.error('E-Mail not valid!')
