@@ -263,7 +263,7 @@
           <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active" >
             Invalid user name or password
           </div>
-          <button type="submit" class="btn btn-primary">Login</button>
+          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
         </div>
       </form>
 
@@ -299,7 +299,7 @@
             <div *ngIf="_loginForm.invalid" class="error active" >
               Invalid user name or password
             </div>
-            <button type="submit" class="btn btn-primary" [clrLoading]="_createButtonState">Registrieren</button>
+            <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Registrieren</button>
           </div>
         </form>
       </div>

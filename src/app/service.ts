@@ -30,6 +30,26 @@ let boardsString: string[] = ["DefaultBoard"];
 
 @Injectable({providedIn: 'root'})
 export class Service {
+  initWebsocket(token: string) {
+    this.socketAuthentification = token;
+
+          this._boardsObservable.subscribe( board => console.log(board));
+
+          getWebSocket(token, this._boardsObservable);
+    //
+    //     }, error: (error) => {
+    //       this.socketAuthentification = '';
+    //     }
+    // });
+
+    // aktualPerson = person;
+    // console.log("Socketauth: ", this.socketAuthentification);
+    // console.log(' debug! initialiced socket');
+    //
+    // this._boardsObservable.subscribe( board => console.log(board));
+    //
+    // return of(this.socketAuthentification);
+  }
 
 
   loadBoards() {
@@ -371,146 +391,19 @@ export class Service {
 
   }
 
-  //initial request to get all boards?
-  getBoards() {
 
-    let subtask1: Subtask = {
-      name: "Subtask1",
-      description: "test description1",
-      worker: "Testworker1",
-      id: 0,
-      position: 0
-    }
-    let subtask2: Subtask = {
-      name: "Subtask2",
-      description: "test description2",
-      worker: "Testworker2",
-      id: 1,
-      position: 1
-    }
-
-    let subtask11: Subtask = {
-      name: "Subtask1",
-      description: "test description1",
-      worker: "Testworker1",
-      id: 3,
-      position: 0
-    }
-    let subtask12: Subtask = {
-      name: "Subtask2",
-      description: "test description2",
-      worker: "Testworker2",
-      id: 4,
-      position: 1
-    }
-
-
-    let subtask3: Subtask = {
-      name: "Subtask3",
-      description: "test description",
-      worker: "Testworker2",
-      id: 5,
-      position: 0
-    }
-
-    let state1: State = {
-      state: "Done",
-      subtasks: [subtask3],
-      id: 6,
-      position: 0
-    }
-    let state2: State = {
-      state: "ToDo",
-      subtasks: [subtask1, subtask2],
-      id: 7,
-      position: 0
-    }
-
-    let state4: State = {
-      state: "In Progress",
-      subtasks: [],
-      id: 8,
-      position: 0
-    }
-
-    let state3: State = {
-      state: "ToDo",
-      subtasks: [subtask11, subtask12],
-      id: 9,
-      position: 0
-    }
-
-    let task1: Task = {
-      name: "Testtask1",
-      states: [state2, state1, state4],
-      id: 10
-    }
-
-    let task2: Task = {
-      name: "Testtask2",
-      states: [state3, state4],
-      id: 11
-    }
-
-    let task3: Task = {
-      name: "Testtask3",
-      states: [state3],
-      id: 12
-    }
-
-    let board1: Board = {
-      name: 'Board 1',
-      tasks: [task1, task2],
-      id: 13
-    }
-
-    let board2: Board = {
-      name: 'Board 2',
-      tasks: [],
-      id: 14
-    }
-
-
-    //this._boardsObservable = this._http.get<string[]>('/api/getBoardsNames/' + socketId, aktualPerson);
-    this._boardsObservable = from([[board1, board2]]);
-
-    return this._boardsObservable;
-
-  }
-
-  public login(person: Person): Observable<string> {
+  public login(person: Person): Observable<MessageToken> {
     let socketAuth: string = '';
 
-    //delete if statement
-    //if((person.email !== 'CodeMonkey')){
       const headers = { 'content-type': 'application/json'};
       const body=JSON.stringify(person);
 
       console.log('Not debug!', person.email, person.pwd);
       console.log("Sending data to server: ", body);
-      let socketAuthentificationObservable = this._http.post<MessageToken>('/api/login', person).subscribe({
-        next: (token) => {
-          socketAuth = token.token;
-          console.log("SocketAuth: ", socketAuth);
 
-          this.socketAuthentification = token.token;
+      aktualPerson = person;
 
-          this._boardsObservable.subscribe( board => console.log(board));
-
-          getWebSocket(socketAuth, this._boardsObservable);
-
-        }, error: (error) => {
-          this.socketAuthentification = '';
-        }
-    });
-
-    aktualPerson = person;
-    console.log("Socketauth: ", this.socketAuthentification);
-    console.log(' debug! initialiced socket');
-
-    this._boardsObservable.subscribe( board => console.log(board));
-
-    return of(this.socketAuthentification);
+      return this._http.post<MessageToken>('/api/login', person);
   }
 
 
