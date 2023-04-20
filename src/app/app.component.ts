@@ -7,7 +7,6 @@ import {ClarityModule, ClrLoadingState} from '@clr/angular';
 // import { AppComponent } from './app.component';
 import {Service} from './service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {Person} from './service';
 import {ToastrService} from 'ngx-toastr';
 import {HttpStatusCode} from '@angular/common/http';
 import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip} from 'rxjs';
@@ -315,7 +314,7 @@ export class AppComponent {
     }
   }
 //TODO: was sendet alwin zurück, wie kommt die Antwort?
-}
+
 
 // function getBoardsArray(_boards$: Observable<Board[]>): any {
 //     throw new Error('Function not implemented.');
