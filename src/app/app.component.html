@@ -188,17 +188,22 @@
                       <h3 class="card-header">{{subtask.name}}</h3>
                       <div class="card-block">
                         <div class="card-title">
-<!--                          <textarea clrTextarea #textArea [value]=subtask.description (change)="changeDescription(board, task, state, subtask, textArea.value)"></textarea>-->
+
 <!--                          {{subtask.description}}-->
                         </div>
                         <div class="card-text">
-                          <span class="label label-info">
-                            {{subtask.worker}}
-                          </span>
+<!--                          <button type="button"-->
+<!--                                  class="btn"-->
+<!--                          (click)="openModal">-->
+<!--                            DESCRIPTION-->
+<!--                          </button>-->
+<!--                          <textarea clrTextarea #textArea [value]=subtask.description (change)="changeDescription(board, task, state, subtask, textArea.value)"></textarea>-->
                         </div>
                       </div>
                       <div class="card-footer">
-
+                        <span class="label label-info">
+                            {{subtask.worker}}
+                        </span>
                       </div>
                     </div>
                   </div>

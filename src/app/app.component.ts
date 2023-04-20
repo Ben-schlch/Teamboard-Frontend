@@ -312,9 +312,10 @@ export class AppComponent {
     this.service.deleteState(boardGet, taskGet, stateGet);
   }
 
-  // changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
-  //   this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
-  // }
+  changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
+    this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
+  }
+
 }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {

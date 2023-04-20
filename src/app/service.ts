@@ -31,6 +31,7 @@ let boardsString: string[] = ["DefaultBoard"];
 @Injectable({providedIn: 'root'})
 export class Service {
 
+
   loadBoards() {
       //throw new Error('Method not implemented.');
 
@@ -89,6 +90,41 @@ export class Service {
     boardsArray.push(newBoard);
 
     this._boardsObservable = of(boardsArray);
+  }
+
+  changeDescriptionFromSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
+
+    let boardsArray: Board[] = getBoardsArray(this._boardsObservable);
+
+    for (const boardsArrayElement of boardsArray) {
+      if (boardsArrayElement.id === boardGet.id) {
+
+        for (const tasksArrayElement of boardsArrayElement.tasks) {
+          if (tasksArrayElement === taskGet) {
+
+            for (const state of tasksArrayElement.states) {
+              if (state === stateGet) {
+
+                for (const subtask of state.subtasks){
+                  if(subtask.id == subtaskGet.id){
+                    subtask.description = inputValue;
+
+
+
+                    //todo: send message to server
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+
+
+
+    //throw new Error('Method not implemented.');
   }
 
   //add Task to Observable
@@ -898,8 +934,8 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
         for (let l = 0; l < JSONObject[i].tasks[j].states[k].subtasks.length; l++) {
 
           let newSubtask: Subtask = {
-            //todo: add subtaskID
-            id: 0,
+            //TODO: add subtaskID
+            id: JSONObject[i].tasks[j].states[k].subtasks[l].subtask_id,
             position: l,
             name: JSONObject[i].tasks[j].states[k].subtasks[l].name,
             description: JSONObject[i].tasks[j].states[k].subtasks[l].description,
