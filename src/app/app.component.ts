@@ -24,6 +24,7 @@ import '@clr/icons/shapes/travel-shapes';
 import '@clr/icons/shapes/technology-shapes';
 import '@clr/icons/shapes/chart-shapes';
 import { Board, Task, State, Subtask, Person } from './models/boards';
+import { MessageToken } from './models/communication';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,7 @@ import { Board, Task, State, Subtask, Person } from './models/boards';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  protected _createButtonState: ClrLoadingState = ClrLoadingState.DEFAULT;
+   _createButtonState: ClrLoadingState = ClrLoadingState.DEFAULT;
 
   subscriber: Subscription;
 
@@ -98,33 +99,11 @@ export class AppComponent {
     };
 
     this.service.login(person).subscribe({
-      next: (websocketAuthentification: string) => {
-        console.log("Websocketauthentification: ", websocketAuthentification);
-        //console.log("Observable in component: ", getBoardsArray(this._boards$));
+      next: (tokenmessage: MessageToken) =>{
+        this.closeModal();
+        this.toastr.success('Logged in successfully');
 
-        //this._boards$
-        // this._boards$ = this.service._boardsObservable.pipe(
-        //   map(board => board)
-        // );
-
-        //console.log("Observable in component: ", getBoardsArray(this._boards$));
-
-
-        this._websocketAuthentification = websocketAuthentification;
-
-        //if(websocketAuthentification !== ""){
-          this.closeModal();
-          this.toastr.success('Logged in successfully');
-       // }else {
-       //   this.toastr.error('Login failed');
-       // }
-        //while (this._boards$ == null){
-          this.service.loadBoards();
-        //}
-
-        this._boards$ = sortBoards(this._boards$);
-
-
+        this.service.initWebsocket(tokenmessage.token);
       },
       error: (error) => {
         switch (error.status) {
