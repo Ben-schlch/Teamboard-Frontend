@@ -388,19 +388,8 @@ export class Service {
 
 
   public register(person: Person): Observable<boolean> {
+      return this._http.post<boolean>('/api/register/', person);
 
-    let isRegistered = false;
-    let registerObservable = this._http.post<boolean>('/api/register/', person).subscribe({
-      next: (getIsRegistered) => {
-        isRegistered = getIsRegistered;
-      },
-      error: (error) => {
-        console.log("ERROR!!");
-        isRegistered = false;
-      }
-      }
-    );
-    return of(isRegistered);
   }
 
   //

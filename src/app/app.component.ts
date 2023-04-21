@@ -84,7 +84,6 @@ export class AppComponent {
   protected boards: Board[] = [];
 
   _login() {
-    this._createButtonState = ClrLoadingState.DEFAULT;
 
     if (!this._loginForm.valid) {
       this.toastr.error("Nicht alle Felder ausgefüllt");
@@ -146,13 +145,10 @@ export class AppComponent {
       pwd: person_register.pwd
     }
     this.service.register(person).subscribe({
-      next: (isRegistered: boolean) => {
-        if (isRegistered) {
+      next: () => {
           this.toastr.info('You will get an Email to validate');
-        } else {
-          this.toastr.error('Registration failed.');
-        }
-        this._createButtonState = ClrLoadingState.DEFAULT;
+
+
       },
       error: (error) => {
         switch (error.status) {
@@ -167,6 +163,7 @@ export class AppComponent {
         }
       }
     });
+    this._createButtonState = ClrLoadingState.DEFAULT;
   }
 
 
