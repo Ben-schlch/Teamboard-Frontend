@@ -726,8 +726,8 @@ function deleteState(boardId: number, taskId: number, stateGet: State, _boardsOb
 
 //how to sort them???
 function moveState(teamboard: number, task: number, column: State, _boardsObservable: Observable<Board[]>) {
-  throw new Error('Function not implemented.');
-  // let boardsArray: Board[] = getBoardsArray(_boardsObservable);
+
+  let boardsArray: Board[] = getBoardsArray(_boardsObservable);
   //
   // const stateIndex = boardsArray[teamboard].tasks[task].states.findIndex(state => state === column);
   //
@@ -739,7 +739,7 @@ function moveState(teamboard: number, task: number, column: State, _boardsObserv
   //   state.subtasks.sort((subtask1, subtask2) => subtask1.position - subtask2.position);
   // }
   //
-  // _boardsObservable = of(boardsArray);
+  return  of(boardsArray);
 }
 
 
