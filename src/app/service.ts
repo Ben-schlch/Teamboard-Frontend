@@ -563,7 +563,7 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
           deleteState(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state, _boardsObservabel);
           break;
         case 'move':
-          moveState(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state, _boardsObservabel);
+          moveState(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state, JSONObject.oldPosition, JSONObject.newPosition, _boardsObservabel);
           break;
       }
       break;
@@ -724,22 +724,66 @@ function deleteState(boardId: number, taskId: number, stateGet: State, _boardsOb
 }
 
 
-//how to sort them???
-function moveState(teamboard: number, task: number, column: State, _boardsObservable: Observable<Board[]>) {
+function moveState(teamboardID: number, taskID: number, state: State, oldPosition: number, newPosition: number, _boardsObservable: Observable<Board[]>) {
+
+  if(newPosition == oldPosition){
+    _boardsObservable = addPositionsToBoards(_boardsObservable);
+    _boardsObservable = sortBoards(_boardsObservable);
+    return _boardsObservable;
+  }
 
   let boardsArray: Board[] = getBoardsArray(_boardsObservable);
-  //
-  // const stateIndex = boardsArray[teamboard].tasks[task].states.findIndex(state => state === column);
-  //
-  // boardsArray[teamboard].tasks[task].states[stateIndex].position = column.position;
-  //
-  // //todo: sort the array!!!??? -> get all States with new positions?
-  // boardsArray[teamboard].tasks[task].states.sort((state1, state2) => state1.position - state2.position);
-  // for (const state of boardsArray[teamboard].tasks[task].states) {
-  //   state.subtasks.sort((subtask1, subtask2) => subtask1.position - subtask2.position);
-  // }
-  //
-  return  of(boardsArray);
+  let boardIndex = 0;
+  let taskIndex = 0;
+
+  for (let board of boardsArray) {
+    if(board.id == teamboardID){
+       break;
+    }
+    boardIndex++;
+  }
+
+  for (let task of boardsArray[boardIndex].tasks) {
+    if (task.id == taskID){
+      break;
+    }
+    taskIndex++;
+  }
+
+  //add new position
+  if(boardsArray[boardIndex].tasks[taskIndex].states[newPosition].id == state.id){
+    console.log("If statement");
+    _boardsObservable = addPositionsToBoards(_boardsObservable);
+  }else{
+    console.log("else statement");
+
+    boardsArray[boardIndex].tasks[taskIndex].states[oldPosition].position = newPosition;
+
+    for (let stateOfArray of boardsArray[boardIndex].tasks[taskIndex].states) {
+      if(oldPosition < newPosition){
+        if((stateOfArray.position < newPosition) && (stateOfArray.position > oldPosition)){
+          stateOfArray.position --;
+        }
+        if((stateOfArray.position == newPosition) && (stateOfArray.id != state.id)){
+          stateOfArray.position --;
+        }
+      }else{
+        if((stateOfArray.position > newPosition) && (stateOfArray.position < oldPosition)){
+          stateOfArray.position ++;
+        }
+        if((stateOfArray.position == newPosition) && (stateOfArray.id != state.id)){
+          stateOfArray.position ++;
+        }
+      }
+      console.log("Switch position: Position:", stateOfArray.position);
+    }
+  }
+
+  console.log(boardsArray);
+
+  _boardsObservable = sortBoards(of(boardsArray));
+
+  return  _boardsObservable;
 }
 
 
