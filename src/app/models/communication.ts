@@ -94,3 +94,8 @@ export interface MessageMoveSubtask {
 export interface MessageToken {
   token: string
 }
+
+export interface MessageDeleteUser{
+  kind_of_object: string,
+  type_of_edit: string
+}

@@ -49,10 +49,55 @@
   </div>
 
   <div class="settings">
-    <a href="/" class="nav-link nav-icon">
-      <clr-icon shape="cog"></clr-icon>
-    </a>
+
+    <clr-button-group [clrMenuPosition]="'bottom-right'">
+      <clr-button class="btn" [clrInMenu]="true" (click)="_logout()">Logout</clr-button>
+      <clr-button class="btn" [clrInMenu]="true" (click)="_deletUser()">Delet User</clr-button>
+    </clr-button-group>
+<!--    <div class="btn-group btn-primary">-->
+<!--    <div class="btn-group-overflow open">-->
+<!--      <button class="btn dropdown-toggle">-->
+<!--        <clr-icon shape="cog"></clr-icon>-->
+<!--      </button>-->
+<!--      <div class="dropdown-menu">-->
+<!--        <button class="btn">Logout</button>-->
+<!--        <button class="btn">Delete User</button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    </div>-->
+
+<!--    <button-->
+<!--      type="button"-->
+<!--      class="btn btn-icon"-->
+<!--      cdkMenuTrigger="menu"-->
+
+<!--      (click)="$event.stopPropagation()"-->
+<!--    >-->
+<!--      <clr-icon shape="cog"></clr-icon>-->
+<!--    </button>-->
+
+<!--    <a href="/" class="nav-link nav-icon">-->
+<!--      <clr-icon shape="cog"></clr-icon>-->
+<!--    </a>-->
   </div>
+
+<!--  <ng-template #menu>-->
+<!--    <div cdkMenu>-->
+<!--      <div-->
+<!--        cdkMenuItem-->
+<!--        (click)="_deletUser()"-->
+<!--      >-->
+<!--        delete User-->
+<!--      </div>-->
+<!--      <div>-->
+<!--        cdkMenuItem-->
+<!--        <a href="/" class="nav-link ">-->
+<!--          Logout-->
+<!--        </a>-->
+
+<!--      </div>-->
+<!--    </div>-->
+<!--  </ng-template>-->
 
 </header>
 
