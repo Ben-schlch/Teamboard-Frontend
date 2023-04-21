@@ -48,7 +48,7 @@ export interface MessageDeleteTask {
   kind_of_object: string,
   type_of_edit: string,
   teamboard_id: number,
-  task: Task
+  task_id: number
 }
 
 export interface MessageDeleteState {
@@ -93,4 +93,11 @@ export interface MessageMoveSubtask {
 
 export interface MessageToken {
   token: string
+}
+
+export interface MessageAddUser {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard_id: number,
+  email: string
 }

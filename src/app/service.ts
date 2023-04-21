@@ -7,15 +7,9 @@ import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-import {MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, MessageLoadBoards, MessageToken} from './models/communication';
+import {MessageAddUser, MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, MessageLoadBoards, MessageToken} from './models/communication';
 import {Board, Person, State, Subtask, Task } from './models/boards';
 
-export interface CheckEmailAddUser {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  email: string
-}
 
 //socketComponents
 // für PROD: "ws://195.201.94.44:8000"
@@ -453,7 +447,7 @@ export class Service {
   }
 
   addEmailToBoard(email: string, boardID: number) {
-    const message: CheckEmailAddUser = {
+    const message: MessageAddUser = {
       kind_of_object: "teamboard",
       type_of_edit: "addUser",
       teamboard_id: boardID,
@@ -463,11 +457,21 @@ export class Service {
   }
 
   deleteEmailFromBoard(email: string, boardID: number) {
-    const message: CheckEmailAddUser = {
+    const message: MessageAddUser = {
       kind_of_object: "teamboard",
       type_of_edit: "deleteUser",
       teamboard_id: boardID,
       email: email
+    }
+    sendMessageToServer(JSON.stringify(message));
+  }
+
+  deleteTask(boardID: number, taskID: number) {
+    const message: MessageDeleteTask = {
+      kind_of_object: "teamboard",
+      type_of_edit: "deleteTask",
+      teamboard_id: boardID,
+      task_id: taskID
     }
     sendMessageToServer(JSON.stringify(message));
   }

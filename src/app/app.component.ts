@@ -321,6 +321,24 @@ export class AppComponent {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
   }
 
+
+  showModelDeleteTask: boolean = false;
+  deleteTask: any = null;
+  _showModalDeleteTask(board: Board, task: Task) {
+    this.showModelDeleteTask = true;
+    this.deleteTask = {board ,task};
+  }
+
+
+  _deleteTask() {
+    try {
+      this.service.deleteTask(this.deleteTask.board.id, this.deleteTask.task.id)
+        //Todo: Teamboard aktualisieren, nachdem Backend das Teamboard gelöscht hat
+    } catch (e) {
+      console.log(e);
+    }
+    this.deleteTask = null;
+  }
 }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
