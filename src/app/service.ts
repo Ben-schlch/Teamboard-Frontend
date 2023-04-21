@@ -874,6 +874,8 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
 
   return _boardsObservabel;
 }
+
+
 function addPositionsToBoards(_boardsObservabel: Observable<Board[]>): Observable<Board[]> {
   let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
 
