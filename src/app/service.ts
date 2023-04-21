@@ -870,5 +870,30 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
 
   _boardsObservabel = of(boardsArray);
 
+  _boardsObservabel = addPositionsToBoards(_boardsObservabel);
+
   return _boardsObservabel;
 }
+function addPositionsToBoards(_boardsObservabel: Observable<Board[]>): Observable<Board[]> {
+  let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
+
+  for (let board of boardsArray) {
+    for (let task of board.tasks) {
+
+      let statePosition = 0;
+      for (let state of task.states) {
+        state.position = statePosition;
+        statePosition++;
+
+        let subtaskPosition = 0;
+        for (let subtask of state.subtasks) {
+          subtask.position = subtaskPosition;
+          subtaskPosition ++;
+        }
+      }
+    }
+  }
+
+  return of(boardsArray);
+}
+

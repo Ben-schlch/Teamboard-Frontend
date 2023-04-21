@@ -61,8 +61,10 @@
 
 <clr-tabs>
   <clr-tab *ngFor="let board of _boards$ | async">
+
     <button clrTabLink id=board.name>
       {{board.name}}
+      <div class="btn-group btn-icon">
       <button
       type="button"
       class="btn"
@@ -93,6 +95,7 @@
       >
         <b>-</b>
       </button>
+    </div>
     </button>
 
     <clr-tab-content id="content1" *clrIfActive>
