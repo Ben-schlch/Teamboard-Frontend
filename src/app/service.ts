@@ -726,8 +726,8 @@ function deleteState(boardId: number, taskId: number, stateGet: State, _boardsOb
 
 //how to sort them???
 function moveState(teamboard: number, task: number, column: State, _boardsObservable: Observable<Board[]>) {
-  throw new Error('Function not implemented.');
-  // let boardsArray: Board[] = getBoardsArray(_boardsObservable);
+
+  let boardsArray: Board[] = getBoardsArray(_boardsObservable);
   //
   // const stateIndex = boardsArray[teamboard].tasks[task].states.findIndex(state => state === column);
   //
@@ -739,7 +739,7 @@ function moveState(teamboard: number, task: number, column: State, _boardsObserv
   //   state.subtasks.sort((subtask1, subtask2) => subtask1.position - subtask2.position);
   // }
   //
-  // _boardsObservable = of(boardsArray);
+  return  of(boardsArray);
 }
 
 
@@ -861,6 +861,8 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
 
   _boardsObservabel = addPositionsToBoards(_boardsObservabel);
 
+  _boardsObservabel = sortBoards(_boardsObservabel);
+
   return _boardsObservabel;
 }
 
@@ -887,4 +889,29 @@ function addPositionsToBoards(_boardsObservabel: Observable<Board[]>): Observabl
 
   return of(boardsArray);
 }
+
+function sortBoards(_boardsObservabel: Observable<Board[]>): Observable<Board[]> {
+  let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
+
+  for (let board of boardsArray) {
+    for (let task of board.tasks) {
+      let newStates: State[] = new Array(task.states.length);
+      for (let state of task.states) {
+        let newSubtasks: Subtask[] = new Array(state.subtasks.length);
+        for (let subtask of state.subtasks) {
+          newSubtasks[subtask.position] = subtask;
+        }
+        state.subtasks = newSubtasks;
+          //sort states
+        newStates[state.position] = state;
+      }
+      task.states = newStates;
+    }
+  }
+
+  return of(boardsArray);
+}
+
+
+
 
