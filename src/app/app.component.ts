@@ -11,7 +11,7 @@ import {ToastrService} from 'ngx-toastr';
 import {HttpStatusCode} from '@angular/common/http';
 import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip} from 'rxjs';
 import {ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon} from '@cds/core/icon';
-
+import {FormsModule} from "@angular/forms";
 
 // import 'clarity-icons';
 // import 'clarity-icons/shapes/essential-shapes';
@@ -310,17 +310,20 @@ export class AppComponent {
       this.toastr.error('E-Mail not valid!')
     }
   }
-//TODO: was sendet alwin zurück, wie kommt die Antwort?
-
-
-// function getBoardsArray(_boards$: Observable<Board[]>): any {
-//     throw new Error('Function not implemented.');
-// }
 
   changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
   }
 
+  _deletUser() {
+    this.service.deleteUser();
+    window.location.reload();
+  }
+
+  _logout() {
+    this.service.logout();
+    window.location.reload();
+  }
 }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {

@@ -7,7 +7,7 @@ import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-import {MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, MessageLoadBoards, MessageToken} from './models/communication';
+import {MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, MessageLoadBoards, MessageToken, MessageDeleteUser} from './models/communication';
 import {Board, Person, State, Subtask, Task } from './models/boards';
 
 export interface CheckEmailAddUser {
@@ -36,6 +36,16 @@ let boardsString: string[] = ["DefaultBoard"];
 
 @Injectable({providedIn: 'root'})
 export class Service {
+  logout() {
+      sendMessageToServer('logout');
+  }
+  deleteUser() {
+      let message: MessageDeleteUser = {
+        kind_of_object: 'user',
+        type_of_edit: 'delete'
+      }
+      sendMessageToServer(JSON.stringify(message));
+  }
   initWebsocket(token: string) {
     this.socketAuthentification = token;
 
