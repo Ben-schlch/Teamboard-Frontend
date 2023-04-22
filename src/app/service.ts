@@ -37,7 +37,11 @@ let boardsString: string[] = ["DefaultBoard"];
 @Injectable({providedIn: 'root'})
 export class Service {
   logout() {
-      sendMessageToServer('logout');
+    let message: MessageDeleteUser = {
+      kind_of_object: 'user',
+      type_of_edit: 'logout'
+    }
+    sendMessageToServer(JSON.stringify(message));
   }
   deleteUser() {
       let message: MessageDeleteUser = {
@@ -46,6 +50,7 @@ export class Service {
       }
       sendMessageToServer(JSON.stringify(message));
   }
+
   initWebsocket(token: string) {
     this.socketAuthentification = token;
 
