@@ -12,62 +12,48 @@
     flex: 1;
   }
 
- .modal {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1050;
-    display: none;
-    overflow: hidden;
-    outline: 0;
-    background-color: rgba(0,0,0,0.5);
-  }
 
-  .modal-dialog {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    width: 480px;
-    max-width: 90%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  }
-
-  .modal-header {
-    padding: 24px;
-    border-bottom: 1px solid #eee;
-    background-color: #f8f8f8;
-  }
-
-  .modal-title {
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
-  }
-
-  .modal-body {
-    padding: 24px;
-  }
-
-  .login-group,
-  .register-group {
+/* Custom styling for login form */
+  .login-form {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    margin: 50px auto;
+    padding: 20px;
+    width: 300px;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
 
-  .login-group clr-input-container,
-  .register-group clr-input-container {
-    margin-bottom: 16px;
+  .login-form input[type="text"],
+  .login-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background-color: #f7f7f7;
+    font-size: 16px;
+    color: #333;
+    outline: none;
   }
 
+  .login-form button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
 
-
+  .login-form button:hover {
+    background-color: #0069d9;
+  }
 
 </style>
 
