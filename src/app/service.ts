@@ -21,7 +21,7 @@ export interface CheckEmailAddUser {
 // für PROD: "ws://195.201.94.44:8000"
 
 //const SOCKET_URL = "ws://localhost:8000";
-const SOCKET_URL = "wss://teamboard.server-welt.com:8000/ws/";
+const SOCKET_URL = "wss://teamboard.server-welt.com/ws/";
 
 //https://www.piesocket.com/blog/python-websocket
 
