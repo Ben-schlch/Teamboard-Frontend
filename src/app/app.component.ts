@@ -114,7 +114,7 @@ export class AppComponent {
             this.toastr.error('Login failed, you are not a correct User');
             break;
           default:
-            this.toastr.error('Login failed');
+            this.toastr.error('Login failed: '+ error.error.detail);
         }
       },
     });
