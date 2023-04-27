@@ -145,9 +145,9 @@ export class AppComponent {
 
     this.service.forgetPW(email).subscribe({
       next: () => {
-        this.toastr.info('Das PW wird zurückgesetzt, wenn der User existiert');
+        this.toastr.info('Das PW wird zurückgesetzt, wenn der User existiert. Überprüfe deine E-Mails');
       },error: () => {
-        this.toastr.error('Failed');
+        this.toastr.error('Fehler beim Zurücksetzen des PWs');
       }
     })
   }
@@ -176,7 +176,7 @@ export class AppComponent {
     }
     this.service.register(person).subscribe({
       next: () => {
-          this.toastr.info('You will get an Email to validate');
+          this.toastr.info('Bitte bestätige deine E-Mail vor dem einloggen!');
 
 
       },
