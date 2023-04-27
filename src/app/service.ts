@@ -7,7 +7,22 @@ import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-import {MessageAddUser, MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, MessageLoadBoards, MessageToken} from './models/communication';
+import {
+  MessageAddUser,
+  MessageAddBoard,
+  MessageAddTask,
+  MessageAddSubtask,
+  MessageAddState,
+  MessageDeleteBoard,
+  MessageDeleteState,
+  MessageDeleteSubtask,
+  MessageDeleteTask,
+  MessageMoveState,
+  MessageMoveSubtask,
+  MessageLoadBoards,
+  MessageToken,
+  MessageChangeName
+} from './models/communication';
 import {Board, Person, State, Subtask, Task } from './models/boards';
 
 
@@ -378,6 +393,7 @@ export class Service {
       aktualPerson = person;
 
       return this._http.post<MessageToken>('/api/login', person);
+
   }
 
 
@@ -472,6 +488,16 @@ export class Service {
       type_of_edit: "deleteTask",
       teamboard_id: boardID,
       task_id: taskID
+    }
+    sendMessageToServer(JSON.stringify(message));
+  }
+
+  changeBoardName(boardID: number, newTitle: string) {
+    const message: MessageChangeName = {
+      kind_of_object: "teamboard",
+      type_of_edit: "changeBoardName",
+      teamboard_id: boardID,
+      name_new: newTitle
     }
     sendMessageToServer(JSON.stringify(message));
   }

@@ -321,7 +321,7 @@ export class AppComponent {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
   }
 
-
+  //Delete Tasks with Modal
   showModelDeleteTask: boolean = false;
   deleteTask: any = null;
   _showModalDeleteTask(board: Board, task: Task) {
@@ -338,6 +338,26 @@ export class AppComponent {
       console.log(e);
     }
     this.deleteTask = null;
+  }
+
+  //Change Title with Modal
+  showModalChangeName: boolean = false;
+  board: any = null;
+  newName: string = "";
+  _showModalChangeName(board: Board) {
+    this.showModalChangeName = true;
+    this.board = board;
+  }
+
+  _changeBoardName() {
+    try {
+      this.service.changeBoardName(this.board.id, this.newName)
+      //Todo: Teamboard aktualisieren
+    } catch (e) {
+      console.log(e);
+    }
+    this.board = null;
+    this.newName = "";
   }
 }
 
