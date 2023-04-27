@@ -21,7 +21,7 @@ export interface CheckEmailAddUser {
 // für PROD: "ws://195.201.94.44:8000"
 
 //const SOCKET_URL = "ws://localhost:8000";
-const SOCKET_URL = "wss://teamboard.server-welt.com:8000/ws/";
+const SOCKET_URL = "wss://teamboard.server-welt.com/ws/";
 
 //https://www.piesocket.com/blog/python-websocket
 
@@ -36,6 +36,7 @@ let boardsString: string[] = ["DefaultBoard"];
 
 @Injectable({providedIn: 'root'})
 export class Service {
+
   logout() {
     let message: MessageDeleteUser = {
       kind_of_object: 'user',
@@ -127,8 +128,6 @@ export class Service {
                 for (const subtask of state.subtasks){
                   if(subtask.id == subtaskGet.id){
                     subtask.description = inputValue;
-
-
 
                     //todo: send message to server
                   }
@@ -399,6 +398,10 @@ export class Service {
       aktualPerson = person;
 
       return this._http.post<MessageToken>('/api/login', person);
+  }
+
+  forgetPW(email: string) {
+    return this._http.get('/api/send_reset_mail/' + email);
   }
 
 

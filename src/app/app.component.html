@@ -254,14 +254,7 @@
 
 </clr-tabs>
 
-
-
-
-
-
 </body>
-
-
 
 <div class="modal" id="modalLoggin">
   <div class="modal-dialog" role="dialog" aria-hidden="true">
@@ -295,6 +288,9 @@
             Invalid user name or password
           </div>
           <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
+          <button class="btn btn-primary" (click)="_forgetPW();
+          $event.preventDefault();
+          $event.stopPropagation()">Forget PW</button>
         </div>
       </form>
 
