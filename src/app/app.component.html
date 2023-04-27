@@ -13,47 +13,6 @@
   }
 
 
-/* Custom styling for login form */
-  .login-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 50px auto;
-    padding: 20px;
-    width: 300px;
-    background-color: #f7f7f7;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
-
-  .login-form input[type="text"],
-  .login-form input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-    border-bottom: 1px solid #ccc;
-    background-color: #f7f7f7;
-    font-size: 16px;
-    color: #333;
-    outline: none;
-  }
-
-  .login-form button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  .login-form button:hover {
-    background-color: #0069d9;
-  }
 
 </style>
 
@@ -61,7 +20,8 @@
 
 <header>
   <div class="branding">
-    <span class="title">Projekt Boards</span>
+    <img src="favicon_big.svg" alt="Logo">
+    <span class="title">Deine Teamboards</span>
   </div>
   <clr-icon shape="floppy"></clr-icon>
   <div class="nav-divider"></div>
@@ -98,7 +58,7 @@
       </button>
       <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
         <a (click)="_logout()" clrDropdownItem>Logout</a>
-        <a (click)="_deletUser()" clrDropdownItem>Delet User</a>
+        <a (click)="_deletUser()" clrDropdownItem>Delete User</a>
       </clr-dropdown-menu>
     </clr-dropdown>
   </div>

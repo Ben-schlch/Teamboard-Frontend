@@ -10,3 +10,9 @@
   display: inline-block;
   vertical-align: top;
 }
+
+.modal-dialog .modal-content {
+  display: inline-grid;
+  /* padding-left: 80px; */
+  padding: 3.2rem 8rem 3.2rem 10em;
+}
