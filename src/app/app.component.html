@@ -13,13 +13,15 @@
   }
 
 
+
 </style>
 
 <!-- Toolbar -->
 
 <header>
-  <div class="branding">
-    <span class="title">Projekt Boards</span>
+  <div class="branding" style="width: 260px;">
+    <img src="assets/flipchart_weiß.png" alt="Logo" style="padding: 10px;">
+    <span class="title">Deine Teamboards</span>
   </div>
   <clr-icon shape="floppy"></clr-icon>
   <div class="nav-divider"></div>
@@ -56,7 +58,7 @@
       </button>
       <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
         <a (click)="_logout()" clrDropdownItem>Logout</a>
-        <a (click)="_deletUser()" clrDropdownItem>Delet User</a>
+        <a (click)="_deletUser()" clrDropdownItem>Delete User</a>
       </clr-dropdown-menu>
     </clr-dropdown>
   </div>
