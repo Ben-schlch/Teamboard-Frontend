@@ -54,7 +54,7 @@ export interface MessageDeleteBoard {
 export interface MessageDeleteTask {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard_id: number,
+  teamboard: Board,
   task_id: number
 }
 

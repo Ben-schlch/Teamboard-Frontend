@@ -286,6 +286,36 @@ export class Service {
     this._boardsObservable = of(boardsArray);
   }
 
+  deleteTask(board: Board, task: Task) {
+    let boardsArray: Board[] = [];
+
+    if (this._boardsObservable !== undefined) {
+      //move Observable to array to add subtask
+      this._boardsObservable.subscribe(board => {
+        boardsArray = board as Board[]
+      });
+    }
+
+    const boardIndex = boardsArray.indexOf(board);
+
+    let taskIndex = -1;
+    if (boardIndex !== -1) {
+      taskIndex = boardsArray.at(boardIndex).tasks.indexOf(task);
+      boardsArray.at(boardIndex).tasks.splice(taskIndex, 1);
+    }
+
+    const message: MessageDeleteTask = {
+      kind_of_object: "teamboard",
+      type_of_edit: "deleteTask",
+      teamboard: board,
+      task_id: task.id
+    }
+
+    sendMessageToServer(JSON.stringify(message));
+
+    this._boardsObservable = of(boardsArray);
+  }
+
   deleteState(boardGet: Board, taskGet: Task, stateGet: State) {
     let boardsArray: Board[] = [];
 
@@ -480,16 +510,6 @@ export class Service {
       type_of_edit: "deleteUser",
       teamboard_id: boardID,
       email: email
-    }
-    sendMessageToServer(JSON.stringify(message));
-  }
-
-  deleteTask(boardID: number, taskID: number) {
-    const message: MessageDeleteTask = {
-      kind_of_object: "teamboard",
-      type_of_edit: "deleteTask",
-      teamboard_id: boardID,
-      task_id: taskID
     }
     sendMessageToServer(JSON.stringify(message));
   }
