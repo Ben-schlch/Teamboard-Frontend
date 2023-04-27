@@ -63,6 +63,21 @@ export class AppComponent {
   });
 
   ngOnInit() {
+
+    const token = sessionStorage.getItem('token');
+
+    if (token) {
+      try {
+        this.service.initWebsocket(token)
+        this.closeModal()
+      }
+      catch (error) {
+        console.error(error);
+        sessionStorage.removeItem('token');
+      }
+
+    }
+
     this.service._boardsObservable.subscribe(d => this.boards = d);
     this._boards$ = this.service._boardsObservable;
 
@@ -102,6 +117,9 @@ export class AppComponent {
       next: (tokenmessage: MessageToken) =>{
         this.closeModal();
         this.toastr.success('Logged in successfully');
+
+        // storing toke in Sessionstorage
+        sessionStorage.setItem('token', tokenmessage.token);
 
         this.service.initWebsocket(tokenmessage.token);
       },
@@ -334,6 +352,7 @@ export class AppComponent {
 
   _logout() {
     this.service.logout();
+    sessionStorage.removeItem('token');
     window.location.reload();
   }
 
