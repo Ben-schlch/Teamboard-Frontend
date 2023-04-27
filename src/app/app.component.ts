@@ -82,6 +82,7 @@ export class AppComponent {
   )
 
   protected boards: Board[] = [];
+  basic: boolean = false;
 
   _login() {
 
