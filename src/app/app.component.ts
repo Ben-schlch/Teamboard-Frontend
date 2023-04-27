@@ -64,7 +64,7 @@ export class AppComponent {
 
   ngOnInit() {
 
-    const token = sessionStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
     if (token) {
       try {
@@ -73,7 +73,7 @@ export class AppComponent {
       }
       catch (error) {
         console.error(error);
-        sessionStorage.removeItem('token');
+        localStorage.removeItem('token');
       }
 
     }
@@ -118,8 +118,8 @@ export class AppComponent {
         this.closeModal();
         this.toastr.success('Logged in successfully');
 
-        // storing toke in Sessionstorage
-        sessionStorage.setItem('token', tokenmessage.token);
+        // storing toke in localStorage
+        localStorage.setItem('token', tokenmessage.token);
 
         this.service.initWebsocket(tokenmessage.token);
       },
@@ -352,7 +352,7 @@ export class AppComponent {
 
   _logout() {
     this.service.logout();
-    sessionStorage.removeItem('token');
+    localStorage.removeItem('token');
     window.location.reload();
   }
 
