@@ -351,8 +351,14 @@ export class AppComponent {
 
   _changeBoardName() {
     try {
-      this.service.changeBoardName(this.board.id, this.newName)
-      //Todo: Teamboard aktualisieren
+      if (this.newName == "") {
+        this.toastr.error('The new name must not be empty')
+      }
+      else {
+        this.service.changeBoardName(this.board.id, this.newName)
+        this.toastr.success('Name of the board successfully changed')
+        //Todo: Teamboard aktualisieren
+      }
     } catch (e) {
       console.log(e);
     }
