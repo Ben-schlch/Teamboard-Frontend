@@ -305,10 +305,10 @@ export class Service {
     }
 
     const message: MessageDeleteTask = {
-      kind_of_object: "teamboard",
-      type_of_edit: "deleteTask",
+      kind_of_object: "task",
+      type_of_edit: "delete",
       teamboard: board,
-      task_id: task.id
+      task: task
     }
 
     sendMessageToServer(JSON.stringify(message));

@@ -279,10 +279,6 @@ export class AppComponent {
     this.service.addBoard(newBoard);
   }
 
-  _deleteBoard(board: Board) {
-    this.service.deleteBoard(board);
-  }
-
   _deleteState(boardGet: Board, taskGet: Task, stateGet: State) {
     console.log("Delete state", stateGet);
     this.service.deleteState(boardGet, taskGet, stateGet);
@@ -320,6 +316,23 @@ export class AppComponent {
   changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
   }
+
+  //Delete Board with Modal
+  showModalDeleteBoard: boolean = false;
+  deleteBoard: any = null;
+  _showModalDeleteBoard(board: Board) {
+    this.showModalDeleteBoard = true;
+    this.deleteBoard = board;
+  }
+
+
+  _deleteBoard() {
+    this.service.deleteBoard(this.deleteBoard);
+    this.deleteBoard = null;
+  }
+
+
+
 
   //Delete Tasks with Modal
   showModelDeleteTask: boolean = false;
