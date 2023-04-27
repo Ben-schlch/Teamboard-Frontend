@@ -122,6 +122,18 @@ export class AppComponent {
     this._createButtonState = ClrLoadingState.DEFAULT;
   }
 
+  _forgetPW() {
+    let email = this._loginForm.getRawValue().email;
+
+    this.service.forgetPW(email).subscribe({
+      next: () => {
+        this.toastr.info('Das PW wird zurückgesetzt, wenn der User existiert');
+      },error: () => {
+        this.toastr.error('Failed');
+      }
+    })
+  }
+
 
   _register() {
     this._createButtonState = ClrLoadingState.DEFAULT;
@@ -324,6 +336,7 @@ export class AppComponent {
     this.service.logout();
     window.location.reload();
   }
+
 }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
