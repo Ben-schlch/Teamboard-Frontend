@@ -16,3 +16,15 @@
   /* padding-left: 80px; */
   padding: 3.2rem 8rem 3.2rem 10em;
 }
+
+footer {
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  /* Height of the footer*/
+  height: 50px;
+  background: grey;
+}
+
+
