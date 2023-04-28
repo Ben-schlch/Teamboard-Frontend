@@ -13,13 +13,15 @@
   }
 
 
+
 </style>
 
 <!-- Toolbar -->
 
 <header>
-  <div class="branding">
-    <span class="title">Projekt Boards</span>
+  <div class="branding" style="width: 260px;">
+    <img src="assets/flipchart_weiß.png" alt="Logo" style="padding: 10px;">
+    <span class="title">Deine Teamboards</span>
   </div>
   <clr-icon shape="floppy"></clr-icon>
   <div class="nav-divider"></div>
@@ -47,12 +49,18 @@
     />
   </div>
 
-  <div class="settings">
-    <a href="/" class="nav-link nav-icon">
-      <clr-icon shape="cog"></clr-icon>
-    </a>
-  </div>
+  <div class="header-actions">
+    <clr-dropdown>
+      <button class="nav-icon" clrDropdownTrigger aria-label="toggle settings menu">
 
+        <cds-icon shape="angle" direction="down"></cds-icon>
+      </button>
+      <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+        <a (click)="_logout()" clrDropdownItem>Logout</a>
+        <a (click)="_deletUser()" clrDropdownItem>Delete User</a>
+      </clr-dropdown-menu>
+    </clr-dropdown>
+  </div>
 </header>
 
 
@@ -267,8 +275,8 @@
 
 </clr-tabs>
 
-
 </body>
+
 
 <clr-modal [(clrModalOpen)]="showModelDeleteTask">
   <h3 class="modal-title">Delete Task</h3>
@@ -308,6 +316,7 @@
   </div>
 </clr-modal>
 
+
 <div class="modal" id="modalLoggin">
   <div class="modal-dialog" role="dialog" aria-hidden="true">
     <div class="modal-content">
@@ -341,7 +350,13 @@
             </div>
             <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
           </div>
-        </form>
+
+          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
+          <button class="btn btn-primary" (click)="_forgetPW();
+          $event.preventDefault();
+          $event.stopPropagation()">Forget PW</button>
+        </div>
+      </form>
 
         <form [formGroup]="_registrationForm"
               (ngSubmit)="_register()"

@@ -102,9 +102,15 @@ export interface MessageToken {
   token: string
 }
 
+
 export interface MessageAddUser {
   kind_of_object: string,
   type_of_edit: string,
   teamboard_id: number,
   email: string
+}
+
+export interface MessageDeleteUser{
+  kind_of_object: string,
+  type_of_edit: string
 }

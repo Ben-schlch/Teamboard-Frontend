@@ -11,7 +11,7 @@ import {ToastrService} from 'ngx-toastr';
 import {HttpStatusCode} from '@angular/common/http';
 import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip} from 'rxjs';
 import {ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon} from '@cds/core/icon';
-
+import {FormsModule} from "@angular/forms";
 
 // import 'clarity-icons';
 // import 'clarity-icons/shapes/essential-shapes';
@@ -120,6 +120,18 @@ export class AppComponent {
     });
 
     this._createButtonState = ClrLoadingState.DEFAULT;
+  }
+
+  _forgetPW() {
+    let email = this._loginForm.getRawValue().email;
+
+    this.service.forgetPW(email).subscribe({
+      next: () => {
+        this.toastr.info('Das PW wird zurückgesetzt, wenn der User existiert');
+      },error: () => {
+        this.toastr.error('Failed');
+      }
+    })
   }
 
 
@@ -306,16 +318,11 @@ export class AppComponent {
       this.toastr.error('E-Mail not valid!')
     }
   }
-//TODO: was sendet alwin zurück, wie kommt die Antwort?
-
-
-// function getBoardsArray(_boards$: Observable<Board[]>): any {
-//     throw new Error('Function not implemented.');
-// }
 
   changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
   }
+
 
   //Delete Board with Modal
   showModalDeleteBoard: boolean = false;
@@ -330,7 +337,6 @@ export class AppComponent {
     this.service.deleteBoard(this.deleteBoard);
     this.deleteBoard = null;
   }
-
 
 
 
@@ -378,6 +384,18 @@ export class AppComponent {
     this.board = null;
     this.newName = "";
   }
+
+  _deletUser() {
+    this.service.deleteUser();
+    window.location.reload();
+  }
+
+  _logout() {
+    this.service.logout();
+    window.location.reload();
+  }
+
+
 }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
