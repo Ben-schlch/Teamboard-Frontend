@@ -1,20 +1,3 @@
-<style>
-  :host {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .spacer {
-    flex: 1;
-  }
-
-
-
-</style>
 
 <!-- Toolbar -->
 
@@ -176,6 +159,7 @@
                     [cdkDropListData]="state.subtasks"
                     (cdkDropListDropped)="drop($event, board, task, state)"
                     class="example-list">
+<!--              columns      -->
                     <div style="display: inline-flex">
                       <h4>
                         {{state.state}}
@@ -221,17 +205,9 @@
                       <h3 class="card-header">{{subtask.name}}</h3>
                       <div class="card-block">
                         <div class="card-title">
-
-<!--                          {{subtask.description}}-->
                         </div>
                         <div class="card-text">
-<!--                          <button type="button"-->
-<!--                                  class="btn"-->
-<!--                          (click)="openModal">-->
-<!--                            DESCRIPTION-->
-<!--                          </button>-->
-<!--                          <textarea clrTextarea #textArea [value]=subtask.description (change)="changeDescription(board, task, state, subtask, textArea.value)"></textarea>-->
-                        </div>
+                         </div>
                       </div>
                       <div class="card-footer">
                         <span class="label label-info">
@@ -253,7 +229,6 @@
       </clr-accordion>
     </clr-tab-content>
   </clr-tab>
-
 </clr-tabs>
 
 
@@ -276,6 +251,7 @@
 
         </clr-checkbox-wrapper>
         <p>
+<!-- login form -->
         <form [formGroup]="_loginForm"
               (ngSubmit)="_login()"
               *ngIf="!isRegistration.checked"
@@ -299,6 +275,7 @@
           $event.preventDefault();
           $event.stopPropagation()">Forget PW</button>
         </div>
+<!-- Register form       -->
       </form>
 
         <form [formGroup]="_registrationForm"
@@ -343,10 +320,10 @@
 <div class="modal-backdrop" aria-hidden="true"></div>
 
 
+<!--Impressum-->
 <clr-modal [(clrModalOpen)]="basic" [clrModalSize]="'xl'">
   <h3 class="modal-title">Impressum</h3>
   <div class="modal-body">
-<!--    <p>But not much to say...</p><h1>Impressum</h1>-->
     <h2 id="m46">Diensteanbieter</h2>
     <p>Ben Schlauch</p>
     <p>Im Rahmen eines Projektes der DHBW Stuttgart</p>
