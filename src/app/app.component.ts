@@ -69,7 +69,7 @@ export class AppComponent {
     if (token) {
       this.service.initWebsocket(token, () => {
       // This function will be called after the WebSocket connection is established successfully
-        this.closeModal();s
+        this.closeModal();
     });
     }
     }catch(e){
@@ -113,13 +113,16 @@ export class AppComponent {
 
     this.service.login(person).subscribe({
       next: (tokenmessage: MessageToken) =>{
-        this.closeModal();
         this.toastr.success('Logged in successfully');
 
         // storing toke in localStorage
         localStorage.setItem('token', tokenmessage.token);
 
-        this.service.initWebsocket(tokenmessage.token);
+        this.service.initWebsocket(tokenmessage.token, () => {
+            // This function will be called after the WebSocket connection is established successfully
+            this.closeModal();
+          }
+          );
       },
       error: (error) => {
         switch (error.status) {
