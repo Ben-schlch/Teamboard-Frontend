@@ -52,14 +52,13 @@ export class Service {
       sendMessageToServer(JSON.stringify(message));
   }
 
-  initWebsocket(token: string) {
-    this.socketAuthentification = token;
+initWebsocket(token: string, successCallback: () => void) {
+  this.socketAuthentification = token;
 
-          this._boardsObservable.subscribe( board => console.log(board));
+  this._boardsObservable.subscribe(board => console.log(board));
 
-          getWebSocket(token, this._boardsObservable);
-
-  }
+  getWebSocket(token, this._boardsObservable, successCallback);
+}
 
 
   loadBoards() {
@@ -495,13 +494,12 @@ export class Service {
   }
 }
 
-function getWebSocket(socketAuthentification: string, _boardsObservable: Observable<Board[]>) {
+function getWebSocket(socketAuthentification: string, _boardsObservable: Observable<Board[]>, successCallback: () => void) {
   const webSocket = new WebSocket(SOCKET_URL + socketAuthentification);
 
   webSocket.onerror = (error) => {
     throw new Error(`WebSocket error: ${error}`);
   };
-
 
   const message: MessageLoadBoards = {
     kind_of_object: 'board',
@@ -513,6 +511,9 @@ function getWebSocket(socketAuthentification: string, _boardsObservable: Observa
   webSocket.addEventListener("open", (event: any) => {
     // @ts-ignore
     webSocket.send(JSON.stringify(message));
+
+    // Call the successCallback function to indicate that the WebSocket connection was established successfully
+    successCallback();
   });
 
   // @ts-ignore
@@ -523,7 +524,6 @@ function getWebSocket(socketAuthentification: string, _boardsObservable: Observa
     } catch (error) {
       console.log(error);
     }
-
   });
 
   // @ts-ignore

@@ -67,8 +67,10 @@ export class AppComponent {
     try{
     const token = localStorage.getItem('token');
     if (token) {
-      this.service.initWebsocket(token)
-      this.closeModal();
+      this.service.initWebsocket(token, () => {
+      // This function will be called after the WebSocket connection is established successfully
+        this.closeModal();s
+    });
     }
     }catch(e){
       localStorage.removeItem('token');
