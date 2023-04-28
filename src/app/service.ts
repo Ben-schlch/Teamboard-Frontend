@@ -114,6 +114,7 @@ export class Service {
 
   check_if_websocket_open(){
     if (socket != undefined){
+      console.log("socket.readyState: " + socket.readyState);
       return socket.readyState === WebSocket.OPEN;
     }
     else {
