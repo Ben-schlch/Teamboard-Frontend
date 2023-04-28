@@ -291,10 +291,6 @@ export class AppComponent {
     this.service.addBoard(newBoard);
   }
 
-  _deleteBoard(board: Board) {
-    this.service.deleteBoard(board);
-  }
-
   _deleteState(boardGet: Board, taskGet: Task, stateGet: State) {
     console.log("Delete state", stateGet);
     this.service.deleteState(boardGet, taskGet, stateGet);
@@ -327,6 +323,68 @@ export class AppComponent {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
   }
 
+
+  //Delete Board with Modal
+  showModalDeleteBoard: boolean = false;
+  deleteBoard: any = null;
+  _showModalDeleteBoard(board: Board) {
+    this.showModalDeleteBoard = true;
+    this.deleteBoard = board;
+  }
+
+
+  _deleteBoard() {
+    this.service.deleteBoard(this.deleteBoard);
+    this.deleteBoard = null;
+  }
+
+
+
+  //Delete Tasks with Modal
+  showModelDeleteTask: boolean = false;
+  deleteTask: any = null;
+  _showModalDeleteTask(board: Board, task: Task) {
+    this.showModelDeleteTask = true;
+    this.deleteTask = {board ,task};
+  }
+
+
+  _deleteTask() {
+    try {
+      this.service.deleteTask(this.deleteTask.board, this.deleteTask.task)
+        //Todo: Teamboard aktualisieren, nachdem Backend das Teamboard gelöscht hat
+    } catch (e) {
+      console.log(e);
+    }
+    this.deleteTask = null;
+  }
+
+  //Change Title with Modal
+  showModalChangeName: boolean = false;
+  board: any = null;
+  newName: string = "";
+  _showModalChangeName(board: Board) {
+    this.showModalChangeName = true;
+    this.board = board;
+  }
+
+  _changeBoardName() {
+    try {
+      if (this.newName == "") {
+        this.toastr.error('The new name must not be empty')
+      }
+      else {
+        this.service.changeBoardName(this.board.id, this.newName)
+        this.toastr.success('Name of the board successfully changed')
+        //Todo: Teamboard aktualisieren
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    this.board = null;
+    this.newName = "";
+  }
+
   _deletUser() {
     this.service.deleteUser();
     window.location.reload();
@@ -336,6 +394,7 @@ export class AppComponent {
     this.service.logout();
     window.location.reload();
   }
+
 
 }
 

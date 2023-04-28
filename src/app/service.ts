@@ -7,15 +7,25 @@ import {AnonymousSubject} from 'rxjs/internal/Subject';
 import {webSocket} from "rxjs/webSocket";
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-import {MessageAddBoard, MessageAddTask, MessageAddSubtask, MessageAddState, MessageDeleteBoard, MessageDeleteState, MessageDeleteSubtask, MessageDeleteTask, MessageMoveState, MessageMoveSubtask, MessageLoadBoards, MessageToken, MessageDeleteUser} from './models/communication';
+import {
+  MessageAddUser,
+  MessageAddBoard,
+  MessageAddTask,
+  MessageAddSubtask,
+  MessageAddState,
+  MessageDeleteBoard,
+  MessageDeleteState,
+  MessageDeleteSubtask,
+  MessageDeleteTask,
+  MessageMoveState,
+  MessageMoveSubtask,
+  MessageLoadBoards,
+  MessageToken,
+  MessageChangeName
+} from './models/communication';
+
 import {Board, Person, State, Subtask, Task } from './models/boards';
 
-export interface CheckEmailAddUser {
-  kind_of_object: string,
-  type_of_edit: string,
-  teamboard_id: number,
-  email: string
-}
 
 //socketComponents
 // für PROD: "ws://195.201.94.44:8000"
@@ -291,6 +301,36 @@ export class Service {
     this._boardsObservable = of(boardsArray);
   }
 
+  deleteTask(board: Board, task: Task) {
+    let boardsArray: Board[] = [];
+
+    if (this._boardsObservable !== undefined) {
+      //move Observable to array to add subtask
+      this._boardsObservable.subscribe(board => {
+        boardsArray = board as Board[]
+      });
+    }
+
+    const boardIndex = boardsArray.indexOf(board);
+
+    let taskIndex = -1;
+    if (boardIndex !== -1) {
+      taskIndex = boardsArray.at(boardIndex).tasks.indexOf(task);
+      boardsArray.at(boardIndex).tasks.splice(taskIndex, 1);
+    }
+
+    const message: MessageDeleteTask = {
+      kind_of_object: "task",
+      type_of_edit: "delete",
+      teamboard: board,
+      task: task
+    }
+
+    sendMessageToServer(JSON.stringify(message));
+
+    this._boardsObservable = of(boardsArray);
+  }
+
   deleteState(boardGet: Board, taskGet: Task, stateGet: State) {
     let boardsArray: Board[] = [];
 
@@ -387,17 +427,20 @@ export class Service {
 
 
   public login(person: Person): Observable<MessageToken> {
-    let socketAuth: string = '';
-
-      const headers = { 'content-type': 'application/json'};
-      const body=JSON.stringify(person);
-
-      console.log('Not debug!', person.email, person.pwd);
-      console.log("Sending data to server: ", body);
-
-      aktualPerson = person;
-
-      return this._http.post<MessageToken>('/api/login', person);
+    //TODO: nur für Testzwecke auskommentiert!!!
+    // let socketAuth: string = '';
+    //
+    //   const headers = { 'content-type': 'application/json'};
+    //   const body=JSON.stringify(person);
+    //
+    //   console.log('Not debug!', person.email, person.pwd);
+    //   console.log("Sending data to server: ", body);
+    //
+    //   aktualPerson = person;
+    //
+    //   return this._http.post<MessageToken>('/api/login', person);
+    let msg: MessageToken = {token: "test"}
+    return of(msg)
   }
 
   forgetPW(email: string) {
@@ -471,7 +514,7 @@ export class Service {
   }
 
   addEmailToBoard(email: string, boardID: number) {
-    const message: CheckEmailAddUser = {
+    const message: MessageAddUser = {
       kind_of_object: "teamboard",
       type_of_edit: "addUser",
       teamboard_id: boardID,
@@ -481,11 +524,21 @@ export class Service {
   }
 
   deleteEmailFromBoard(email: string, boardID: number) {
-    const message: CheckEmailAddUser = {
+    const message: MessageAddUser = {
       kind_of_object: "teamboard",
       type_of_edit: "deleteUser",
       teamboard_id: boardID,
       email: email
+    }
+    sendMessageToServer(JSON.stringify(message));
+  }
+
+  changeBoardName(boardID: number, newTitle: string) {
+    const message: MessageChangeName = {
+      kind_of_object: "teamboard",
+      type_of_edit: "changeBoardName",
+      teamboard_id: boardID,
+      name_new: newTitle
     }
     sendMessageToServer(JSON.stringify(message));
   }
