@@ -24,8 +24,8 @@ import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/travel-shapes';
 import '@clr/icons/shapes/technology-shapes';
 import '@clr/icons/shapes/chart-shapes';
-import { Board, Task, State, Subtask, Person } from './models/boards';
-import { MessageToken } from './models/communication';
+import {Board, Task, State, Subtask, Person} from './models/boards';
+import {MessageToken} from './models/communication';
 
 @Component({
   selector: 'app-root',
@@ -33,7 +33,7 @@ import { MessageToken } from './models/communication';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-   _createButtonState: ClrLoadingState = ClrLoadingState.DEFAULT;
+  _createButtonState: ClrLoadingState = ClrLoadingState.DEFAULT;
 
   subscriber: Subscription;
 
@@ -103,7 +103,7 @@ export class AppComponent {
     };
 
     this.service.login(person).subscribe({
-      next: (tokenmessage: MessageToken) =>{
+      next: (tokenmessage: MessageToken) => {
         this.closeModal();
         this.toastr.success('Logged in successfully');
 
@@ -132,7 +132,7 @@ export class AppComponent {
     this.service.forgetPW(email).subscribe({
       next: () => {
         this.toastr.info('Das PW wird zurückgesetzt, wenn der User existiert');
-      },error: () => {
+      }, error: () => {
         this.toastr.error('Failed');
       }
     })
@@ -162,7 +162,7 @@ export class AppComponent {
     }
     this.service.register(person).subscribe({
       next: () => {
-          this.toastr.info('You will get an Email to validate');
+        this.toastr.info('You will get an Email to validate');
 
 
       },
@@ -244,7 +244,7 @@ export class AppComponent {
 
     //add task to observable
 
-    if(taskName == ""){
+    if (taskName == "") {
       return;
     }
 
@@ -331,6 +331,7 @@ export class AppComponent {
   //Delete Board with Modal
   showModalDeleteBoard: boolean = false;
   deleteBoard: any = null;
+
   _showModalDeleteBoard(board: Board) {
     this.showModalDeleteBoard = true;
     this.deleteBoard = board;
@@ -343,20 +344,20 @@ export class AppComponent {
   }
 
 
-
   //Delete Tasks with Modal
   showModelDeleteTask: boolean = false;
   deleteTask: any = null;
+
   _showModalDeleteTask(board: Board, task: Task) {
     this.showModelDeleteTask = true;
-    this.deleteTask = {board ,task};
+    this.deleteTask = {board, task};
   }
 
 
   _deleteTask() {
     try {
       this.service.deleteTask(this.deleteTask.board, this.deleteTask.task)
-        //Todo: Teamboard aktualisieren, nachdem Backend das Teamboard gelöscht hat
+      //Todo: Teamboard aktualisieren, nachdem Backend das Teamboard gelöscht hat
     } catch (e) {
       console.log(e);
     }
@@ -367,6 +368,7 @@ export class AppComponent {
   showModalChangeName: boolean = false;
   board: any = null;
   newName: string = "";
+
   _showModalChangeName(board: Board) {
     this.showModalChangeName = true;
     this.board = board;
@@ -376,8 +378,7 @@ export class AppComponent {
     try {
       if (this.newName == "") {
         this.toastr.error('The new name must not be empty')
-      }
-      else {
+      } else {
         this.service.changeBoardName(this.board.id, this.newName)
         this.toastr.success('Name of the board successfully changed')
         //Todo: Teamboard aktualisieren
@@ -414,7 +415,6 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
 
   return boardsArray;
 }
-
 
 
 function validateEmail(email: string | null) {

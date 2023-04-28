@@ -1,10 +1,11 @@
+<!--<style>-->
 
-  .spacer {
-    flex: 1;
-  }
+<!--  .spacer {-->
+<!--    flex: 1;-->
+<!--  }-->
 
 
-</style>
+<!--</style>-->
 
 <!-- Toolbar -->
 
@@ -179,18 +180,18 @@
 
                   <div class="example-container">
 
-                  <div
-                    cdkDropList
-                    [id]="state.state"
-                    #{{state.state}} = "cdkDropList"
-                    [cdkDropListData]="state.subtasks"
-                    (cdkDropListDropped)="drop($event, board, task, state)"
-                    class="example-list">
-<!--              columns      -->
-                    <div style="display: inline-flex">
-                      <h4>
-                        {{state.state}}
-                      </h4>
+                    <div
+                      cdkDropList
+                      [id]="state.state"
+                      #{{state.state}}="cdkDropList"
+                      [cdkDropListData]="state.subtasks"
+                      (cdkDropListDropped)="drop($event, board, task, state)"
+                      class="example-list">
+                      <!--              columns      -->
+                      <div style="display: inline-flex">
+                        <h4>
+                          {{state.state}}
+                        </h4>
                         <input
                           #input
                           clrInput
@@ -233,26 +234,29 @@
                           <div class="card-title">
 
 
-                    <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
-                      <h3 class="card-header">{{subtask.name}}</h3>
-                      <div class="card-block">
-                        <div class="card-title">
-                        </div>
-                        <div class="card-text">
-                         </div>
-                      </div>
-                      <div class="card-footer">
+                            <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
+                              <h3 class="card-header">{{subtask.name}}</h3>
+                              <div class="card-block">
+                                <div class="card-title">
+                                </div>
+                                <div class="card-text">
+                                </div>
+                              </div>
+                              <div class="card-footer">
                         <span class="label label-info">
                             {{subtask.worker}}
                         </span>
+                              </div>
+                            </div>
+                          </div>
+
                         </div>
+
                       </div>
+
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
             </div>
           </clr-accordion-content>
@@ -323,32 +327,33 @@
 
         </clr-checkbox-wrapper>
         <p>
-<!-- login form -->
+          <!-- login form -->
         <form [formGroup]="_loginForm"
               (ngSubmit)="_login()"
               *ngIf="!isRegistration.checked"
         >
-        <div class="login-group">
-          <clr-input-container>
-            <label class="clr-sr-only">Email</label>
-            <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
-          </clr-input-container>
-          <clr-password-container>
-            <label class="clr-sr-only">Password</label>
-            <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
-          </clr-password-container>
+          <div class="login-group">
+            <clr-input-container>
+              <label class="clr-sr-only">Email</label>
+              <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
+            </clr-input-container>
+            <clr-password-container>
+              <label class="clr-sr-only">Password</label>
+              <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
+            </clr-password-container>
 
-          <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->
-          <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active" >
-            Invalid user name or password
-          </div>
-          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
-          <button class="btn btn-primary" (click)="_forgetPW();
+            <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->
+            <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active">
+              Invalid user name or password
+            </div>
+            <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
+            <button class="btn btn-primary" (click)="_forgetPW();
           $event.preventDefault();
-          $event.stopPropagation()">Forget PW</button>
-        </div>
-<!-- Register form       -->
-      </form>
+          $event.stopPropagation()">Forget PW
+            </button>
+          </div>
+          <!-- Register form       -->
+        </form>
 
         <form [formGroup]="_registrationForm"
               (ngSubmit)="_register()"
@@ -430,12 +435,27 @@
     <p>Im Rahmen eines Projektes der DHBW Stuttgart</p>
     <p>Kiefernweg 14</p>
     <p>71149 Bondorf</p>
-    <h2 id="m56">Kontaktmöglichkeiten</h2>E-Mail-Adresse: <p><a href="mailto:{{firstEmail}}{{secondEmail}}">{{firstEmail}}{{secondEmail}}</a></p>
-    <h2 id="m65">Haftungs- und Schutzrechtshinweise</h2><p>Haftungsausschluss: Die Inhalte dieses Onlineangebotes wurden sorgfältig und nach unserem aktuellen Kenntnisstand erstellt, dienen jedoch nur der Information und entfalten keine rechtlich bindende Wirkung, sofern es sich nicht um gesetzlich verpflichtende Informationen (z.B. das Impressum, die Datenschutzerklärung, AGB oder verpflichtende Belehrungen von Verbrauchern) handelt. Wir behalten uns vor, die Inhalte vollständig oder teilweise zu ändern oder zu löschen, soweit vertragliche Verpflichtungen unberührt bleiben. Alle Angebote sind freibleibend und unverbindlich.</p>
-    <p>Urheberrechte und Markenrechte: Alle auf dieser Website dargestellten Inhalte, wie Texte, Fotografien, Grafiken, Marken und Warenzeichen sind durch die jeweiligen Schutzrechte (Urheberrechte, Markenrechte) geschützt. Die Verwendung, Vervielfältigung usw. unterliegen unseren Rechten oder den Rechten der jeweiligen Urheber bzw. Rechteinhaber.</p>
-    <p>Hinweise auf Rechtsverstöße: Sollten Sie innerhalb unseres Internetauftritts Rechtsverstöße bemerken, bitten wir Sie uns auf diese hinzuweisen. Wir werden rechtswidrige Inhalte und Links nach Kenntnisnahme unverzüglich entfernen.</p>
-    <p class="seal"><a href="https://datenschutz-generator.de/" title="Rechtstext von Dr. Schwenke - für weitere Informationen bitte anklicken." target="_blank" rel="noopener noreferrer nofollow">Erstellt mit kostenlosem Datenschutz-Generator.de von Dr. Thomas Schwenke</a></p>
-    </div>
+    <h2 id="m56">Kontaktmöglichkeiten</h2>E-Mail-Adresse: <p><a
+    href="mailto:{{firstEmail}}{{secondEmail}}">{{firstEmail}}{{secondEmail}}</a></p>
+    <h2 id="m65">Haftungs- und Schutzrechtshinweise</h2>
+    <p>Haftungsausschluss: Die Inhalte dieses Onlineangebotes wurden sorgfältig und nach unserem aktuellen Kenntnisstand
+      erstellt, dienen jedoch nur der Information und entfalten keine rechtlich bindende Wirkung, sofern es sich nicht
+      um gesetzlich verpflichtende Informationen (z.B. das Impressum, die Datenschutzerklärung, AGB oder verpflichtende
+      Belehrungen von Verbrauchern) handelt. Wir behalten uns vor, die Inhalte vollständig oder teilweise zu ändern oder
+      zu löschen, soweit vertragliche Verpflichtungen unberührt bleiben. Alle Angebote sind freibleibend und
+      unverbindlich.</p>
+    <p>Urheberrechte und Markenrechte: Alle auf dieser Website dargestellten Inhalte, wie Texte, Fotografien, Grafiken,
+      Marken und Warenzeichen sind durch die jeweiligen Schutzrechte (Urheberrechte, Markenrechte) geschützt. Die
+      Verwendung, Vervielfältigung usw. unterliegen unseren Rechten oder den Rechten der jeweiligen Urheber bzw.
+      Rechteinhaber.</p>
+    <p>Hinweise auf Rechtsverstöße: Sollten Sie innerhalb unseres Internetauftritts Rechtsverstöße bemerken, bitten wir
+      Sie uns auf diese hinzuweisen. Wir werden rechtswidrige Inhalte und Links nach Kenntnisnahme unverzüglich
+      entfernen.</p>
+    <p class="seal"><a href="https://datenschutz-generator.de/"
+                       title="Rechtstext von Dr. Schwenke - für weitere Informationen bitte anklicken." target="_blank"
+                       rel="noopener noreferrer nofollow">Erstellt mit kostenlosem Datenschutz-Generator.de von Dr.
+      Thomas Schwenke</a></p>
+  </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="basic = false">Cancel</button>
     <button type="button" class="btn btn-primary" (click)="basic = false">Ok</button>
