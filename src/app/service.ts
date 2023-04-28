@@ -113,7 +113,12 @@ export class Service {
   }
 
   check_if_websocket_open(){
-    return socket.readyState === WebSocket.OPEN;
+    if (socket != undefined){
+      return socket.readyState === WebSocket.OPEN;
+    }
+    else {
+      return false;
+    }
     }
 
   changeDescriptionFromSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
