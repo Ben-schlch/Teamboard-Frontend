@@ -68,13 +68,7 @@ export class AppComponent {
     const token = localStorage.getItem('token');
     if (token) {
       this.service.initWebsocket(token)
-
-      if (this.service.check_if_websocket_open()) {
-        this.closeModal();
-      }
-      else {
-        localStorage.removeItem('token');
-      }
+      this.closeModal();
     }
     }catch(e){
       localStorage.removeItem('token');

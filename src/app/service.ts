@@ -498,6 +498,11 @@ export class Service {
 function getWebSocket(socketAuthentification: string, _boardsObservable: Observable<Board[]>) {
   const webSocket = new WebSocket(SOCKET_URL + socketAuthentification);
 
+  webSocket.onerror = (error) => {
+    throw new Error(`WebSocket error: ${error}`);
+  };
+
+
   const message: MessageLoadBoards = {
     kind_of_object: 'board',
     type_of_edit: 'load'
