@@ -112,6 +112,10 @@ export class Service {
     this._boardsObservable = of(boardsArray);
   }
 
+  check_if_websocket_open(){
+    return socket.readyState === WebSocket.OPEN;
+    }
+
   changeDescriptionFromSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
 
     let boardsArray: Board[] = getBoardsArray(this._boardsObservable);

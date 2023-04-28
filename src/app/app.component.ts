@@ -64,18 +64,20 @@ export class AppComponent {
 
   ngOnInit() {
 
+    try{
     const token = localStorage.getItem('token');
-
     if (token) {
-      try {
-        this.service.initWebsocket(token)
-        this.closeModal()
+      this.service.initWebsocket(token)
+
+      if (this.service.check_if_websocket_open()) {
+        this.closeModal();
       }
-      catch (error) {
-        console.error(error);
+      else {
         localStorage.removeItem('token');
       }
-
+    }
+    }catch(e){
+      localStorage.removeItem('token');
     }
 
     this.service._boardsObservable.subscribe(d => this.boards = d);
