@@ -13,7 +13,6 @@
   }
 
 
-
 </style>
 
 <!-- Toolbar -->
@@ -348,54 +347,53 @@
             <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active">
               Invalid user name or password
             </div>
-            <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
           </div>
 
           <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
           <button class="btn btn-primary" (click)="_forgetPW();
           $event.preventDefault();
-          $event.stopPropagation()">Forget PW</button>
-        </div>
-      </form>
-
-        <form [formGroup]="_registrationForm"
-              (ngSubmit)="_register()"
-              *ngIf="isRegistration.checked"
-              [clrLoading]="_createButtonState"
-        >
-          <div class="register-group">
-            <clr-input-container>
-              <label class="clr-sr-only">Username</label>
-              <input type="text" name="username" clrInput placeholder="Username" formControlName="name"/>
-            </clr-input-container>
-            <clr-input-container>
-              <label class="clr-sr-only">Email</label>
-              <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
-            </clr-input-container>
-            <clr-input-container>
-              <label class="clr-sr-only">Email</label>
-              <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
-            </clr-input-container>
-            <clr-password-container>
-              <label class="clr-sr-only">Password</label>
-              <input type="password" name="password" clrPassword placeholder="Password" formControlName="pwd"/>
-            </clr-password-container>
-
-            <clr-password-container *ngIf="isRegistration.checked">
-              <label class="clr-sr-only">Password wiederholen</label>
-              <input type="password" name="password" clrPassword placeholder="Password Wiederholen"
-                     formControlName="pwd_wdh"/>
-            </clr-password-container>
-
-            <!-- Wenn loginform ungültig ist Fehlermeldung anzeigen-->
-            <div *ngIf="_loginForm.invalid" class="error active">
-              Invalid user name or password
-            </div>
-            <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Registrieren</button>
-          </div>
+          $event.stopPropagation()">Forget PW
+          </button>
         </form>
       </div>
+      <form [formGroup]="_registrationForm"
+            (ngSubmit)="_register()"
+            *ngIf="isRegistration.checked"
+            [clrLoading]="_createButtonState"
+      >
+        <div class="register-group">
+          <clr-input-container>
+            <label class="clr-sr-only">Username</label>
+            <input type="text" name="username" clrInput placeholder="Username" formControlName="name"/>
+          </clr-input-container>
+          <clr-input-container>
+            <label class="clr-sr-only">Email</label>
+            <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
+          </clr-input-container>
+          <clr-input-container>
+            <label class="clr-sr-only">Email</label>
+            <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
+          </clr-input-container>
+          <clr-password-container>
+            <label class="clr-sr-only">Password</label>
+            <input type="password" name="password" clrPassword placeholder="Password" formControlName="pwd"/>
+          </clr-password-container>
+
+          <clr-password-container *ngIf="isRegistration.checked">
+            <label class="clr-sr-only">Password wiederholen</label>
+            <input type="password" name="password" clrPassword placeholder="Password Wiederholen"
+                   formControlName="pwd_wdh"/>
+          </clr-password-container>
+
+          <!-- Wenn loginform ungültig ist Fehlermeldung anzeigen-->
+          <div *ngIf="_loginForm.invalid" class="error active">
+            Invalid user name or password
+          </div>
+          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Registrieren</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+
 <div class="modal-backdrop" aria-hidden="true"></div>
