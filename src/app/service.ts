@@ -438,14 +438,9 @@ export class Service {
 
       aktualPerson = person;
 
-      //return this._http.post<MessageToken>('/api/login', person);
-    
-    //DELET THIS!!!
-      let message: MessageToken = {
-        token: 'DiesIstEinTsttokenDelet'
-      }
+      return this._http.post<MessageToken>('/api/login', person);
 
-      return of(message);
+
   }
 
   forgetPW(email: string): Observable<Object> {
