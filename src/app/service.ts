@@ -111,10 +111,6 @@ initWebsocket(token: string, successCallback: () => void) {
     this._boardsObservable = of(boardsArray);
   }
 
-  check_if_websocket_open(){
-    return socket != undefined;
-    }
-
   changeDescriptionFromSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
 
     let boardsArray: Board[] = getBoardsArray(this._boardsObservable);
