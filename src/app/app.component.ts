@@ -82,6 +82,10 @@ export class AppComponent {
   )
 
   protected boards: Board[] = [];
+  basic: boolean = false;
+
+  firstEmail: string = "inf21140@";
+  secondEmail: string = "lehre.dhbw-stuttgart.de";
 
   _login() {
 

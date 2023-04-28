@@ -1,12 +1,3 @@
-<style>
-  :host {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
 
   .spacer {
     flex: 1;
@@ -188,17 +179,18 @@
 
                   <div class="example-container">
 
-                    <div
-                      cdkDropList
-                      [id]="state.state"
-                      #{{state.state}}="cdkDropList"
-                      [cdkDropListData]="state.subtasks"
-                      (cdkDropListDropped)="drop($event, board, task, state)"
-                      class="example-list">
-                      <div style="display: inline-flex">
-                        <h4>
-                          {{state.state}}
-                        </h4>
+                  <div
+                    cdkDropList
+                    [id]="state.state"
+                    #{{state.state}} = "cdkDropList"
+                    [cdkDropListData]="state.subtasks"
+                    (cdkDropListDropped)="drop($event, board, task, state)"
+                    class="example-list">
+<!--              columns      -->
+                    <div style="display: inline-flex">
+                      <h4>
+                        {{state.state}}
+                      </h4>
                         <input
                           #input
                           clrInput
@@ -240,18 +232,16 @@
                         <div class="card-block">
                           <div class="card-title">
 
-                            <!--                          {{subtask.description}}-->
-                          </div>
-                          <div class="card-text">
-                            <!--                          <button type="button"-->
-                            <!--                                  class="btn"-->
-                            <!--                          (click)="openModal">-->
-                            <!--                            DESCRIPTION-->
-                            <!--                          </button>-->
-                            <!--                          <textarea clrTextarea #textArea [value]=subtask.description (change)="changeDescription(board, task, state, subtask, textArea.value)"></textarea>-->
-                          </div>
+
+                    <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
+                      <h3 class="card-header">{{subtask.name}}</h3>
+                      <div class="card-block">
+                        <div class="card-title">
                         </div>
-                        <div class="card-footer">
+                        <div class="card-text">
+                         </div>
+                      </div>
+                      <div class="card-footer">
                         <span class="label label-info">
                             {{subtask.worker}}
                         </span>
@@ -271,8 +261,12 @@
       </clr-accordion>
     </clr-tab-content>
   </clr-tab>
-
 </clr-tabs>
+
+
+<footer>
+  <button class="btn btn-primary" (click)="basic=true">IMPRESSUM</button>
+</footer>
 
 </body>
 
@@ -329,11 +323,39 @@
 
         </clr-checkbox-wrapper>
         <p>
+<!-- login form -->
         <form [formGroup]="_loginForm"
               (ngSubmit)="_login()"
               *ngIf="!isRegistration.checked"
         >
-          <div class="login-group">
+        <div class="login-group">
+          <clr-input-container>
+            <label class="clr-sr-only">Email</label>
+            <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
+          </clr-input-container>
+          <clr-password-container>
+            <label class="clr-sr-only">Password</label>
+            <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
+          </clr-password-container>
+
+          <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->
+          <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active" >
+            Invalid user name or password
+          </div>
+          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
+          <button class="btn btn-primary" (click)="_forgetPW();
+          $event.preventDefault();
+          $event.stopPropagation()">Forget PW</button>
+        </div>
+<!-- Register form       -->
+      </form>
+
+        <form [formGroup]="_registrationForm"
+              (ngSubmit)="_register()"
+              *ngIf="isRegistration.checked"
+              [clrLoading]="_createButtonState"
+        >
+          <div class="register-group">
             <clr-input-container>
               <label class="clr-sr-only">Email</label>
               <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
@@ -397,3 +419,25 @@
 </div>
 
 <div class="modal-backdrop" aria-hidden="true"></div>
+
+
+<!--Impressum-->
+<clr-modal [(clrModalOpen)]="basic" [clrModalSize]="'xl'">
+  <h3 class="modal-title">Impressum</h3>
+  <div class="modal-body">
+    <h2 id="m46">Diensteanbieter</h2>
+    <p>Ben Schlauch</p>
+    <p>Im Rahmen eines Projektes der DHBW Stuttgart</p>
+    <p>Kiefernweg 14</p>
+    <p>71149 Bondorf</p>
+    <h2 id="m56">Kontaktmöglichkeiten</h2>E-Mail-Adresse: <p><a href="mailto:{{firstEmail}}{{secondEmail}}">{{firstEmail}}{{secondEmail}}</a></p>
+    <h2 id="m65">Haftungs- und Schutzrechtshinweise</h2><p>Haftungsausschluss: Die Inhalte dieses Onlineangebotes wurden sorgfältig und nach unserem aktuellen Kenntnisstand erstellt, dienen jedoch nur der Information und entfalten keine rechtlich bindende Wirkung, sofern es sich nicht um gesetzlich verpflichtende Informationen (z.B. das Impressum, die Datenschutzerklärung, AGB oder verpflichtende Belehrungen von Verbrauchern) handelt. Wir behalten uns vor, die Inhalte vollständig oder teilweise zu ändern oder zu löschen, soweit vertragliche Verpflichtungen unberührt bleiben. Alle Angebote sind freibleibend und unverbindlich.</p>
+    <p>Urheberrechte und Markenrechte: Alle auf dieser Website dargestellten Inhalte, wie Texte, Fotografien, Grafiken, Marken und Warenzeichen sind durch die jeweiligen Schutzrechte (Urheberrechte, Markenrechte) geschützt. Die Verwendung, Vervielfältigung usw. unterliegen unseren Rechten oder den Rechten der jeweiligen Urheber bzw. Rechteinhaber.</p>
+    <p>Hinweise auf Rechtsverstöße: Sollten Sie innerhalb unseres Internetauftritts Rechtsverstöße bemerken, bitten wir Sie uns auf diese hinzuweisen. Wir werden rechtswidrige Inhalte und Links nach Kenntnisnahme unverzüglich entfernen.</p>
+    <p class="seal"><a href="https://datenschutz-generator.de/" title="Rechtstext von Dr. Schwenke - für weitere Informationen bitte anklicken." target="_blank" rel="noopener noreferrer nofollow">Erstellt mit kostenlosem Datenschutz-Generator.de von Dr. Thomas Schwenke</a></p>
+    </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="basic = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="basic = false">Ok</button>
+  </div>
+</clr-modal>
