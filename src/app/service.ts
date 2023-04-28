@@ -21,7 +21,8 @@ import {
   MessageMoveSubtask,
   MessageLoadBoards,
   MessageToken,
-  MessageChangeName
+  MessageChangeName,
+  MessageDeleteUser
 } from './models/communication';
 
 import {Board, Person, State, Subtask, Task } from './models/boards';
@@ -427,20 +428,17 @@ export class Service {
 
 
   public login(person: Person): Observable<MessageToken> {
-    //TODO: nur für Testzwecke auskommentiert!!!
-    // let socketAuth: string = '';
-    //
-    //   const headers = { 'content-type': 'application/json'};
-    //   const body=JSON.stringify(person);
-    //
-    //   console.log('Not debug!', person.email, person.pwd);
-    //   console.log("Sending data to server: ", body);
-    //
-    //   aktualPerson = person;
-    //
-    //   return this._http.post<MessageToken>('/api/login', person);
-    let msg: MessageToken = {token: "test"}
-    return of(msg)
+    let socketAuth: string = '';
+
+      const headers = { 'content-type': 'application/json'};
+      const body=JSON.stringify(person);
+
+      console.log('Not debug!', person.email, person.pwd);
+      console.log("Sending data to server: ", body);
+
+      aktualPerson = person;
+
+      return this._http.post<MessageToken>('/api/login', person);
   }
 
   forgetPW(email: string) {
