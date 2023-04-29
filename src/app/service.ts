@@ -708,19 +708,17 @@ function deleteBoard(deleteBoard: any, _boardsObservable: Observable<Board[]>) {
 
   if (_boardsObservable !== undefined) {
     //move Observable to array to add subtask
-    _boardsObservable.subscribe(board => {
-      boardsArray = board as Board[]
-    });
+    let board: Board[] = getBoardsArray(_boardsObservable);
   }
 
-  const index = boardsArray.findIndex((board) => board.name === newBoard.name);
+  const index = boardsArray.findIndex((board) => board.id === newBoard.id);
 
   //wenn nicht gefunden nichts machen
   if (index !== -1) {
     boardsArray.splice(index, 1);
   }
 
-  _boardsObservable = of(boardsArray);
+  _boardsObservable = addPositionsToBoards(of(boardsArray));
 }
 
 
@@ -737,7 +735,7 @@ function addTask(teamboard: number, newTask: Task, _boardsObservable: Observable
     boardsArray[boardIndex].tasks[taskIndex].id = newTask.id;
   }
 
-  _boardsObservable = of(boardsArray);
+  _boardsObservable = addPositionsToBoards(of(boardsArray));
 }
 
 function deleteTask(teamboard: number, taskGet: Task, _boardsObservable: Observable<Board[]>) {
@@ -758,7 +756,7 @@ function deleteTask(teamboard: number, taskGet: Task, _boardsObservable: Observa
     boardsArray[boardIndex].tasks.splice(taskIndex, 1);
   }
 
-  _boardsObservable = of(boardsArray);
+  _boardsObservable = addPositionsToBoards(of(boardsArray));
 }
 
 
@@ -776,7 +774,7 @@ function addState(boardId: number, taskId: number, column: State, _boardsObserva
     boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].id = column.id;
   }
 
-  _boardsObservable = of(boardsArray);
+  _boardsObservable = addPositionsToBoards(of(boardsArray));
 }
 
 function deleteState(boardId: number, taskId: number, stateGet: State, _boardsObservable: Observable<Board[]>) {
@@ -792,7 +790,7 @@ function deleteState(boardId: number, taskId: number, stateGet: State, _boardsOb
     boardsArray[boardIndex].tasks[taskIndex].states.splice(stateIndex, 1);
   }
   console.log("initalice observable new..");
-  _boardsObservable = of(boardsArray);
+  _boardsObservable = addPositionsToBoards(of(boardsArray));
 }
 
 
@@ -875,7 +873,7 @@ function addSubtask(teamboardId: number, taskId: number, columnId: number, subta
     boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks[subtaskIndex].id = subtask.id;
   }
 
-  _boardsObservable = of(boardsArray);
+  _boardsObservable = addPositionsToBoards(of(boardsArray));
 }
 
 function deleteSubtask(teamboardId: number, taskId: number, columnId: number, subtaskGet: Subtask, _boardsObservable: Observable<Board[]>) {
@@ -891,7 +889,7 @@ function deleteSubtask(teamboardId: number, taskId: number, columnId: number, su
     boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.splice(subtaskIndex, 1);
   }
 
-  _boardsObservable = of(boardsArray);
+  _boardsObservable = addPositionsToBoards(of(boardsArray));
 }
 
 
@@ -906,6 +904,90 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
   }
 
   return boardsArray;
+}
+
+
+
+function moveSubtaskBetweenState(teamboard_id: number, task_id: number, state_id: number, oldPosition: number, newPosition: number, subtask: Subtask, _boardsObservable: Observable<Board[]>) {
+  let boardsArray: Board[] = getBoardsArray(_boardsObservable);
+  let stateIndex = 0;
+  let helpSubtask: Subtask | null = null;
+
+
+  const boardIndex = getBoardPosition(boardsArray, teamboard_id);
+
+  //find task position
+  const taskIndex = getTaskPosition(boardsArray[boardIndex].tasks, task_id);
+
+  //remove and copy state
+  for (let state of boardsArray[boardIndex].tasks[taskIndex].states) {
+    if ((state.subtasks.length > oldPosition) && (state.subtasks[oldPosition].id === subtask.id)) {
+      helpSubtask = state.subtasks[oldPosition];
+      state.subtasks.splice(oldPosition, 1);
+      break;
+    }
+    stateIndex++;
+  }
+
+  if (helpSubtask === null) {
+    throw Error("Error by moving subtask");
+  }
+
+  //count positions new
+  let index = 0;
+  for (let subtask of boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks) {
+    subtask.position = index;
+    index++;
+  }
+
+  //find position of new state
+  let newStatePosition = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, state_id);
+
+  //change positions
+  for (const subtask of boardsArray[boardIndex].tasks[taskIndex].states[newStatePosition].subtasks) {
+    if (subtask.position >= newPosition) {
+      subtask.position++;
+    }
+  }
+
+  helpSubtask.position = newPosition;
+
+  //add subtask
+  boardsArray[boardIndex].tasks[taskIndex].states[newStatePosition].subtasks.push(helpSubtask);
+
+  _boardsObservable = of(boardsArray);
+  _boardsObservable = sortBoards(_boardsObservable);
+}
+
+function moveSubtaskInState(teamboard_id: number, task_id: number, state_id: number, oldPosition: number, newPosition: number, subtaskGet: Subtask, _boardsObservable: Observable<Board[]>): void {
+  let boardsArray = getBoardsArray(_boardsObservable);
+
+  const boardIndex = getBoardPosition(boardsArray, teamboard_id);
+  const taskIndex = getTaskPosition(boardsArray[boardIndex].tasks, task_id);
+  const stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, state_id);
+
+  for (let subtask of boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks) {
+    //wurde der subtask nach oben oder nach unten geschoben
+    if (oldPosition < newPosition) {
+      //alle dazwischenliegenden aufrutschen
+      if ((subtask.position > oldPosition) && (subtask.position <= newPosition) && (subtask.id !== subtaskGet.id)) {
+        subtask.position--;
+      }
+    } else {
+      //alle dazwischenliegenden aufrutschen
+      if ((subtask.position < oldPosition) && (subtask.position >= newPosition) && (subtask.id !== subtaskGet.id)) {
+        subtask.position++;
+      }
+    }
+  }
+
+  if (newPosition < oldPosition) {
+
+  }
+
+  _boardsObservable = of(boardsArray);
+  _boardsObservable = sortBoards(_boardsObservable);
+
 }
 
 
@@ -1022,89 +1104,6 @@ function sortBoards(_boardsObservabel: Observable<Board[]>): Observable<Board[]>
   }
 
   return of(boardsArray);
-}
-
-
-function moveSubtaskBetweenState(teamboard_id: number, task_id: number, state_id: number, oldPosition: number, newPosition: number, subtask: Subtask, _boardsObservable: Observable<Board[]>) {
-  let boardsArray: Board[] = getBoardsArray(_boardsObservable);
-  let stateIndex = 0;
-  let helpSubtask: Subtask | null = null;
-
-
-  const boardIndex = getBoardPosition(boardsArray, teamboard_id);
-
-  //find task position
-  const taskIndex = getTaskPosition(boardsArray[boardIndex].tasks, task_id);
-
-  //remove and copy state
-  for (let state of boardsArray[boardIndex].tasks[taskIndex].states) {
-    if ((state.subtasks.length > oldPosition) && (state.subtasks[oldPosition].id === subtask.id)) {
-      helpSubtask = state.subtasks[oldPosition];
-      state.subtasks.splice(oldPosition, 1);
-      break;
-    }
-    stateIndex++;
-  }
-
-  if (helpSubtask === null) {
-    throw Error("Error by moving subtask");
-  }
-
-  //count positions new
-  let index = 0;
-  for (let subtask of boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks) {
-    subtask.position = index;
-    index++;
-  }
-
-  //find position of new state
-  let newStatePosition = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, state_id);
-
-  //change positions
-  for (const subtask of boardsArray[boardIndex].tasks[taskIndex].states[newStatePosition].subtasks) {
-    if (subtask.position >= newPosition) {
-      subtask.position++;
-    }
-  }
-
-  helpSubtask.position = newPosition;
-
-  //add subtask
-  boardsArray[boardIndex].tasks[taskIndex].states[newStatePosition].subtasks.push(helpSubtask);
-
-  _boardsObservable = of(boardsArray);
-  _boardsObservable = sortBoards(_boardsObservable);
-}
-
-function moveSubtaskInState(teamboard_id: number, task_id: number, state_id: number, oldPosition: number, newPosition: number, subtaskGet: Subtask, _boardsObservable: Observable<Board[]>): void {
-  let boardsArray = getBoardsArray(_boardsObservable);
-
-  const boardIndex = getBoardPosition(boardsArray, teamboard_id);
-  const taskIndex = getTaskPosition(boardsArray[boardIndex].tasks, task_id);
-  const stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, state_id);
-
-  for (let subtask of boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks) {
-    //wurde der subtask nach oben oder nach unten geschoben
-    if (oldPosition < newPosition) {
-      //alle dazwischenliegenden aufrutschen
-      if ((subtask.position > oldPosition) && (subtask.position <= newPosition) && (subtask.id !== subtaskGet.id)) {
-        subtask.position--;
-      }
-    } else {
-      //alle dazwischenliegenden aufrutschen
-      if ((subtask.position < oldPosition) && (subtask.position >= newPosition) && (subtask.id !== subtaskGet.id)) {
-        subtask.position++;
-      }
-    }
-  }
-
-  if (newPosition < oldPosition) {
-
-  }
-
-  _boardsObservable = of(boardsArray);
-  _boardsObservable = sortBoards(_boardsObservable);
-
 }
 
 function getBoardPosition(boardsArray: Board[], teamboard_id: number): number {
