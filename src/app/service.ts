@@ -170,15 +170,17 @@ initWebsocket(token: string, successCallback: () => void) {
     this._boardsObservable = of(boardsArray);
   }
 
-  set_aktualPerson(person: Person) {
-    aktualPerson = person;
-  }
   //add Subtask to Observable
   addSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtask: Subtask) {
 
     let boardsArray: Board[] = [];
 
-    subtask.worker = aktualPerson!.email;
+    if(aktualPerson){
+      subtask.worker = aktualPerson!.email;
+    }
+    else{
+      subtask.worker = localStorage.getItem('email')!;
+    }
 
     console.log("parse task");
     //move Observable to array to add subtask

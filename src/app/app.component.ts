@@ -71,12 +71,6 @@ export class AppComponent {
       this.service.initWebsocket(token, () => {
       // This function will be called after the WebSocket connection is established successfully
         this.closeModal();
-        const person: Person = {
-          name: '',
-          email: mail,
-          pwd: ''
-        }
-        this.service.set_aktualPerson(person);
     });
     }
     }catch(e){
