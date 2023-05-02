@@ -66,14 +66,21 @@ export class AppComponent {
 
     try{
     const token = localStorage.getItem('token');
-    if (token) {
+    const mail :string = localStorage.getItem('mail');
+    if (token && mail) {
       this.service.initWebsocket(token, () => {
       // This function will be called after the WebSocket connection is established successfully
         this.closeModal();
+        const person: Person = {
+          name: '',
+          email: mail,
+          pwd: ''
+        }
     });
     }
     }catch(e){
       localStorage.removeItem('token');
+      localStorage.removeItem('mail');
     }
 
     this.service._boardsObservable.subscribe(d => this.boards = d);
@@ -111,12 +118,15 @@ export class AppComponent {
       pwd: this._loginForm.getRawValue().password
     };
 
+    // use stored email
+
     this.service.login(person).subscribe({
       next: (tokenmessage: MessageToken) =>{
         this.toastr.success('Logged in successfully');
 
         // storing toke in localStorage
         localStorage.setItem('token', tokenmessage.token);
+        localStorage.setItem('mail', person.email);
 
         this.service.initWebsocket(tokenmessage.token, () => {
             // This function will be called after the WebSocket connection is established successfully
@@ -256,6 +266,8 @@ export class AppComponent {
 
   _addSubtask(boardGet: Board, taskGet: Task, stateGet: State, taskName: string) {
     //todo: open modal to add??
+
+
 
     //add task to observable
 
