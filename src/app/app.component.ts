@@ -76,6 +76,7 @@ export class AppComponent {
           email: mail,
           pwd: ''
         }
+        this.service.set_aktualPerson(person);
     });
     }
     }catch(e){
