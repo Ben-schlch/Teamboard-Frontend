@@ -66,7 +66,7 @@ export class AppComponent {
 
     try{
     const token = localStorage.getItem('token');
-    const mail :string = localStorage.getItem('mail');
+    const mail = localStorage.getItem('mail');
     if (token && mail) {
       this.service.initWebsocket(token, () => {
       // This function will be called after the WebSocket connection is established successfully
