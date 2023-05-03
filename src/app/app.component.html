@@ -349,12 +349,9 @@
             <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
             <button class="btn btn-primary" (click)="_forgetPW();
           $event.preventDefault();
-          $event.stopPropagation()">Forget PW
-            </button>
-          </div>
-          <!-- Register form       -->
-        </form>
-
+          $event.stopPropagation()">Passwort zurücksetzen</button>
+        </div>
+      </form>
         <form [formGroup]="_registrationForm"
               (ngSubmit)="_register()"
               *ngIf="isRegistration.checked"
