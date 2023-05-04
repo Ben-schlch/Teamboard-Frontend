@@ -9,6 +9,9 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { AppComponent } from './app.component';
 import { ToastrModule } from 'ngx-toastr';
 
+// importing the sessionstorage
+import { NgxWebstorageModule } from 'ngx-webstorage';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -21,6 +24,7 @@ import { ToastrModule } from 'ngx-toastr';
     BrowserAnimationsModule,
     DragDropModule,
     HttpClientModule,
+    NgxWebstorageModule.forRoot(),
     ToastrModule.forRoot()
   ],
   providers: [HttpClient],

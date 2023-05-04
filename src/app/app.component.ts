@@ -63,6 +63,21 @@ export class AppComponent {
   });
 
   ngOnInit() {
+
+    try{
+    const token = localStorage.getItem('token');
+    const mail = localStorage.getItem('mail');
+    if (token && mail) {
+      this.service.initWebsocket(token, () => {
+      // This function will be called after the WebSocket connection is established successfully
+        this.closeModal();
+    });
+    }
+    }catch(e){
+      localStorage.removeItem('token');
+      localStorage.removeItem('mail');
+    }
+
     this.service._boardsObservable.subscribe(d => this.boards = d);
     this._boards$ = this.service._boardsObservable;
 
@@ -102,12 +117,21 @@ export class AppComponent {
       pwd: this._loginForm.getRawValue().password
     };
 
+    // use stored email
+
     this.service.login(person).subscribe({
-      next: (tokenmessage: MessageToken) => {
-        this.closeModal();
+      next: (tokenmessage: MessageToken) =>{
         this.toastr.success('Logged in successfully');
 
-        this.service.initWebsocket(tokenmessage.token);
+        // storing toke in localStorage
+        localStorage.setItem('token', tokenmessage.token);
+        localStorage.setItem('mail', person.email);
+
+        this.service.initWebsocket(tokenmessage.token, () => {
+            // This function will be called after the WebSocket connection is established successfully
+            this.closeModal();
+          }
+          );
       },
       error: (error) => {
         switch (error.status) {
@@ -131,9 +155,9 @@ export class AppComponent {
 
     this.service.forgetPW(email).subscribe({
       next: () => {
-        this.toastr.info('Das PW wird zurückgesetzt, wenn der User existiert');
-      }, error: () => {
-        this.toastr.error('Failed');
+        this.toastr.info('Das PW wird zurückgesetzt, wenn der User existiert. Überprüfe deine E-Mails');
+      },error: () => {
+        this.toastr.error('Fehler beim Zurücksetzen des PWs');
       }
     })
   }
@@ -162,9 +186,7 @@ export class AppComponent {
     }
     this.service.register(person).subscribe({
       next: () => {
-        this.toastr.info('You will get an Email to validate');
-
-
+          this.toastr.info('Bitte bestätige deine E-Mail vor dem einloggen!');
       },
       error: (error) => {
         switch (error.status) {
@@ -241,6 +263,8 @@ export class AppComponent {
 
   _addSubtask(boardGet: Board, taskGet: Task, stateGet: State, taskName: string) {
     //todo: open modal to add??
+
+
 
     //add task to observable
 
@@ -397,6 +421,7 @@ export class AppComponent {
 
   _logout() {
     this.service.logout();
+    localStorage.removeItem('token');
     window.location.reload();
   }
 
