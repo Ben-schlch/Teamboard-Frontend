@@ -1,14 +1,6 @@
-<!--<style>-->
-
-<!--  .spacer {-->
-<!--    flex: 1;-->
-<!--  }-->
 
 
-<!--</style>-->
-
-<!-- Toolbar -->
-
+<!-- header with add board and personal settings-->
 <header>
   <div class="branding" style="width: 260px;">
     <img src="assets/flipchart_weiß.png" alt="Logo" style="padding: 10px;">
@@ -58,15 +50,17 @@
 <body>
 
 <clr-tabs>
+<!--  alle Boards der liste anzeigen-->
+<!--  !!! async wird als fehler markiert, da intelliJ es nicht kennt. !!!-->
   <clr-tab *ngFor="let board of _boards$ | async">
 
+<!--show boardname in tab mit den möglichen beabeitungsmethoden diese brauchen stopPropagation, da sonst der tab auf und zu geht-->
     <button clrTabLink id=board.name>
       {{board.name}}
       <div class="btn-group btn-icon">
         <button
           type="button"
-          class="btn"
-          style="font-size: large"
+          class="btn largeButton"
           (click)="_showModalChangeName(board);
             $event.preventDefault();
             $event.stopPropagation();
@@ -76,8 +70,7 @@
         </button>
         <button
           type="button"
-          class="btn"
-          style="font-size: large"
+          class="btn largeButton"
           (click)="_showModalDeleteBoard(board);
             $event.preventDefault();
             $event.stopPropagation()"
@@ -86,8 +79,7 @@
         </button>
         <button
           type="button"
-          class="btn"
-          style="font-size: large"
+          class="btn largeButton"
           (click)="_addUserToBoard(board);
             $event.preventDefault();
             $event.stopPropagation()"
@@ -96,8 +88,7 @@
         </button>
         <button
           type="button"
-          class="btn"
-          style="font-size: large"
+          class="btn largeButton"
           (click)="_deleteUserFromBoard(board);
             $event.preventDefault();
             $event.stopPropagation()"
@@ -214,8 +205,7 @@
 
                         <button
                           type="button"
-                          class="btn"
-                          style="font-size: large"
+                          class="btn largeButton"
                           (click)="_deleteState(board, task, state);
                                         $event.preventDefault();
                                         $event.stopPropagation()"
