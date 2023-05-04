@@ -59,12 +59,13 @@ export class Service {
     sendMessageToServer(JSON.stringify(message));
   }
 
-initWebsocket(token: string, successCallback: () => void) {
-  this.socketAuthentification = token;
-  this._boardsObservable.subscribe(board => console.log(board));
+  initWebsocket(token: string, successCallback: () => void) {
+    this.socketAuthentification = token;
+    this._boardsObservable.subscribe(board => console.log(board));
 
-  getWebSocket(token, this._boardsObservable, successCallback);
-}
+    getWebSocket(token, this._boardsObservable, successCallback);
+  }
+
   loadBoards() {
 
     //boardload
@@ -179,7 +180,7 @@ initWebsocket(token: string, successCallback: () => void) {
 
     let boardsArray: Board[] = [];
 
-    if(aktualPerson){
+    if (aktualPerson) {
       subtask.worker = aktualPerson!.email;
     }
     else{
@@ -913,7 +914,6 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
 
   return boardsArray;
 }
-
 
 
 function moveSubtaskBetweenState(teamboard_id: number, task_id: number, state_id: number, oldPosition: number, newPosition: number, subtask: Subtask, _boardsObservable: Observable<Board[]>) {
