@@ -35,8 +35,7 @@
   <div class="header-actions">
     <clr-dropdown>
       <button class="nav-icon" clrDropdownTrigger aria-label="toggle settings menu">
-
-        <cds-icon shape="angle" direction="down"></cds-icon>
+        <img src="assets/arrow_drop_down_circle.svg" alt="Dropdown Image" width="50%">
       </button>
       <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
         <a (click)="_logout()" clrDropdownItem>Logout</a>
@@ -53,50 +52,58 @@
 <!--  alle Boards der liste anzeigen-->
 <!--  !!! async wird als fehler markiert, da intelliJ es nicht kennt. !!!-->
   <clr-tab *ngFor="let board of _boards$ | async">
-
-<!--show boardname in tab mit den möglichen beabeitungsmethoden diese brauchen stopPropagation, da sonst der tab auf und zu geht-->
-    <button clrTabLink id=board.name>
+    <!--show boardname in tab mit den möglichen beabeitungsmethoden diese brauchen stopPropagation, da sonst der tab auf und zu geht-->
+    <div clrTabLink id=board.name >
       {{board.name}}
-      <div class="btn-group btn-icon">
-        <button
-          type="button"
-          class="btn largeButton"
-          (click)="_showModalChangeName(board);
-            $event.preventDefault();
-            $event.stopPropagation();
-           "
-        >
-          <img src="/assets/edit.png" width="50%">
-        </button>
-        <button
-          type="button"
-          class="btn largeButton"
-          (click)="_showModalDeleteBoard(board);
-            $event.preventDefault();
-            $event.stopPropagation()"
-        >
-          <img src="/assets/delete.png" width=50%>
-        </button>
-        <button
-          type="button"
-          class="btn largeButton"
-          (click)="_addUserToBoard(board);
-            $event.preventDefault();
-            $event.stopPropagation()"
-        >
-          <img src="assets/person_add.png" width=50%>
-        </button>
-        <button
-          type="button"
-          class="btn largeButton"
-          (click)="_deleteUserFromBoard(board);
-            $event.preventDefault();
-            $event.stopPropagation()"
-        >
-          <img src="assets/person_remove.png" width=50%>
-        </button>
-      </div>
-    </button>
+      <!--Dropdown-Menu to Edit Teamboards (Change name, delete, addUser, deleteUser)-->
+      <clr-dropdown clrTabLink>
+        <button clrDropdownTrigger><img src="assets/arrow_drop_down_circle.png" width="40%"></button>
+        <clr-dropdown-menu>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_showModalChangeName(board);
+                  $event.preventDefault();
+                  $event.stopPropagation();">
+            <img src="assets/edit.png" width="10%">
+            Edit Teamboard name
+          </button>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_showModalDeleteBoard(board);
+                            $event.preventDefault();
+                            $event.stopPropagation()">
+            <img src="assets/delete.png" width=10%>
+            Delete Teamboard
+          </button>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_addUserToBoard(board);
+                      $event.preventDefault();
+                      $event.stopPropagation()"
+          >
+            <img src="assets/person_add.png" width=10%>
+            Add Person
+          </button>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_deleteUserFromBoard(board);
+                      $event.preventDefault();
+                      $event.stopPropagation()"
+          >
+            <img src="assets/person_remove.png" width=10%>
+            Remove Person
+          </button>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+    </div>
 
     <clr-tab-content id="content1" *clrIfActive>
 
