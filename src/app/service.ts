@@ -183,7 +183,7 @@ initWebsocket(token: string, successCallback: () => void) {
       subtask.worker = aktualPerson!.email;
     }
     else{
-      subtask.worker = localStorage.getItem('email')!;
+      subtask.worker = localStorage.getItem('mail')!;
     }
 
     console.log("parse task");
