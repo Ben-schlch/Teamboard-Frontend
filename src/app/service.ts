@@ -424,20 +424,20 @@ initWebsocket(token: string, successCallback: () => void) {
 
 
   public login(person: Person): Observable<MessageToken> {
-    // let socketAuth: string = '';
-    //
-    // const headers = {'content-type': 'application/json'};
-    // const body = JSON.stringify(person);
-    //
-    // console.log('Not debug!', person.email, person.pwd);
-    // console.log("Sending data to server: ", body);
-    //
-    // aktualPerson = person;
-    //
-    // return this._http.post<MessageToken>('/api/login', person);
+    let socketAuth: string = '';
 
-    let response: MessageToken = {token: "test"}
-    return of(response)
+    const headers = {'content-type': 'application/json'};
+    const body = JSON.stringify(person);
+
+    console.log('Not debug!', person.email, person.pwd);
+    console.log("Sending data to server: ", body);
+
+    aktualPerson = person;
+
+    return this._http.post<MessageToken>('/api/login', person);
+
+    // let response: MessageToken = {token: "test"}
+    // return of(response)
   }
 
   forgetPW(email: string): Observable<Object> {
