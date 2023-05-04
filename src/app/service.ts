@@ -59,12 +59,16 @@ export class Service {
     sendMessageToServer(JSON.stringify(message));
   }
 
-initWebsocket(token: string, successCallback: () => void) {
-  this.socketAuthentification = token;
-  this._boardsObservable.subscribe(board => console.log(board));
+  initWebsocket(token: string) {
+    this.socketAuthentification = token;
 
-  getWebSocket(token, this._boardsObservable, successCallback);
-}
+    this._boardsObservable.subscribe(board => console.log(board));
+
+    getWebSocket(token, this._boardsObservable);
+
+  }
+
+
   loadBoards() {
 
     //boardload
@@ -179,12 +183,7 @@ initWebsocket(token: string, successCallback: () => void) {
 
     let boardsArray: Board[] = [];
 
-    if(aktualPerson){
-      subtask.worker = aktualPerson!.email;
-    }
-    else{
-      subtask.worker = localStorage.getItem('email')!;
-    }
+    subtask.worker = aktualPerson!.email;
 
     console.log("parse task");
     //move Observable to array to add subtask
@@ -540,12 +539,8 @@ initWebsocket(token: string, successCallback: () => void) {
   }
 }
 
-function getWebSocket(socketAuthentification: string, _boardsObservable: Observable<Board[]>, successCallback: () => void) {
+function getWebSocket(socketAuthentification: string, _boardsObservable: Observable<Board[]>) {
   const webSocket = new WebSocket(SOCKET_URL + socketAuthentification);
-
-  webSocket.onerror = (error) => {
-    throw new Error(`WebSocket error: ${error}`);
-  };
 
   const message: MessageLoadBoards = {
     kind_of_object: 'board',
@@ -557,9 +552,6 @@ function getWebSocket(socketAuthentification: string, _boardsObservable: Observa
   webSocket.addEventListener("open", (event: any) => {
     // @ts-ignore
     webSocket.send(JSON.stringify(message));
-
-    // Call the successCallback function to indicate that the WebSocket connection was established successfully
-    successCallback();
   });
 
   // @ts-ignore
@@ -570,6 +562,7 @@ function getWebSocket(socketAuthentification: string, _boardsObservable: Observa
     } catch (error) {
       console.log(error);
     }
+
   });
 
   // @ts-ignore
