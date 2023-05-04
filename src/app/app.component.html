@@ -59,52 +59,57 @@
 
 <clr-tabs>
   <clr-tab *ngFor="let board of _boards$ | async">
-
-    <button clrTabLink id=board.name>
+    <div clrTabLink id=board.name >
       {{board.name}}
-      <div class="btn-group btn-icon">
-        <button
-          type="button"
-          class="btn"
-          style="font-size: large"
-          (click)="_showModalChangeName(board);
-            $event.preventDefault();
-            $event.stopPropagation();"
-        >
-          <img src="assets/edit.png" width="50%">
-        </button>
-        <button
-          type="button"
-          class="btn"
-          style="font-size: large"
-          (click)="_showModalDeleteBoard(board);
-            $event.preventDefault();
-            $event.stopPropagation()"
-        >
-          <img src="assets/delete.png" width=50%>
-        </button>
-        <button
-          type="button"
-          class="btn"
-          style="font-size: large"
-          (click)="_addUserToBoard(board);
-            $event.preventDefault();
-            $event.stopPropagation()"
-        >
-          <img src="assets/person_add.png" width=50%>
-        </button>
-        <button
-          type="button"
-          class="btn"
-          style="font-size: large"
-          (click)="_deleteUserFromBoard(board);
-            $event.preventDefault();
-            $event.stopPropagation()"
-        >
-          <img src="assets/person_remove.png" width=50%>
-        </button>
-      </div>
-    </button>
+      <!--Dropdown-Menu to Edit Teamboards (Change name, delete, addUser, deleteUser)-->
+      <clr-dropdown clrTabLink>
+        <button clrDropdownTrigger><img src="assets/arrow_drop_down_circle.png" width="40%"></button>
+        <clr-dropdown-menu>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_showModalChangeName(board);
+                  $event.preventDefault();
+                  $event.stopPropagation();">
+            <img src="assets/edit.png" width="10%">
+            Edit Teamboard name
+          </button>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_showModalDeleteBoard(board);
+                            $event.preventDefault();
+                            $event.stopPropagation()">
+            <img src="assets/delete.png" width=10%>
+            Delete Teamboard
+          </button>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_addUserToBoard(board);
+                      $event.preventDefault();
+                      $event.stopPropagation()"
+          >
+            <img src="assets/person_add.png" width=10%>
+            Add Person
+          </button>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_deleteUserFromBoard(board);
+                      $event.preventDefault();
+                      $event.stopPropagation()"
+          >
+            <img src="assets/person_remove.png" width=10%>
+            Remove Person
+          </button>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+    </div>
 
     <clr-tab-content id="content1" *clrIfActive>
 
