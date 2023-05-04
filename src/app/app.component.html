@@ -1,20 +1,11 @@
-<style>
-  :host {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+<!--<style>-->
 
-  .spacer {
-    flex: 1;
-  }
+<!--  .spacer {-->
+<!--    flex: 1;-->
+<!--  }-->
 
 
-
-</style>
+<!--</style>-->
 
 <!-- Toolbar -->
 
@@ -25,7 +16,6 @@
   </div>
   <clr-icon shape="floppy"></clr-icon>
   <div class="nav-divider"></div>
-
 
   <div class="header-nav clr-nav-level-1">
     <input
@@ -73,113 +63,135 @@
     <button clrTabLink id=board.name>
       {{board.name}}
       <div class="btn-group btn-icon">
-      <button
-      type="button"
-      class="btn"
-      style="font-size: x-large"
-      (click)="_deleteBoard(board);
+        <button
+          type="button"
+          class="btn"
+          style="font-size: large"
+          (click)="_showModalChangeName(board);
+            $event.preventDefault();
+            $event.stopPropagation();
+            $event"
+        >
+          <img src="/assets/edit.png" width="50%">
+        </button>
+        <button
+          type="button"
+          class="btn"
+          style="font-size: large"
+          (click)="_showModalDeleteBoard(board);
             $event.preventDefault();
             $event.stopPropagation()"
-    >
-      <b>🗑</b>
-    </button>
-      <button
-        type="button"
-        class="btn"
-        style="font-size: x-large"
-        (click)="_addUserToBoard(board);
+        >
+          <img src="/assets/delete.png" width=50%>
+        </button>
+        <button
+          type="button"
+          class="btn"
+          style="font-size: large"
+          (click)="_addUserToBoard(board);
             $event.preventDefault();
             $event.stopPropagation()"
-      >
-        <b>+</b>
-      </button>
-      <button
-        type="button"
-        class="btn"
-        style="font-size: x-large"
-        (click)="_deleteUserFromBoard(board);
+        >
+          <img src="assets/person_add.png" width=50%>
+        </button>
+        <button
+          type="button"
+          class="btn"
+          style="font-size: large"
+          (click)="_deleteUserFromBoard(board);
             $event.preventDefault();
             $event.stopPropagation()"
-      >
-        <b>-</b>
-      </button>
-    </div>
+        >
+          <img src="assets/person_remove.png" width=50%>
+        </button>
+      </div>
     </button>
 
     <clr-tab-content id="content1" *clrIfActive>
 
       <clr-accordion clrAccordionMultiPanel="true">
 
-            <input
-              #input
-              clrInput
-              type="text"
-              placeholder="Add new Task"
-              (click)="
+        <input
+          #input
+          clrInput
+          type="text"
+          placeholder="Add new Task"
+          (click)="
 
                                         input.value = '';
                                         $event.preventDefault();
                                         $event.stopPropagation()
                                     "
-              (keydown.enter)="
+          (keydown.enter)="
                                         _addTask(input.value, board);
                                         input.value = '';
                                         $event.preventDefault();
                                         $event.stopPropagation()
                                     "
-            />
+        />
 
         <clr-accordion-panel *ngFor="let task of board.tasks">
           <clr-accordion-title>
             <form clrForm clrLayout="horizontal">
-            <clr-input-container clrLayout="horizontal">
-              <label>
-                {{task.name}}
-              </label>
-            <input
-              #input
-              clrInput
-              type="text"
-              placeholder="Add new State"
-              (click)="
+              <clr-input-container clrLayout="horizontal">
+                <label>
+                  {{task.name}}
+                </label>
+                <input
+                  #input
+                  clrInput
+                  type="text"
+                  placeholder="Add new State"
+                  (click)="
 
                                         input.value = '';
                                         $event.preventDefault();
                                         $event.stopPropagation()
                                     "
-              (keydown.enter)="
+                  (keydown.enter)="
                                         _addState(board, task, input.value);
                                         input.value = '';
                                         $event.preventDefault();
                                         $event.stopPropagation()
                                     "
 
-            />
-            </clr-input-container>
+                />
+              </clr-input-container>
             </form>
+            <button
+              type="button"
+              class="btn"
+              (click)="_showModalDeleteTask(board, task);
+            $event.preventDefault();
+            $event.stopPropagation();
+            $event"
+            >
+              <b>Delete {{task.name}}</b>
+            </button>
           </clr-accordion-title>
           <clr-accordion-content *clrIfExpanded>
 
-            <div cdkDropList cdkDropListOrientation="horizontal" [id]="task.name" #{{task.name}} = "cdkDropList"
+            <div cdkDropList cdkDropListOrientation="horizontal" [id]="task.name" #{{task.name}}="cdkDropList"
                  [cdkDropListData]="task.states" (cdkDropListDropped)="dropState($event, board, task)">
 
 
-            <div cdkDropListGroup>
-              <div *ngFor="let state of task.states" cdkDrag style="display: inline-block">
+              <div cdkDropListGroup>
+                <div *ngFor="let state of task.states" cdkDrag style="display: inline-block">
 
-                <div class="example-container">
+                  <div class="example-container">
 
-                  <div
-                    cdkDropList
-                    [id]="state.state"
-                    #{{state.state}} = "cdkDropList"
-                    [cdkDropListData]="state.subtasks"
-                    (cdkDropListDropped)="drop($event, board, task, state)"
-                    class="example-list">
-                    <div style="display: inline-flex">
-                      <h4>
-                        {{state.state}}
-                      </h4>
+                    <div
+                      cdkDropList
+                      [id]="state.state"
+                      #{{state.state}}="cdkDropList"
+                      [cdkDropListData]="state.subtasks"
+                      (cdkDropListDropped)="drop($event, board, task, state)"
+                      class="example-list">
+                      <!--              columns      -->
+                      <div style="display: inline-flex">
+                        <h4>
+                          {{state.state}}
+                        </h4>
                         <input
                           #input
                           clrInput
@@ -205,47 +217,47 @@
                         <button
                           type="button"
                           class="btn"
+                          style="font-size: large"
                           (click)="_deleteState(board, task, state);
                                         $event.preventDefault();
                                         $event.stopPropagation()"
                         >
-                          🗑
+                          <img src="assets/delete.png" width=50%>
                         </button>
 
-                    </div>
-
-
-
-
-                    <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
-                      <h3 class="card-header">{{subtask.name}}</h3>
-                      <div class="card-block">
-                        <div class="card-title">
-
-<!--                          {{subtask.description}}-->
-                        </div>
-                        <div class="card-text">
-<!--                          <button type="button"-->
-<!--                                  class="btn"-->
-<!--                          (click)="openModal">-->
-<!--                            DESCRIPTION-->
-<!--                          </button>-->
-<!--                          <textarea clrTextarea #textArea [value]=subtask.description (change)="changeDescription(board, task, state, subtask, textArea.value)"></textarea>-->
-                        </div>
                       </div>
-                      <div class="card-footer">
+
+
+                      <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
+                        <h3 class="card-header">{{subtask.name}}</h3>
+                        <div class="card-block">
+                          <div class="card-title">
+
+
+                            <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
+                              <h3 class="card-header">{{subtask.name}}</h3>
+                              <div class="card-block">
+                                <div class="card-title">
+                                </div>
+                                <div class="card-text">
+                                </div>
+                              </div>
+                              <div class="card-footer">
                         <span class="label label-info">
                             {{subtask.worker}}
                         </span>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+
                       </div>
+
                     </div>
                   </div>
-
                 </div>
-
               </div>
-
-            </div>
             </div>
           </clr-accordion-content>
         </clr-accordion-panel>
@@ -253,10 +265,54 @@
       </clr-accordion>
     </clr-tab-content>
   </clr-tab>
-
 </clr-tabs>
 
+
+<footer>
+  <button class="btn btn-primary" (click)="basic=true">IMPRESSUM</button>
+</footer>
+
 </body>
+
+
+<clr-modal [(clrModalOpen)]="showModelDeleteTask">
+  <h3 class="modal-title">Delete Task</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to delete the task?</p>
+    <p>All subtasks will be deleted as well.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="showModelDeleteTask = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="showModelDeleteTask = false; _deleteTask()">Delete</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="showModalDeleteBoard">
+  <h3 class="modal-title">Delete Board</h3>
+  <div class="modal-body">
+    <p>Are you sure you want to delete the board?</p>
+    <p>All tasks and subtasks will be deleted as well.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="showModalDeleteBoard = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="showModalDeleteBoard = false; _deleteBoard()">Delete</button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="showModalChangeName">
+  <h3 class="modal-title">Change Name</h3>
+  <div class="modal-body">
+    Please enter the new name:
+    <input [(ngModel)]="newName" type="text" id="basic" placeholder="Enter value here" class="clr-input"/>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="showModalChangeName = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="showModalChangeName = false; _changeBoardName()">
+      Change Title
+    </button>
+  </div>
+</clr-modal>
+
 
 <div class="modal" id="modalLoggin">
   <div class="modal-dialog" role="dialog" aria-hidden="true">
@@ -267,35 +323,35 @@
       <div class="modal-body">
         <clr-checkbox-wrapper>
           <label>Neuer User</label>
-          <input type="checkbox" name="rememberMe" (change)="true" clrCheckbox  #isRegistration/>
+          <input type="checkbox" name="rememberMe" (change)="true" clrCheckbox #isRegistration/>
 
         </clr-checkbox-wrapper>
         <p>
+          <!-- login form -->
         <form [formGroup]="_loginForm"
               (ngSubmit)="_login()"
               *ngIf="!isRegistration.checked"
         >
-        <div class="login-group">
-          <clr-input-container>
-            <label class="clr-sr-only">Email</label>
-            <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
-          </clr-input-container>
-          <clr-password-container>
-            <label class="clr-sr-only">Password</label>
-            <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
-          </clr-password-container>
+          <div class="login-group">
+            <clr-input-container>
+              <label class="clr-sr-only">Email</label>
+              <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
+            </clr-input-container>
+            <clr-password-container>
+              <label class="clr-sr-only">Password</label>
+              <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
+            </clr-password-container>
 
-          <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->
-          <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active" >
-            Invalid user name or password
-          </div>
-          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
-          <button class="btn btn-primary" (click)="_forgetPW();
+            <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->
+            <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active">
+              Invalid user name or password
+            </div>
+            <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
+            <button class="btn btn-primary" (click)="_forgetPW();
           $event.preventDefault();
           $event.stopPropagation()">Passwort zurücksetzen?</button>
         </div>
       </form>
-
         <form [formGroup]="_registrationForm"
               (ngSubmit)="_register()"
               *ngIf="isRegistration.checked"
@@ -303,36 +359,102 @@
         >
           <div class="register-group">
             <clr-input-container>
-              <label class="clr-sr-only">Username</label>
-              <input type="text" name="username" clrInput placeholder="Username" formControlName="name"/>
-            </clr-input-container>
-            <clr-input-container>
-              <label class="clr-sr-only">Email</label>
-              <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
-            </clr-input-container>
-            <clr-input-container>
               <label class="clr-sr-only">Email</label>
               <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
             </clr-input-container>
             <clr-password-container>
               <label class="clr-sr-only">Password</label>
-              <input type="password" name="password" clrPassword placeholder="Password" formControlName="pwd"/>
+              <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
             </clr-password-container>
 
-            <clr-password-container *ngIf="isRegistration.checked">
-              <label class="clr-sr-only">Password wiederholen</label>
-              <input type="password" name="password" clrPassword placeholder="Password Wiederholen" formControlName="pwd_wdh"/>
-            </clr-password-container>
-
-            <!-- Wenn loginform ungültig ist Fehlermeldung anzeigen-->
-            <div *ngIf="_loginForm.invalid" class="error active" >
+            <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->
+            <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active">
               Invalid user name or password
             </div>
-            <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Registrieren</button>
           </div>
+
+          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
+          <button class="btn btn-primary" (click)="_forgetPW();
+          $event.preventDefault();
+          $event.stopPropagation()">Forget PW
+          </button>
         </form>
       </div>
+      <form [formGroup]="_registrationForm"
+            (ngSubmit)="_register()"
+            *ngIf="isRegistration.checked"
+            [clrLoading]="_createButtonState"
+      >
+        <div class="register-group">
+          <clr-input-container>
+            <label class="clr-sr-only">Username</label>
+            <input type="text" name="username" clrInput placeholder="Username" formControlName="name"/>
+          </clr-input-container>
+          <clr-input-container>
+            <label class="clr-sr-only">Email</label>
+            <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
+          </clr-input-container>
+          <clr-input-container>
+            <label class="clr-sr-only">Email</label>
+            <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
+          </clr-input-container>
+          <clr-password-container>
+            <label class="clr-sr-only">Password</label>
+            <input type="password" name="password" clrPassword placeholder="Password" formControlName="pwd"/>
+          </clr-password-container>
+
+          <clr-password-container *ngIf="isRegistration.checked">
+            <label class="clr-sr-only">Password wiederholen</label>
+            <input type="password" name="password" clrPassword placeholder="Password Wiederholen"
+                   formControlName="pwd_wdh"/>
+          </clr-password-container>
+
+          <!-- Wenn loginform ungültig ist Fehlermeldung anzeigen-->
+          <div *ngIf="_loginForm.invalid" class="error active">
+            Invalid user name or password
+          </div>
+          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Registrieren</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+
 <div class="modal-backdrop" aria-hidden="true"></div>
+
+
+<!--Impressum-->
+<clr-modal [(clrModalOpen)]="basic" [clrModalSize]="'xl'">
+  <h3 class="modal-title">Impressum</h3>
+  <div class="modal-body">
+    <h2 id="m46">Diensteanbieter</h2>
+    <p>Ben Schlauch</p>
+    <p>Im Rahmen eines Projektes der DHBW Stuttgart</p>
+    <p>Kiefernweg 14</p>
+    <p>71149 Bondorf</p>
+    <h2 id="m56">Kontaktmöglichkeiten</h2>E-Mail-Adresse: <p><a
+    href="mailto:{{firstEmail}}{{secondEmail}}">{{firstEmail}}{{secondEmail}}</a></p>
+    <h2 id="m65">Haftungs- und Schutzrechtshinweise</h2>
+    <p>Haftungsausschluss: Die Inhalte dieses Onlineangebotes wurden sorgfältig und nach unserem aktuellen Kenntnisstand
+      erstellt, dienen jedoch nur der Information und entfalten keine rechtlich bindende Wirkung, sofern es sich nicht
+      um gesetzlich verpflichtende Informationen (z.B. das Impressum, die Datenschutzerklärung, AGB oder verpflichtende
+      Belehrungen von Verbrauchern) handelt. Wir behalten uns vor, die Inhalte vollständig oder teilweise zu ändern oder
+      zu löschen, soweit vertragliche Verpflichtungen unberührt bleiben. Alle Angebote sind freibleibend und
+      unverbindlich.</p>
+    <p>Urheberrechte und Markenrechte: Alle auf dieser Website dargestellten Inhalte, wie Texte, Fotografien, Grafiken,
+      Marken und Warenzeichen sind durch die jeweiligen Schutzrechte (Urheberrechte, Markenrechte) geschützt. Die
+      Verwendung, Vervielfältigung usw. unterliegen unseren Rechten oder den Rechten der jeweiligen Urheber bzw.
+      Rechteinhaber.</p>
+    <p>Hinweise auf Rechtsverstöße: Sollten Sie innerhalb unseres Internetauftritts Rechtsverstöße bemerken, bitten wir
+      Sie uns auf diese hinzuweisen. Wir werden rechtswidrige Inhalte und Links nach Kenntnisnahme unverzüglich
+      entfernen.</p>
+    <p class="seal"><a href="https://datenschutz-generator.de/"
+                       title="Rechtstext von Dr. Schwenke - für weitere Informationen bitte anklicken." target="_blank"
+                       rel="noopener noreferrer nofollow">Erstellt mit kostenlosem Datenschutz-Generator.de von Dr.
+      Thomas Schwenke</a></p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="basic = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="basic = false">Ok</button>
+  </div>
+</clr-modal>

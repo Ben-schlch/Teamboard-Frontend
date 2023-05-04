@@ -38,6 +38,13 @@ export interface MessageAddSubtask {
 }
 
 //delete interfaces for communication
+export interface MessageChangeName {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard_id: number,
+  name_new: string
+}
+
 export interface MessageDeleteBoard {
   kind_of_object: string,
   type_of_edit: string,
@@ -47,7 +54,7 @@ export interface MessageDeleteBoard {
 export interface MessageDeleteTask {
   kind_of_object: string,
   type_of_edit: string,
-  teamboard_id: number,
+  teamboard: Board,
   task: Task
 }
 
@@ -93,6 +100,14 @@ export interface MessageMoveSubtask {
 
 export interface MessageToken {
   token: string
+}
+
+
+export interface MessageAddUser {
+  kind_of_object: string,
+  type_of_edit: string,
+  teamboard_id: number,
+  email: string
 }
 
 export interface MessageDeleteUser{
