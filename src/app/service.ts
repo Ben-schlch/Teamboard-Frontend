@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
-import {filter, from, map, Observable, Observer, of, Subject, switchAll} from 'rxjs';
+import {filter, from, map, observable, Observable, Observer, of, Subject, switchAll} from 'rxjs';
 import '@cds/core/icon/register.js';
 import '@cds/core/button/register.js';
 import {AnonymousSubject} from 'rxjs/internal/Subject';
@@ -423,19 +423,20 @@ export class Service {
 
 
   public login(person: Person): Observable<MessageToken> {
-    let socketAuth: string = '';
+    // let socketAuth: string = '';
+    //
+    // const headers = {'content-type': 'application/json'};
+    // const body = JSON.stringify(person);
+    //
+    // console.log('Not debug!', person.email, person.pwd);
+    // console.log("Sending data to server: ", body);
+    //
+    // aktualPerson = person;
+    //
+    // return this._http.post<MessageToken>('/api/login', person);
 
-    const headers = {'content-type': 'application/json'};
-    const body = JSON.stringify(person);
-
-    console.log('Not debug!', person.email, person.pwd);
-    console.log("Sending data to server: ", body);
-
-    aktualPerson = person;
-
-    return this._http.post<MessageToken>('/api/login', person);
-
-
+    let response: MessageToken = {token: "test"}
+    return of(response)
   }
 
   forgetPW(email: string): Observable<Object> {
