@@ -83,7 +83,7 @@
             clrDropdownItem
             type="button"
             class="btn"
-            (click)="_addUserToBoard(board);
+            (click)="_showModalAddUserToTeamboard(board);
                       $event.preventDefault();
                       $event.stopPropagation()"
           >
@@ -94,7 +94,7 @@
             clrDropdownItem
             type="button"
             class="btn"
-            (click)="_deleteUserFromBoard(board);
+            (click)="_showModalDeleteUser(board);
                       $event.preventDefault();
                       $event.stopPropagation()"
           >
@@ -270,7 +270,7 @@
 </clr-modal>
 
 <clr-modal [(clrModalOpen)]="showModalDeleteBoard">
-  <h3 class="modal-title">Delete Board</h3>
+  <h3 class="modal-title">Delete Teamboard</h3>
   <div class="modal-body">
     <p>Are you sure you want to delete the board?</p>
     <p>All tasks and subtasks will be deleted as well.</p>
@@ -282,14 +282,42 @@
 </clr-modal>
 
 <clr-modal [(clrModalOpen)]="showModalChangeName">
-  <h3 class="modal-title">Change Name</h3>
+  <h3 class="modal-title">Change Teamboard Name</h3>
   <div class="modal-body">
     Please enter the new name:
-    <input [(ngModel)]="newName" type="text" id="basic" placeholder="Enter value here" class="clr-input"/>
+    <input [(ngModel)]="newTeamboardName" type="text" id="basic" placeholder="Enter value here" class="clr-input"/>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline" (click)="showModalChangeName = false">Cancel</button>
     <button type="button" class="btn btn-primary" (click)="showModalChangeName = false; _changeBoardName()">
+      Change Title
+    </button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="showModalAddUser">
+  <h3 class="modal-title">Add User to Teamboard</h3>
+  <div class="modal-body">
+    Pleas enter the email of the new user:
+    <input [(ngModel)]="email" type="text" placeholder="example@email.com" class="clr-input"/>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="showModalAddUser = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="showModalAddUser = false; _addUserToBoard()">
+      Change Title
+    </button>
+  </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="showModalDeleteUser">
+  <h3 class="modal-title">Delete User from Teamboard</h3>
+  <div class="modal-body">
+    Pleas enter the email of the user:
+    <input [(ngModel)]="email" type="text" placeholder="example@email.com" class="clr-input"/>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline" (click)="showModalDeleteUser = false">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="showModalDeleteUser = false; _deleteUserFromBoard()">
       Change Title
     </button>
   </div>
