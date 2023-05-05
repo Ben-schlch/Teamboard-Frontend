@@ -377,7 +377,7 @@ export class AppComponent {
     }
     try {
       this.service.deleteEmailFromBoard(this.email, this.board.id);
-      this.toastr.success('E-Mail valid, user was deleted from teamboard')
+      this.toastr.success('E-Mail valid, user was removed from teamboard')
     } catch (e) {
       console.log(e);
     }
