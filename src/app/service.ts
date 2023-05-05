@@ -22,7 +22,8 @@ import {
   MessageLoadBoards,
   MessageToken,
   MessageChangeName,
-  MessageDeleteUser
+  MessageDeleteUser,
+  MessageChangeDescription
 } from './models/communication';
 
 import {Board, Person, State, Subtask, Task} from './models/boards';
@@ -133,7 +134,19 @@ export class Service {
                   if (subtask.id == subtaskGet.id) {
                     subtask.description = inputValue;
 
-                    //todo: send message to server
+                    //send message to server
+                    let message: MessageChangeDescription = {
+                      kind_of_object: 'subtask',
+                      type_of_edit: 'edit',
+                      teamboard_id: boardGet.id,
+                      task_id: taskGet.id,
+                      state_id: stateGet.id,
+                      subtask: subtask
+                    }
+
+                    sendMessageToServer(JSON.stringify(message));
+                    break;
+
                   }
                 }
               }
@@ -634,7 +647,6 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
       }
       break;
 
-
     case 'state':
       switch (JSONObject.type_of_edit) {
         case 'add':
@@ -663,13 +675,8 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
         case 'delete':
           deleteSubtask(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state_id, JSONObject.subtask, _boardsObservabel);
           break;
-
-        // case 'move':
-        //   moveSubtask(JSONObject.teamboard, JSONObject.task, JSONObject.column, JSONObject.subtask, _boardsObservabel);
-        //   break;
-        // case 'moveSubtaskInState':
-        //   //moveSubtaskInState(JSONObject.teamboard, JSONObject.task, JSONObject.column, JSONObject.subtask, _boardsObservabel);
-        //   break;
+        case 'edit':
+          editSubtask(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state_id, JSONObject.subtask, _boardsObservabel);
       }
       break;
   }
@@ -1074,6 +1081,19 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
   return _boardsObservabel;
 }
 
+function editSubtask(teamboard_id: number, task_id: number, state_id: number, subtask: Subtask, _boardsObservabel: Observable<Board[]>) {
+    let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
+
+    const boardIndex = getBoardPosition(boardsArray, teamboard_id);
+    const taskIndex = getTaskPosition(boardsArray[boardIndex].tasks, task_id);
+    const stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, state_id);
+    const subtaskIndex = getSubtaskPosition(boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks, subtask.id);
+
+    boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks[subtaskIndex] = subtask;
+
+    _boardsObservabel = of(boardsArray);
+}
+
 
 function addPositionsToBoards(_boardsObservabel: Observable<Board[]>): Observable<Board[]> {
   let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
@@ -1133,6 +1153,11 @@ function getTaskPosition(taskArray: Task[], task_id: number): number {
 function getStatePosition(stateArray: State[], state_id: number): number {
 
   return stateArray.findIndex(state => state.id === state_id);
+
+}
+function getSubtaskPosition(subtaskArray: Subtask[], subtask_id: number): number {
+
+  return subtaskArray.findIndex(subtask => subtask.id === subtask_id);
 
 }
 
