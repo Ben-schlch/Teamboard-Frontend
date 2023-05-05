@@ -323,6 +323,10 @@ export class AppComponent {
     this.service.deleteState(boardGet, taskGet, stateGet);
   }
 
+  changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
+    this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
+  }
+
   // Board for modals
   board: any = null;
 
@@ -383,10 +387,6 @@ export class AppComponent {
 
   }
 
-  changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
-    this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
-  }
-
 
   //Delete Board with Modal
   showModalDeleteBoard: boolean = false;
@@ -399,8 +399,13 @@ export class AppComponent {
 
 
   _deleteBoard() {
-    this.service.deleteBoard(this.deleteBoard);
+    try {
+      this.service.deleteBoard(this.deleteBoard);
+    } catch (e) {
+      console.log(e);
+    }
     this.deleteBoard = null;
+
   }
 
 
@@ -440,7 +445,7 @@ export class AppComponent {
     }
     try {
       this.service.changeBoardName(this.board.id, this.newTeamboardName)
-      this.toastr.success('Name of the board successfully changed')
+      this.toastr.success('Name of the Teamboard successfully changed')
       //Todo: Teamboard aktualisieren
     } catch (e) {
       console.log(e);
@@ -467,8 +472,6 @@ export class AppComponent {
     localStorage.removeItem('token');
     window.location.reload();
   }
-
-
 }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
