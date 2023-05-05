@@ -383,6 +383,9 @@ export class Service {
       newPosition: event.currentIndex,
       state: event.container.data.at(event.currentIndex)
     }
+    if (message.oldPosition === message.newPosition){
+      return;
+    }
 
     sendMessageToServer(JSON.stringify(message));
   }
@@ -400,6 +403,9 @@ export class Service {
         oldPosition: event.previousIndex,
         newPosition: event.currentIndex,
         subtask: event.container.data.at(event.currentIndex)
+      }
+      if (message.oldPosition === message.newPosition){
+        return;
       }
       sendMessageToServer(JSON.stringify(message));
     } else {
