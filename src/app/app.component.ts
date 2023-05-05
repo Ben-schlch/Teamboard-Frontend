@@ -415,8 +415,13 @@ export class AppComponent {
 
 
   _deleteBoard() {
-    this.service.deleteBoard(this.deleteBoard);
+    try {
+      this.service.deleteBoard(this.deleteBoard);
+    } catch (e) {
+      console.log(e);
+    }
     this.deleteBoard = null;
+
   }
 
 
@@ -456,7 +461,7 @@ export class AppComponent {
     }
     try {
       this.service.changeBoardName(this.board.id, this.newTeamboardName)
-      this.toastr.success('Name of the board successfully changed')
+      this.toastr.success('Name of the Teamboard successfully changed')
       //Todo: Teamboard aktualisieren
     } catch (e) {
       console.log(e);
