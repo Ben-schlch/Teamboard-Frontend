@@ -940,6 +940,7 @@ function addSubtask(teamboardId: number, taskId: number, columnId: number, subta
 }
 
 function deleteSubtask(teamboardId: number, taskId: number, columnId: number, subtaskGet: Subtask, _boardsObservable: Observable<Board[]>) {
+  //TODO: bugfix subtask is not deleted for other users
   let boardsArray: Board[] = getBoardsArray(_boardsObservable);
 
   const boardIndex = getBoardPosition(boardsArray, teamboardId);
