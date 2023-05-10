@@ -60,8 +60,8 @@ footer {
   outline: 0;
 }
 
-clr-textarea-container.clr-form-control {
-    margin-top: 0 !important;
+.clr-textarea-container {
+  margin-top: 0; /* Remove or adjust the margin as desired */
 }
 
 
