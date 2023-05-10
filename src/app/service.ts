@@ -157,6 +157,45 @@ export class Service {
     }
   }
 
+  changePriorityFromSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: number) {
+
+    let boardsArray: Board[] = getBoardsArray(this._boardsObservable);
+
+    for (const boardsArrayElement of boardsArray) {
+      if (boardsArrayElement.id === boardGet.id) {
+
+        for (const tasksArrayElement of boardsArrayElement.tasks) {
+          if (tasksArrayElement === taskGet) {
+
+            for (const state of tasksArrayElement.states) {
+              if (state === stateGet) {
+
+                for (const subtask of state.subtasks) {
+                  if (subtask.id == subtaskGet.id) {
+                    subtask.priority = inputValue;
+                    //send message to server
+                    let message: MessageChangeDescription = {
+                      kind_of_object: 'subtask',
+                      type_of_edit: 'edit',
+                      teamboard_id: boardGet.id,
+                      task_id: taskGet.id,
+                      state_id: stateGet.id,
+                      subtask: subtask
+                    }
+
+                    sendMessageToServer(JSON.stringify(message));
+                    break;
+
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   //add Task to Observable
   addTask(boardGet: Board, newTask: Task) {
     let boardsArray: Board[] = [];
