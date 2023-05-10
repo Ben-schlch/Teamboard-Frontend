@@ -58,9 +58,6 @@ footer {
   resize: none;
   border: none;
   outline: 0;
-}
-
-[class~="card-block\ width"] {
   margin-top: 0;
 }
 
