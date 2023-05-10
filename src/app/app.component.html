@@ -232,7 +232,7 @@
                           <span class="label label-info">
                               {{subtask.worker}}
                           </span>
-                          <input type="number" id="priority" [value]="subtask.priority" min="0" max="5" #priorityInput (change)="changePriority(board, task, state, subtask, priorityInput.value)">
+                          <input type="number" id="priority" [value]=subtask.priority min="0" max="5" #priorityInput (change)="changePriority(board, task, state, subtask, priorityInput.value)">
                           <button
                             class="btn label"
                             (click)="_deleteSubtask(board, task, state, subtask);
