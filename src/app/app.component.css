@@ -60,8 +60,8 @@ footer {
   outline: 0;
 }
 
-clr-textarea-container.clr-form-control.ng-star-inserted {
-    margin-top: 0;
+clr-textarea-container.clr-form-control {
+    margin-top: 0 !important;
 }
 
 
