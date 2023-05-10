@@ -56,17 +56,17 @@ footer {
   outline: 0;
 }
 
-/*[class~="clr-form-control ng-star-inserted"]{*/
-/*  width: 100%;*/
-/*  margin-top: 0;*/
-/*}*/
-/*clr-form-control{*/
-/*  width: 100%;*/
-/*  margin-top: 0;*/
-/*}*/
-/*clr-control-container {*/
-/*  width: 100%;*/
-/*}*/
+[class~="clr-form-control ng-star-inserted"]{
+  width: 100%;
+  margin-top: 0;
+}
+clr-form-control{
+  width: 100%;
+  margin-top: 0;
+}
+clr-control-container {
+  width: 100%;
+}
 
 
 
