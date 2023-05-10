@@ -1,2 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~ngx-toastr/toastr';
+
+.clr-textarea-container {
+  margin-top: 0; /* Remove or adjust the margin as desired */
+}
