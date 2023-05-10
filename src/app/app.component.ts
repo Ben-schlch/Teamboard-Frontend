@@ -414,6 +414,14 @@ export class AppComponent {
     this.newName = "";
   }
 
+  _deleteSubtask(board: Board, task: Task, state: State, subtask: Subtask) {
+    try {
+      this.service.deleteSubtask(board, task, state, subtask)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   _deletUser() {
     this.service.deleteUser();
     window.location.reload();

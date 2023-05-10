@@ -403,6 +403,46 @@ export class Service {
     sendMessageToServer(JSON.stringify(message));
   }
 
+  deleteSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask) {
+    let boardsArray: Board[] = [];
+
+    if (this._boardsObservable !== undefined) {
+      //move Observable to array to add subtask
+      this._boardsObservable.subscribe(board => {
+        boardsArray = board as Board[]
+      });
+    }
+
+    const boardIndex = boardsArray.indexOf(boardGet);
+
+    let taskIndex = -1;
+    if (boardIndex !== -1) {
+      taskIndex = boardsArray.at(boardIndex).tasks.indexOf(taskGet);
+    }
+
+    let stateIndex = -1;
+    if (taskIndex !== -1) {
+      stateIndex = boardsArray.at(boardIndex).tasks.at(taskIndex).states.indexOf(stateGet);
+    }
+
+    let subtaskIndex = -1;
+    if(stateIndex !== -1){
+      subtaskIndex = boardsArray.at(boardIndex).tasks.at(taskIndex).states.at(stateIndex).subtasks.indexOf(subtaskGet);
+      boardsArray.at(boardIndex).tasks.at(taskIndex).states.at(stateIndex).subtasks.splice(subtaskIndex, 1);
+    }
+
+    const message: MessageDeleteSubtask = {
+      kind_of_object: "subtask",
+      type_of_edit: "delete",
+      teamboard_id: boardGet.id,
+      task_id: taskGet.id,
+      state_id: stateGet.id,
+      subtask: subtaskGet
+    }
+
+    sendMessageToServer(JSON.stringify(message));
+  }
+
   moveSubtask(event: CdkDragDrop<Subtask[], Subtask[], any>, boardGet: Board, taskGet: Task, stateGet: State) {
 
     if (event.previousContainer === event.container) {
@@ -559,6 +599,7 @@ export class Service {
     }
     sendMessageToServer(JSON.stringify(message));
   }
+
 }
 
 function getWebSocket(socketAuthentification: string, _boardsObservable: Observable<Board[]>, successCallback: () => void) {
@@ -906,8 +947,7 @@ function deleteSubtask(teamboardId: number, taskId: number, columnId: number, su
   const stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, columnId);
 
   const subtaskIndex = boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.findIndex(subtask => subtask === subtaskGet);
-
-  if (subtaskIndex !== -1) {
+  if (subtaskIndex === -1) {
     boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.splice(subtaskIndex, 1);
   }
 

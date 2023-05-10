@@ -228,9 +228,17 @@
 
                         </div>
                         <div class="card-footer">
-                        <span class="label label-info">
-                            {{subtask.worker}}
-                        </span>
+                          <span class="label label-info">
+                              {{subtask.worker}}
+                          </span>
+                          <button
+                            class="btn label"
+                            (click)="_deleteSubtask(board, task, state, subtask);
+                                        $event.preventDefault();
+                                        $event.stopPropagation()"
+                          >
+                            <img src="assets/delete.png" width=40%>
+                          </button>
                         </div>
                       </div>
                     </div>
