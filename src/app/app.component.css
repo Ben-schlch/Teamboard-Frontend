@@ -51,8 +51,10 @@ footer {
 .card-text textarea {
   width: 100%;
   height: 100%;
-  resize: none; /* Optional: Prevent resizing of the textarea */
+  resize: none;
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
+
 
 
 
