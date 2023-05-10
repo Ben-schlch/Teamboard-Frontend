@@ -157,7 +157,7 @@ export class Service {
     }
   }
 
-  changePriorityFromSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: number) {
+  changePriorityFromSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputNumber: number) {
 
     let boardsArray: Board[] = getBoardsArray(this._boardsObservable);
 
@@ -172,7 +172,7 @@ export class Service {
 
                 for (const subtask of state.subtasks) {
                   if (subtask.id == subtaskGet.id) {
-                    subtask.priority = inputValue;
+                    subtask.priority = inputNumber;
                     //send message to server
                     let message: MessageChangeDescription = {
                       kind_of_object: 'subtask',
@@ -1117,7 +1117,8 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
             position: l,
             name: JSONObject[i].tasks[j].states[k].subtasks[l].name,
             description: JSONObject[i].tasks[j].states[k].subtasks[l].description,
-            worker: JSONObject[i].tasks[j].states[k].subtasks[l].worker
+            worker: JSONObject[i].tasks[j].states[k].subtasks[l].worker,
+            priority: JSONObject[i].tasks[j].states[k].subtasks[l].priority
           }
 
           subtasks.push(newSubtask);

@@ -277,7 +277,8 @@ export class AppComponent {
       description: '',
       worker: '',
       id: -1,
-      position: stateGet.subtasks.length
+      position: stateGet.subtasks.length,
+      priority: 0
     }
 
     this.service.addSubtask(boardGet, taskGet, stateGet, newSubtask);
@@ -351,10 +352,10 @@ export class AppComponent {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
   }
 
-  changePriority(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue) {
-    inputValue = Number(inputValue)
-    if (inputValue >= 0 && inputValue <= 6) {
-      this.service.changePriorityFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
+  changePriority(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string){
+    const inputNumber = parseInt(inputValue);
+    if ((inputNumber >= 0) && (inputNumber <= 6)) {
+      this.service.changePriorityFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputNumber);
     }
   }
 
