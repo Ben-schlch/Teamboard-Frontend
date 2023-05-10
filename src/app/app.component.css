@@ -50,7 +50,7 @@ footer {
 
 .card-text textarea {
   width: 100%;
-  height: 100%;
+  height: 100px;
   resize: none;
   border: none;
 }
@@ -58,6 +58,13 @@ footer {
 [class~="clr-form-control ng-star-inserted"]{
   width: 100%;
   margin-top: 0;
+}
+clr-form-control{
+  width: 100%;
+  margin-top: 0;
+}
+clr-control-container {
+  width: 100%;
 }
 
 
