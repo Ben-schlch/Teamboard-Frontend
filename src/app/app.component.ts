@@ -351,7 +351,8 @@ export class AppComponent {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
   }
 
-  changePriority(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: number) {
+  changePriority(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue) {
+    inputValue = Number(inputValue)
     if (inputValue >= 0 && inputValue <= 6) {
       this.service.changePriorityFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
     }
