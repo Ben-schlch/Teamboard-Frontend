@@ -44,8 +44,22 @@ footer {
   font-size: large;
 }
 
+.width {
+  width: 100%;
+  height: 100%;
+}
 
-.card-text textarea {
+::ng-deep .clr-control-container {
+  width: 100%!important
+}
+
+.clr-control-container {
+  width: 100%;
+}
+
+
+
+.card-block width textarea {
   width: 100%;
   height: 100px;
   resize: none;
