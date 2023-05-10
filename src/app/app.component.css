@@ -60,5 +60,8 @@ footer {
   outline: 0;
 }
 
+[class~="card-block\ width"] {
+  margin-top: 0;
+}
 
 
