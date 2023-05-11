@@ -186,7 +186,7 @@ export class AppComponent {
     }
     this.service.register(person).subscribe({
       next: () => {
-        this.toastr.info('Bitte bestätige deine E-Mail vor dem einloggen!');
+          this.toastr.info('Bitte bestätige deine E-Mail vor dem einloggen!');
       },
       error: (error) => {
         switch (error.status) {
@@ -263,6 +263,7 @@ export class AppComponent {
 
   _addSubtask(boardGet: Board, taskGet: Task, stateGet: State, taskName: string) {
     //todo: open modal to add??
+
 
 
     //add task to observable
@@ -472,6 +473,8 @@ export class AppComponent {
     localStorage.removeItem('token');
     window.location.reload();
   }
+
+
 }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
