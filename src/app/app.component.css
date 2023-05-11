@@ -49,6 +49,7 @@ footer {
   border: none;
   padding: 0.5rem;
   background-color: white;
+  padding-right: 1rem !important;
 }
 
 .priority-input[value="1"] {
