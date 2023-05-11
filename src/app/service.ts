@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
-import {filter, from, map, Observable, Observer, of, Subject, switchAll} from 'rxjs';
+import {filter, from, map, observable, Observable, Observer, of, Subject, switchAll} from 'rxjs';
 import '@cds/core/icon/register.js';
 import '@cds/core/button/register.js';
 import {AnonymousSubject} from 'rxjs/internal/Subject';
@@ -22,7 +22,8 @@ import {
   MessageLoadBoards,
   MessageToken,
   MessageChangeName,
-  MessageDeleteUser
+  MessageDeleteUser,
+  MessageChangeDescription
 } from './models/communication';
 
 import {Board, Person, State, Subtask, Task} from './models/boards';
@@ -59,12 +60,13 @@ export class Service {
     sendMessageToServer(JSON.stringify(message));
   }
 
-initWebsocket(token: string, successCallback: () => void) {
-  this.socketAuthentification = token;
-  this._boardsObservable.subscribe(board => console.log(board));
+  initWebsocket(token: string, successCallback: () => void) {
+    this.socketAuthentification = token;
+    this._boardsObservable.subscribe(board => console.log(board));
 
-  getWebSocket(token, this._boardsObservable, successCallback);
-}
+    getWebSocket(token, this._boardsObservable, successCallback);
+  }
+
   loadBoards() {
 
     //boardload
@@ -132,7 +134,19 @@ initWebsocket(token: string, successCallback: () => void) {
                   if (subtask.id == subtaskGet.id) {
                     subtask.description = inputValue;
 
-                    //todo: send message to server
+                    //send message to server
+                    let message: MessageChangeDescription = {
+                      kind_of_object: 'subtask',
+                      type_of_edit: 'edit',
+                      teamboard_id: boardGet.id,
+                      task_id: taskGet.id,
+                      state_id: stateGet.id,
+                      subtask: subtask
+                    }
+
+                    sendMessageToServer(JSON.stringify(message));
+                    break;
+
                   }
                 }
               }
@@ -179,7 +193,7 @@ initWebsocket(token: string, successCallback: () => void) {
 
     let boardsArray: Board[] = [];
 
-    if(aktualPerson){
+    if (aktualPerson) {
       subtask.worker = aktualPerson!.email;
     }
     else{
@@ -382,6 +396,9 @@ initWebsocket(token: string, successCallback: () => void) {
       newPosition: event.currentIndex,
       state: event.container.data.at(event.currentIndex)
     }
+    if (message.oldPosition === message.newPosition){
+      return;
+    }
 
     sendMessageToServer(JSON.stringify(message));
   }
@@ -399,6 +416,9 @@ initWebsocket(token: string, successCallback: () => void) {
         oldPosition: event.previousIndex,
         newPosition: event.currentIndex,
         subtask: event.container.data.at(event.currentIndex)
+      }
+      if (message.oldPosition === message.newPosition){
+        return;
       }
       sendMessageToServer(JSON.stringify(message));
     } else {
@@ -436,7 +456,8 @@ initWebsocket(token: string, successCallback: () => void) {
 
     return this._http.post<MessageToken>('/api/login', person);
 
-
+    // let response: MessageToken = {token: "test"}
+    // return of(response)
   }
 
   forgetPW(email: string): Observable<Object> {
@@ -659,13 +680,8 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
         case 'delete':
           deleteSubtask(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state_id, JSONObject.subtask, _boardsObservabel);
           break;
-
-        // case 'move':
-        //   moveSubtask(JSONObject.teamboard, JSONObject.task, JSONObject.column, JSONObject.subtask, _boardsObservabel);
-        //   break;
-        // case 'moveSubtaskInState':
-        //   //moveSubtaskInState(JSONObject.teamboard, JSONObject.task, JSONObject.column, JSONObject.subtask, _boardsObservabel);
-        //   break;
+        case 'edit':
+          editSubtask(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state_id, JSONObject.subtask, _boardsObservabel);
       }
       break;
   }
@@ -959,7 +975,6 @@ function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {
 }
 
 
-
 function moveSubtaskBetweenState(teamboard_id: number, task_id: number, state_id: number, oldPosition: number, newPosition: number, subtask: Subtask, _boardsObservable: Observable<Board[]>) {
   let boardsArray: Board[] = getBoardsArray(_boardsObservable);
   let stateIndex = 0;
@@ -1112,6 +1127,19 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
   return _boardsObservabel;
 }
 
+function editSubtask(teamboard_id: number, task_id: number, state_id: number, subtask: Subtask, _boardsObservabel: Observable<Board[]>) {
+    let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
+
+    const boardIndex = getBoardPosition(boardsArray, teamboard_id);
+    const taskIndex = getTaskPosition(boardsArray[boardIndex].tasks, task_id);
+    const stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, state_id);
+    const subtaskIndex = getSubtaskPosition(boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks, subtask.id);
+
+    boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks[subtaskIndex] = subtask;
+
+    _boardsObservabel = of(boardsArray);
+}
+
 
 function addPositionsToBoards(_boardsObservabel: Observable<Board[]>): Observable<Board[]> {
   let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
@@ -1173,3 +1201,7 @@ function getStatePosition(stateArray: State[], state_id: number): number {
   return stateArray.findIndex(state => state.id === state_id);
 
 }
+function getSubtaskPosition(subtaskArray: Subtask[], subtask_id: number): number {
+
+  return subtaskArray.findIndex(subtask => subtask.id === subtask_id);
+

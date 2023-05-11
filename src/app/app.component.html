@@ -1,14 +1,4 @@
-<!--<style>-->
-
-<!--  .spacer {-->
-<!--    flex: 1;-->
-<!--  }-->
-
-
-<!--</style>-->
-
-<!-- Toolbar -->
-
+<!-- header with add board and personal settings-->
 <header>
   <div class="branding" style="width: 260px;">
     <img src="assets/flipchart_weiß.png" alt="Logo" style="padding: 10px;">
@@ -43,8 +33,7 @@
   <div class="header-actions">
     <clr-dropdown>
       <button class="nav-icon" clrDropdownTrigger aria-label="toggle settings menu">
-
-        <cds-icon shape="angle" direction="down"></cds-icon>
+        <img src="assets/arrow_drop_down_circle.svg" alt="Dropdown Image" width="50%">
       </button>
       <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
         <a (click)="_logout()" clrDropdownItem>Logout</a>
@@ -58,54 +47,61 @@
 <body>
 
 <clr-tabs>
+  <!--  alle Boards der liste anzeigen-->
+  <!--  !!! async wird als fehler markiert, da intelliJ es nicht kennt. !!!-->
   <clr-tab *ngFor="let board of _boards$ | async">
-
-    <button clrTabLink id=board.name>
+    <!--show boardname in tab mit den möglichen beabeitungsmethoden diese brauchen stopPropagation, da sonst der tab auf und zu geht-->
+    <div clrTabLink id=board.name>
       {{board.name}}
-      <div class="btn-group btn-icon">
-        <button
-          type="button"
-          class="btn"
-          style="font-size: large"
-          (click)="_showModalChangeName(board);
-            $event.preventDefault();
-            $event.stopPropagation();
-            $event"
-        >
-          <img src="/assets/edit.png" width="50%">
-        </button>
-        <button
-          type="button"
-          class="btn"
-          style="font-size: large"
-          (click)="_showModalDeleteBoard(board);
-            $event.preventDefault();
-            $event.stopPropagation()"
-        >
-          <img src="/assets/delete.png" width=50%>
-        </button>
-        <button
-          type="button"
-          class="btn"
-          style="font-size: large"
-          (click)="_addUserToBoard(board);
-            $event.preventDefault();
-            $event.stopPropagation()"
-        >
-          <img src="assets/person_add.png" width=50%>
-        </button>
-        <button
-          type="button"
-          class="btn"
-          style="font-size: large"
-          (click)="_deleteUserFromBoard(board);
-            $event.preventDefault();
-            $event.stopPropagation()"
-        >
-          <img src="assets/person_remove.png" width=50%>
-        </button>
-      </div>
-    </button>
+      <!--Dropdown-Menu to Edit Teamboards (Change name, delete, addUser, deleteUser)-->
+      <clr-dropdown clrTabLink>
+        <button clrDropdownTrigger><img src="assets/arrow_drop_down_circle.png" width="40%"></button>
+        <clr-dropdown-menu>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_showModalChangeName(board);
+                  $event.preventDefault();
+                  $event.stopPropagation();">
+            <img src="assets/edit.png" width="10%">
+            Edit Teamboard name
+          </button>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_showModalDeleteBoard(board);
+                            $event.preventDefault();
+                            $event.stopPropagation()">
+            <img src="assets/delete.png" width=10%>
+            Delete Teamboard
+          </button>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_addUserToBoard(board);
+                      $event.preventDefault();
+                      $event.stopPropagation()"
+          >
+            <img src="assets/person_add.png" width=10%>
+            Add Person
+          </button>
+          <button
+            clrDropdownItem
+            type="button"
+            class="btn"
+            (click)="_deleteUserFromBoard(board);
+                      $event.preventDefault();
+                      $event.stopPropagation()"
+          >
+            <img src="assets/person_remove.png" width=10%>
+            Remove Person
+          </button>
+        </clr-dropdown-menu>
+      </clr-dropdown>
+    </div>
 
     <clr-tab-content id="content1" *clrIfActive>
 
@@ -164,7 +160,7 @@
               (click)="_showModalDeleteTask(board, task);
             $event.preventDefault();
             $event.stopPropagation();
-            $event"
+            "
             >
               <b>Delete {{task.name}}</b>
             </button>
@@ -212,12 +208,9 @@
 
                         />
 
-                        <!--                      //todo: spacer-->
-
                         <button
                           type="button"
-                          class="btn"
-                          style="font-size: large"
+                          class="btn largeButton"
                           (click)="_deleteState(board, task, state);
                                         $event.preventDefault();
                                         $event.stopPropagation()"
@@ -226,35 +219,22 @@
                         </button>
 
                       </div>
-
-
                       <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
                         <h3 class="card-header">{{subtask.name}}</h3>
-                        <div class="card-block">
-                          <div class="card-title">
+                        <div class="card-block width">
+                                  <textarea class="width" clrTextarea #description name="description" [value]=subtask.description
+                                            (change)="changeDescription(board, task, state, subtask, description.value)" >
+                                  </textarea>
 
-
-                            <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
-                              <h3 class="card-header">{{subtask.name}}</h3>
-                              <div class="card-block">
-                                <div class="card-title">
-                                </div>
-                                <div class="card-text">
-                                </div>
-                              </div>
-                              <div class="card-footer">
+                        </div>
+                        <div class="card-footer">
                         <span class="label label-info">
                             {{subtask.worker}}
                         </span>
-                              </div>
-                            </div>
-                          </div>
-
                         </div>
-
                       </div>
-
                     </div>
+
                   </div>
                 </div>
               </div>
@@ -349,9 +329,11 @@
             <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
             <button class="btn btn-primary" (click)="_forgetPW();
           $event.preventDefault();
-          $event.stopPropagation()">Passwort zurücksetzen?</button>
-        </div>
-      </form>
+          $event.stopPropagation()">Passwort zurücksetzen?
+            </button>
+          </div>
+        </form>
+
         <form [formGroup]="_registrationForm"
               (ngSubmit)="_register()"
               *ngIf="isRegistration.checked"
@@ -359,63 +341,36 @@
         >
           <div class="register-group">
             <clr-input-container>
+              <label class="clr-sr-only">Username</label>
+              <input type="text" name="username" clrInput placeholder="Username" formControlName="name"/>
+            </clr-input-container>
+            <clr-input-container>
+              <label class="clr-sr-only">Email</label>
+              <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
+            </clr-input-container>
+            <clr-input-container>
               <label class="clr-sr-only">Email</label>
               <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
             </clr-input-container>
             <clr-password-container>
               <label class="clr-sr-only">Password</label>
-              <input type="password" name="password" clrPassword placeholder="Password" formControlName="password"/>
+              <input type="password" name="password" clrPassword placeholder="Password" formControlName="pwd"/>
             </clr-password-container>
 
-            <!-- Wenn loginform berührt wurde und ungültig ist Fehlermeldung anzeigen-->
-            <div *ngIf="_loginForm.invalid && _loginForm.touched" class="error active">
+            <clr-password-container *ngIf="isRegistration.checked">
+              <label class="clr-sr-only">Password wiederholen</label>
+              <input type="password" name="password" clrPassword placeholder="Password Wiederholen"
+                     formControlName="pwd_wdh"/>
+            </clr-password-container>
+
+            <!-- Wenn loginform ungültig ist Fehlermeldung anzeigen-->
+            <div *ngIf="_loginForm.invalid" class="error active">
               Invalid user name or password
             </div>
+            <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Registrieren</button>
           </div>
-
-          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Login</button>
-          <button class="btn btn-primary" (click)="_forgetPW();
-          $event.preventDefault();
-          $event.stopPropagation()">Forget PW
-          </button>
         </form>
       </div>
-      <form [formGroup]="_registrationForm"
-            (ngSubmit)="_register()"
-            *ngIf="isRegistration.checked"
-            [clrLoading]="_createButtonState"
-      >
-        <div class="register-group">
-          <clr-input-container>
-            <label class="clr-sr-only">Username</label>
-            <input type="text" name="username" clrInput placeholder="Username" formControlName="name"/>
-          </clr-input-container>
-          <clr-input-container>
-            <label class="clr-sr-only">Email</label>
-            <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
-          </clr-input-container>
-          <clr-input-container>
-            <label class="clr-sr-only">Email</label>
-            <input type="text" name="email" clrInput placeholder="Email" formControlName="email"/>
-          </clr-input-container>
-          <clr-password-container>
-            <label class="clr-sr-only">Password</label>
-            <input type="password" name="password" clrPassword placeholder="Password" formControlName="pwd"/>
-          </clr-password-container>
-
-          <clr-password-container *ngIf="isRegistration.checked">
-            <label class="clr-sr-only">Password wiederholen</label>
-            <input type="password" name="password" clrPassword placeholder="Password Wiederholen"
-                   formControlName="pwd_wdh"/>
-          </clr-password-container>
-
-          <!-- Wenn loginform ungültig ist Fehlermeldung anzeigen-->
-          <div *ngIf="_loginForm.invalid" class="error active">
-            Invalid user name or password
-          </div>
-          <button [clrLoading]="_createButtonState" type="submit" class="btn btn-primary">Registrieren</button>
-        </div>
-      </form>
     </div>
   </div>
 </div>
