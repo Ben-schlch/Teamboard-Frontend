@@ -44,12 +44,14 @@ footer {
   font-size: large;
 }
 
+.numberinput-padding {
+  padding: 0.5rem;
+}
 .priority-input {
   color: black;
   border: none;
-  padding: 0.5rem;
+  /*padding: 0.5rem;*/
   background-color: white;
-  padding-right: 1rem !important;
 }
 
 .priority-input[value="1"] {
