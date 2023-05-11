@@ -1204,4 +1204,5 @@ function getStatePosition(stateArray: State[], state_id: number): number {
 function getSubtaskPosition(subtaskArray: Subtask[], subtask_id: number): number {
 
   return subtaskArray.findIndex(subtask => subtask.id === subtask_id);
+}
 
