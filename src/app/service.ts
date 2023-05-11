@@ -929,7 +929,7 @@ function addSubtask(teamboardId: number, taskId: number, columnId: number, subta
 
 
   const subtaskIndex = boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.findIndex(subtasks => subtasks.name === subtask.name);
-
+  //wenn subtasks bereits vorhanden aktualisiere die id, sonst füge ihn hinzu
   if (subtaskIndex === -1) {
     boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.push(subtask);
   } else {
