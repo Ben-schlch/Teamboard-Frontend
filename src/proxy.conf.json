@@ -1,11 +1,8 @@
 {
   "/api/*": {
-    "target": "https://teamboard.server-welt.com:8000",
+    "target": "https://teamboard.server-welt.com/",
     "secure": false,
     "changeOrigin": true,
-    "logLevel": "debug",
-    "pathRewrite": {
-      "/api": ""
-    }
+    "logLevel": "debug"
   }
 }

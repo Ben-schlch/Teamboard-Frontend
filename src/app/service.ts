@@ -607,14 +607,12 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
         case 'delete':
           deleteBoard(JSONObject.teamboard, _boardsObservabel);
           break;
-        case 'load': {
+        case 'load':
           _boardsObservabel = loadBoards(JSONObject.teamboard, _boardsObservabel);
           break;
-        }
       }
-      break;
 
-
+  break;
     case 'task':
       switch (JSONObject.type_of_edit) {
         case 'add':
@@ -625,7 +623,13 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
           break;
       }
       break;
-
+    case 'teamboard':
+      switch(JSONObject.type_of_edit) {
+        case 'addUser':
+          addBoard(JSONObject.teamboard, _boardsObservabel);
+          break;
+      }
+      break;
 
     case 'state':
       switch (JSONObject.type_of_edit) {
@@ -691,6 +695,47 @@ function addBoard(addBoard: any, _boardsObservable: Observable<Board[]>): void {
     });
   }
 
+  /*let tasks: Task[] = [];
+  for (let j = 0; j < addBoard.tasks.length; j++) {
+
+      //pares states
+      let states: State[] = [];
+      for (let k = 0; k < addBoard.tasks[j].states.length; k++) {
+
+        //parse subtasks
+        let subtasks: Subtask[] = [];
+        for (let l = 0; l < addBoard.tasks[j].states[k].subtasks.length; l++) {
+
+          let newSubtask: Subtask = {
+            id: addBoard.tasks[j].states[k].subtasks[l].subtask_id,
+            position: l,
+            name: addBoard.tasks[j].states[k].subtasks[l].name,
+            description: addBoard.tasks[j].states[k].subtasks[l].description,
+            worker: addBoard.tasks[j].states[k].subtasks[l].worker
+          }
+
+          subtasks.push(newSubtask);
+
+        }
+
+        let newState: State = {
+          id: addBoard.tasks[j].states[k].state_id,
+          position: k,
+          state: addBoard.tasks[j].states[k].name,
+          subtasks: subtasks,
+        }
+
+        states.push(newState);
+      }
+
+      let newTask: Task = {
+        id: addBoard.tasks[j].task_id,
+        name: addBoard.tasks[j].name,
+        states: states
+      }
+      tasks.push(newTask);
+    }
+*/
   const index = boardsArray.findIndex((board) => board.name === newBoard.name);
 
   //wenn board noch nicht vorhanden hinzufügen, sonst nur index hinzufügen
@@ -1128,4 +1173,3 @@ function getStatePosition(stateArray: State[], state_id: number): number {
   return stateArray.findIndex(state => state.id === state_id);
 
 }
-
