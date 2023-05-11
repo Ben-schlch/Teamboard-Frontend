@@ -628,6 +628,9 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
         case 'delete':
           deleteBoard(JSONObject.teamboard, _boardsObservabel);
           break;
+        case 'addUser':
+          addUser(JSONObject.teamboard, _boardsObservabel)
+          break;
         case 'load': {
           _boardsObservabel = loadBoards(JSONObject.teamboard, _boardsObservabel);
           break;
@@ -1161,3 +1164,6 @@ function getSubtaskPosition(subtaskArray: Subtask[], subtask_id: number): number
 
 }
 
+function addUser(newBoard: Board, _boardsObservabel: Observable<Board[]>): void{
+
+}
