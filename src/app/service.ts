@@ -661,6 +661,18 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
   console.log(JSON.stringify(JSONObject));
 
   switch (JSONObject.kind_of_object) {
+    case 'teamboard':
+      //TODO: add/delete Teamboard
+      switch (JSONObject.type_of_edit) {
+        case 'addUser':
+          console.log("Email " + JSONObject.email + "added to " + JSONObject.teamboard_id)
+          break;
+        case 'deleteUser':
+          console.log("Email " + JSONObject.email + "delete from " + JSONObject.teamboard_id)
+          break;
+      }
+      break;
+
     case 'board':
       switch (JSONObject.type_of_edit) {
         case 'add':
