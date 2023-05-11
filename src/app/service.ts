@@ -677,6 +677,7 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
       break;
 
 
+
     case 'task':
       switch (JSONObject.type_of_edit) {
         case 'add':
@@ -718,11 +719,13 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
           break;
         case 'edit':
           editSubtask(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state_id, JSONObject.subtask, _boardsObservabel);
+          break;
       }
       break;
-  }
 
-  loadBoards(JSONObject, _boardsObservabel);
+    default:
+      loadBoards(JSONObject, _boardsObservabel);
+  }
 }
 
 
@@ -975,11 +978,19 @@ function moveSubtaskBetweenState(teamboard_id: number, task_id: number, state_id
   let stateIndex = 0;
   let helpSubtask: Subtask | null = null;
 
+  console.log("Move subtask between states...");
+
 
   const boardIndex = getBoardPosition(boardsArray, teamboard_id);
 
   //find task position
   const taskIndex = getTaskPosition(boardsArray[boardIndex].tasks, task_id);
+
+  stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, state_id);
+
+  if(boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks[newPosition].id === subtask.id){
+    return;
+  }
 
   //remove and copy state
   for (let state of boardsArray[boardIndex].tasks[taskIndex].states) {
@@ -991,7 +1002,7 @@ function moveSubtaskBetweenState(teamboard_id: number, task_id: number, state_id
     stateIndex++;
   }
 
-  if (helpSubtask === null) {
+  if (helpSubtask === null || helpSubtask === undefined) {
     throw Error("Error by moving subtask");
   }
 
@@ -1019,6 +1030,7 @@ function moveSubtaskBetweenState(teamboard_id: number, task_id: number, state_id
 
   _boardsObservable = of(boardsArray);
   _boardsObservable = sortBoards(_boardsObservable);
+  return;
 }
 
 function moveSubtaskInState(teamboard_id: number, task_id: number, state_id: number, oldPosition: number, newPosition: number, subtaskGet: Subtask, _boardsObservable: Observable<Board[]>): void {
@@ -1055,7 +1067,7 @@ function moveSubtaskInState(teamboard_id: number, task_id: number, state_id: num
 
 function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Observable<Board[]> {
 
-  console.log("load boards..", JSONObject);
+  console.log("load boards, my boards..", JSONObject);
 
   let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
 
