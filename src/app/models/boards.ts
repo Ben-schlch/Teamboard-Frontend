@@ -32,5 +32,5 @@ export interface Subtask {
   position: number,
   name: string,
   description: string,
-  worker: Person["name"]
+  worker: string
 }
