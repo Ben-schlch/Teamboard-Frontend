@@ -929,7 +929,7 @@ function addSubtask(teamboardId: number, taskId: number, columnId: number, subta
 
 
   const subtaskIndex = boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.findIndex(subtasks => subtasks.name === subtask.name);
-
+  //wenn subtasks bereits vorhanden aktualisiere die id, sonst füge ihn hinzu
   if (subtaskIndex === -1) {
     boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.push(subtask);
   } else {
@@ -947,7 +947,8 @@ function deleteSubtask(teamboardId: number, taskId: number, columnId: number, su
   const stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, columnId);
 
   const subtaskIndex = boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.findIndex(subtask => subtask === subtaskGet);
-  if (subtaskIndex === -1) {
+  // gibt es den Subtask noch, wenn nein tue nichts, sonst lösche ihn?
+  if (subtaskIndex !== -1) {
     boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.splice(subtaskIndex, 1);
   }
 
