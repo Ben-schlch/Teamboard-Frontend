@@ -46,11 +46,12 @@ footer {
 
 .numberinput-padding {
   display: inline-block;
-  padding: 0.5rem;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
 }
-.priority-input {
-  width: 85%;
 
+.priority-input {
+  width: 30px;
   border-radius: 0.6rem;
   border: 0.05rem solid;
   border-color: hsl(198, 0%, 55%);
