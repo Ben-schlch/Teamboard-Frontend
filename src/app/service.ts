@@ -989,9 +989,14 @@ function moveSubtaskBetweenState(teamboard_id: number, task_id: number, state_id
 
   stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, state_id);
 
-  if(boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks[newPosition].id === subtask.id){
+  //wenn der subtasks schon verschoben wurde, aktualisiere nur die positionen
+  if(boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.length > newPosition && boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks[newPosition].id === subtask.id){
+    _boardsObservable = of(boardsArray);
+    _boardsObservable = addPositionsToBoards(_boardsObservable);
     return;
   }
+
+  stateIndex = 0;
 
   //remove and copy state
   for (let state of boardsArray[boardIndex].tasks[taskIndex].states) {
@@ -1056,7 +1061,7 @@ function moveSubtaskInState(teamboard_id: number, task_id: number, state_id: num
       }
     }
 
-    //bei aktuellem Subtask position aendern
+    //bei aktuellem Subtask position aktualisieren
     if (subtask.id === subtaskGet.id){
       subtask.position = newPosition;
     }
