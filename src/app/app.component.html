@@ -220,7 +220,7 @@
 
                       </div>
                       <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
-                        <h3 class="card-header">{{subtask.priority}}</h3>
+                        <h3 class="card-header">{{subtask.name}}</h3>
                         <div class="card-block">
                           <div class="card-text">
                                   <textarea clrTextarea #description name="description" [value]=subtask.description
@@ -232,7 +232,7 @@
                           <span class="label label-info">
                               {{subtask.worker}}
                           </span>
-                          <input type="number" id="priority" [(ngModel)]="subtask.priority" min="0" max="5" #priorityInput (change)="changePriority(board, task, state, subtask, priorityInput.value)">
+                          <input type="number" id="priority" [(ngModel)]="subtask.priority" min="0" max="5" #priorityInput (change)="changePriority(board, task, state, subtask, priorityInput)" class="clr-input clr-input-rounded priority-input">
                           <button
                             class="btn label"
                             (click)="_deleteSubtask(board, task, state, subtask);

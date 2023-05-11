@@ -44,4 +44,45 @@ footer {
   font-size: large;
 }
 
+.priority-input {
+  color: black;
+  border: none;
+  padding: 0.5rem;
+  background-color: white;
+}
 
+.priority-input[value="1"] {
+  color: green;
+}
+
+.priority-input[value="2"] {
+  color: greenyellow;
+}
+
+.priority-input[value="3"] {
+  color: yellow;
+}
+
+.priority-input[value="4"] {
+  color: orange;
+}
+
+.priority-input[value="5"] {
+  color: red;
+}
+
+.priority-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5); /* Replace with desired focus color */
+}
+
+.priority-input::-webkit-inner-spin-button,
+.priority-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.priority-input::-webkit-inner-spin-button:hover,
+.priority-input::-webkit-outer-spin-button:hover {
+  cursor: pointer;
+}

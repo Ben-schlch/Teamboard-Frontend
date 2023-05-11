@@ -352,11 +352,18 @@ export class AppComponent {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
   }
 
-  changePriority(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string){
-    const inputNumber = parseInt(inputValue);
-    if ((inputNumber >= 0) && (inputNumber <= 6)) {
-      this.service.changePriorityFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputNumber);
+  changePriority(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: HTMLInputElement){
+    const value = Number(inputValue.value);
+    if (/^\d+$/.test(inputValue.value)) {
+      inputValue.value = '0';
     }
+    else if (value < 0) {
+      inputValue.value = '0';
+    }
+    else if (value > 5) {
+      inputValue.value = '5';
+    }
+    this.service.changePriorityFromSubtask(boardGet, taskGet, stateGet, subtaskGet, Number(inputValue.value));
   }
 
 
