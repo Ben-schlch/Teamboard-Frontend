@@ -360,6 +360,9 @@ export class AppComponent {
     else if (value > 5) {
       inputValue.value = '5';
     }
+    else if(isNaN(value)){
+      inputValue.value = '0';
+    }
     this.service.changePriorityFromSubtask(boardGet, taskGet, stateGet, subtaskGet, Number(inputValue.value));
   }
 
