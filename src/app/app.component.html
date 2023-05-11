@@ -215,22 +215,30 @@
                                         $event.preventDefault();
                                         $event.stopPropagation()"
                         >
-                          <img src="assets/delete.png" width=50%>
+                          <img src="assets/delete.png" width=50% alt="delete subtask">
                         </button>
 
                       </div>
                       <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
                         <h3 class="card-header">{{subtask.name}}</h3>
                         <div class="card-block width">
-                                  <textarea class="width" clrTextarea #description name="description" [value]=subtask.description
+                                  <textarea class="width" clrTextarea #description name="description" placeholder="Beschreibung" [value]=subtask.description
                                             (change)="changeDescription(board, task, state, subtask, description.value)" >
                                   </textarea>
 
                         </div>
                         <div class="card-footer">
-                        <span class="label label-info">
-                            {{subtask.worker}}
-                        </span>
+                          <span class="label label-info">
+                              {{subtask.worker}}
+                          </span>
+                          <button
+                            class="btn label"
+                            (click)="_deleteSubtask(board, task, state, subtask);
+                                        $event.preventDefault();
+                                        $event.stopPropagation()"
+                          >
+                            <img src="assets/delete.png" width=40%>
+                          </button>
                         </div>
                       </div>
                     </div>
