@@ -446,6 +446,7 @@ export class Service {
   moveSubtask(event: CdkDragDrop<Subtask[], Subtask[], any>, boardGet: Board, taskGet: Task, stateGet: State) {
 
     if (event.previousContainer === event.container) {
+
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       const message: MessageMoveSubtask = {
         kind_of_object: 'state',
@@ -703,7 +704,7 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
         case 'moveSubtaskBetweenStates':
           moveSubtaskBetweenState(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state_id, JSONObject.oldPosition, JSONObject.newPosition, JSONObject.subtask, _boardsObservabel);
           break;
-        case 'moveSubtaskInStates':
+        case 'moveSubtaskInState':
           moveSubtaskInState(JSONObject.teamboard_id, JSONObject.task_id, JSONObject.state_id, JSONObject.oldPosition, JSONObject.newPosition, JSONObject.subtask, _boardsObservabel);
           break;
       }
@@ -1040,6 +1041,7 @@ function moveSubtaskInState(teamboard_id: number, task_id: number, state_id: num
   const taskIndex = getTaskPosition(boardsArray[boardIndex].tasks, task_id);
   const stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, state_id);
 
+  console.log("Move subtask..");
   for (let subtask of boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks) {
     //wurde der subtask nach oben oder nach unten geschoben
     if (oldPosition < newPosition) {
@@ -1053,10 +1055,11 @@ function moveSubtaskInState(teamboard_id: number, task_id: number, state_id: num
         subtask.position++;
       }
     }
-  }
 
-  if (newPosition < oldPosition) {
-
+    //bei aktuellem Subtask position aendern
+    if (subtask.id === subtaskGet.id){
+      subtask.position = newPosition;
+    }
   }
 
   _boardsObservable = of(boardsArray);
@@ -1174,6 +1177,8 @@ function addPositionsToBoards(_boardsObservabel: Observable<Board[]>): Observabl
 function sortBoards(_boardsObservabel: Observable<Board[]>): Observable<Board[]> {
   let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
 
+  console.log("sortBoards: ", boardsArray);
+
   for (let board of boardsArray) {
     for (let task of board.tasks) {
       let newStates: State[] = new Array(task.states.length);
@@ -1189,6 +1194,8 @@ function sortBoards(_boardsObservabel: Observable<Board[]>): Observable<Board[]>
       task.states = newStates;
     }
   }
+
+  console.log("sortedBoards: ", boardsArray);
 
   return of(boardsArray);
 }
