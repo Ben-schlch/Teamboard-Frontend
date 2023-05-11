@@ -137,7 +137,7 @@
                   #input
                   clrInput
                   type="text"
-                  placeholder="Add new State"
+                  placeholder="Add new category"
                   (click)="
 
                                         input.value = '';
@@ -162,7 +162,7 @@
             $event.stopPropagation();
             "
             >
-              <b>Delete {{task.name}}</b>
+              <b>Delete: "{{task.name}}"</b>
             </button>
           </clr-accordion-title>
           <clr-accordion-content *clrIfExpanded>
@@ -192,7 +192,7 @@
                           #input
                           clrInput
                           type="text"
-                          placeholder="Add new Subtask"
+                          placeholder="Neue Subtask"
                           (click)="
 
                                         input.value = '';
