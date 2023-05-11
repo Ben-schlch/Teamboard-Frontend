@@ -232,7 +232,7 @@
                           <span class="label label-info">
                               {{subtask.worker}}
                           </span>
-                          <div class="label">
+                          <div class="numberinput-padding">
                             <input type="number" id="priority" [(ngModel)]="subtask.priority" min="0" max="5" #priorityInput (change)="changePriority(board, task, state, subtask, priorityInput)" class="clr-input clr-input-rounded priority-input" [ngClass]="getPriorityClass(subtask.priority)">
                           </div>
                           <button

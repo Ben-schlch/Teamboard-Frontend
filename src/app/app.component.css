@@ -44,8 +44,18 @@ footer {
   font-size: large;
 }
 
+.numberinput-padding {
+  display: inline-block;
+  padding: 0.5rem;
+}
 .priority-input {
-  width: 40px;
+  width: 85%;
+
+  border-radius: 0.6rem;
+  border: 0.05rem solid;
+  border-color: hsl(198, 0%, 55%);
+  height: 1.05rem;
+
 }
 
 .priority-0 {
