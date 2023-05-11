@@ -1,7 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' ws: data: ; style-src 'self' 'unsafe-inline'; ">
+<!-- need unsave inline for angular source and font-src and img source need data:  to get no errors-->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none';
+  frame-src 'self';
+  script-src 'self';
+  style-src 'self' 'unsafe-inline'  ;
+  font-src 'self' data: ;
+  img-src 'self' data: ;
+  connect-src 'self' wss: ">
+
 <!--  <link rel="stylesheet" href="node_modules/@clr/icons/clr-icons.min.css">-->
   <meta charset="utf-8">
   <title>Teamboard</title>
