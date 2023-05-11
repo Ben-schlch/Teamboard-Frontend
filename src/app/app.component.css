@@ -60,32 +60,31 @@ footer {
 
 .priority-0 {
   border-color: black !important;
-  box-shadow: 0 0 0 2px black;
 }
 
 .priority-1 {
   border-color: green !important;
-  box-shadow: 0 0 0 2px black;
+  box-shadow: 0 0 0 1px green;
 }
 
 .priority-2 {
   border-color: greenyellow !important;
-  box-shadow: 0 0 0 2px black;
+  box-shadow: 0 0 0 1px greenyellow;
 }
 
 .priority-3 {
   border-color: yellow !important;
-  box-shadow: 0 0 0 2px black;
+  box-shadow: 0 0 0 1px yellow;
 }
 
 .priority-4 {
   border-color: orange !important;
-  box-shadow: 0 0 0 2px black;
+  box-shadow: 0 0 0 1px orange;
 }
 
 .priority-5 {
   border-color: red !important;
-  box-shadow: 0 0 0 2px black;
+  box-shadow: 0 0 0 1px red;
 }
 
 
