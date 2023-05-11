@@ -449,6 +449,10 @@ export class AppComponent {
   }
 
 
+  getPriorityClass(priority: number): string {
+  return `priority-${priority}`;
+  }
+
 }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {

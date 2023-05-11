@@ -49,12 +49,8 @@ footer {
   padding: 0.5rem;
 }
 .priority-input {
-  color: black;
-  background-color: white;
-  /*padding: 0.5rem;*/
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
+  width: 85%;
+
   border-radius: 0.6rem;
   border: 0.05rem solid;
   border-color: hsl(198, 0%, 55%);
@@ -62,25 +58,30 @@ footer {
 
 }
 
-.priority-input[value="1"] {
+.priority-0 {
+  color: black;
+}
+
+.priority-1 {
   color: green;
 }
 
-.priority-input[value="2"] {
+.priority-2 {
   color: greenyellow;
 }
 
-.priority-input[value="3"] {
+.priority-3 {
   color: yellow;
 }
 
-.priority-input[value="4"] {
+.priority-4 {
   color: orange;
 }
 
-.priority-input[value="5"] {
+.priority-5 {
   color: red;
 }
+
 
 .priority-input:focus {
   outline: none;
