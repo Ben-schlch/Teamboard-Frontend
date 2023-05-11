@@ -59,33 +59,28 @@ footer {
 }
 
 .priority-0 {
-  color: black;
-  text-shadow: 0 0 2px black;
+  border-color: black !important;
+
 }
 
 .priority-1 {
-  color: green;
-  text-shadow: 0 0 2px black;
+  border-color: green !important;
 }
 
 .priority-2 {
-  color: greenyellow;
-  text-shadow: 0 0 2px black;
+  border-color: greenyellow !important;
 }
 
 .priority-3 {
-  color: yellow;
-  text-shadow: 0 0 2px black;
+  border-color: yellow !important;
 }
 
 .priority-4 {
-  color: orange;
-  text-shadow: 0 0 2px black;
+  border-color: orange !important;
 }
 
 .priority-5 {
-  color: red;
-  text-shadow: 0 0 2px black;
+  border-color: red !important;
 }
 
 
