@@ -354,10 +354,7 @@ export class AppComponent {
 
   changePriority(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: HTMLInputElement){
     const value = Number(inputValue.value);
-    if (/^\d+$/.test(inputValue.value)) {
-      inputValue.value = '0';
-    }
-    else if (value < 0) {
+    if (value < 0) {
       inputValue.value = '0';
     }
     else if (value > 5) {
