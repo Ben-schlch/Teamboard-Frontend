@@ -59,16 +59,16 @@ export class AppComponent {
 
   ngOnInit() {
 
-    try{
-    const token = localStorage.getItem('token');
-    const mail = localStorage.getItem('mail');
-    if (token && mail) {
-      this.service.initWebsocket(token, () => {
-      // This function will be called after the WebSocket connection is established successfully
-        this.closeModal();
-    });
-    }
-    }catch(e){
+    try {
+      const token = localStorage.getItem('token');
+      const mail = localStorage.getItem('mail');
+      if (token && mail) {
+        this.service.initWebsocket(token, () => {
+          // This function will be called after the WebSocket connection is established successfully
+          this.closeModal();
+        });
+      }
+    } catch (e) {
       localStorage.removeItem('token');
       localStorage.removeItem('mail');
     }
@@ -112,7 +112,7 @@ export class AppComponent {
 
     // use stored email
     this.service.login(person).subscribe({
-      next: (tokenmessage: MessageToken) =>{
+      next: (tokenmessage: MessageToken) => {
         this.toastr.success('Logged in successfully');
 
         // storing toke in localStorage
@@ -123,7 +123,7 @@ export class AppComponent {
             // This function will be called after the WebSocket connection is established successfully
             this.closeModal();
           }
-          );
+        );
       },
       error: (error) => {
         switch (error.status) {
@@ -148,7 +148,7 @@ export class AppComponent {
     this.service.forgetPW(email).subscribe({
       next: () => {
         this.toastr.info('Das PW wird zurückgesetzt, wenn der User existiert. Überprüfe deine E-Mails');
-      },error: () => {
+      }, error: () => {
         this.toastr.error('Fehler beim Zurücksetzen des PWs');
       }
     })
@@ -177,7 +177,7 @@ export class AppComponent {
     }
     this.service.register(person).subscribe({
       next: () => {
-          this.toastr.info('Bitte bestätige deine E-Mail vor dem einloggen!');
+        this.toastr.info('Bitte bestätige deine E-Mail vor dem einloggen!');
       },
       error: (error) => {
         switch (error.status) {
@@ -256,7 +256,6 @@ export class AppComponent {
     //todo: open modal to add??
 
 
-
     //add task to observable
 
     if (taskName == "") {
@@ -316,31 +315,64 @@ export class AppComponent {
     this.service.deleteState(boardGet, taskGet, stateGet);
   }
 
+  // Board for modals
+  board: any = null;
 
-  _addUserToBoard(board: Board) {
-    //boardname wird, wenn codeinjection der string veraendert.
-    const boardName = board.name.replace("<", "(");
-    var email = prompt("Geben Sie die E-Mail ein, die zum Teamboard \"" + boardName + "\" hinzugefügt werden soll:", "example@mail.com");
 
-    if (validateEmail(email) && email) {
-      this.toastr.success('E-Mail valid, user was invited to the teamboard!')
-      this.service.addEmailToBoard(email, board.id);
-    } else {
-      this.toastr.error('E-Mail not valid!')
-    }
+  //Add User with modal
+  showModalAddUser: boolean = false;
+  email: string = "";
+
+  _showModalAddUserToTeamboard(board: Board) {
+    this.showModalAddUser = true;
+    this.board = board;
   }
 
-  _deleteUserFromBoard(board: Board) {
-    //boardname wird, wenn codeinjection der string veraendert.
-    const boardName = board.name.replace("<", "(");
-    var email = prompt("Geben Sie die E-Mail ein, die vom Teamboard \"" + boardName + "\" gelöscht werden soll:", "example@mail.com");
-
-    if (validateEmail(email) && email) {
-      this.toastr.success('E-Mail valid, user was removed from teamboard!')
-      this.service.deleteEmailFromBoard(email, board.id);
-    } else {
-      this.toastr.error('E-Mail not valid!')
+  _addUserToBoard() {
+    if (this.email == "") {
+      this.toastr.error('The email must not be empty')
+      return
+    } else if (!validateEmail(this.email)) {
+      this.toastr.error('E-Mail not valid')
+      return
     }
+    try {
+      this.service.addEmailToBoard(this.email, this.board.id);
+      this.toastr.success('E-Mail valid, user was invited to the teamboard')
+    } catch (e) {
+      console.log(e);
+    }
+    this.board = null;
+    this.email = "";
+  }
+
+
+  //Delete User from Teamboard with modal
+  showModalDeleteUser: boolean = false
+
+  _showModalDeleteUser(board: Board) {
+    this.showModalDeleteUser = true
+    this.board = board
+  }
+
+  _deleteUserFromBoard() {
+    if (this.email == "") {
+      this.toastr.error('The email must not be empty')
+      return
+    } else if (!validateEmail(this.email)) {
+      this.toastr.error('E-Mail not valid')
+      return
+    }
+    try {
+      this.service.deleteEmailFromBoard(this.email, this.board.id);
+      this.toastr.success('E-Mail valid, user was removed from teamboard')
+    } catch (e) {
+      console.log(e);
+    }
+    this.board = null;
+    this.email = "";
+
+
   }
 
   changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
@@ -373,8 +405,13 @@ export class AppComponent {
 
 
   _deleteBoard() {
-    this.service.deleteBoard(this.deleteBoard);
+    try {
+      this.service.deleteBoard(this.deleteBoard);
+    } catch (e) {
+      console.log(e);
+    }
     this.deleteBoard = null;
+
   }
 
 
@@ -391,7 +428,6 @@ export class AppComponent {
   _deleteTask() {
     try {
       this.service.deleteTask(this.deleteTask.board, this.deleteTask.task)
-      //Todo: Teamboard aktualisieren, nachdem Backend das Teamboard gelöscht hat
     } catch (e) {
       console.log(e);
     }
@@ -400,8 +436,7 @@ export class AppComponent {
 
   //Change Title with Modal
   showModalChangeName: boolean = false;
-  board: any = null;
-  newName: string = "";
+  newTeamboardName: string = "";
 
   _showModalChangeName(board: Board) {
     this.showModalChangeName = true;
@@ -409,19 +444,19 @@ export class AppComponent {
   }
 
   _changeBoardName() {
+    if (this.newTeamboardName == "") {
+      this.toastr.error('The new Teambord-Name must not be empty')
+      return
+    }
     try {
-      if (this.newName == "") {
-        this.toastr.error('The new name must not be empty')
-      } else {
-        this.service.changeBoardName(this.board.id, this.newName)
-        this.toastr.success('Name of the board successfully changed')
-        //Todo: Teamboard aktualisieren
-      }
+      this.service.changeBoardName(this.board.id, this.newTeamboardName)
+      this.toastr.success('Name of the Teamboard successfully changed')
+      //Todo: Teamboard aktualisieren
     } catch (e) {
       console.log(e);
     }
     this.board = null;
-    this.newName = "";
+    this.newTeamboardName = "";
   }
 
   _deleteSubtask(board: Board, task: Task, state: State, subtask: Subtask) {
