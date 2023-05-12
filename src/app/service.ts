@@ -613,8 +613,6 @@ function getWebSocket(socketAuthentification: string, _boardsObservable: Observa
     type_of_edit: 'load'
   }
 
-  console.log("Sending Get boards...", JSON.stringify(message));
-
   webSocket.addEventListener("open", (event: any) => {
     // @ts-ignore
     webSocket.send(JSON.stringify(message));
@@ -625,7 +623,6 @@ function getWebSocket(socketAuthentification: string, _boardsObservable: Observa
 
   // @ts-ignore
   webSocket.addEventListener("message", (event) => {
-    console.log("Message from server ", event.data);
     try {
       parseData(JSON.parse(event.data.toString()), _boardsObservable);
     } catch (error) {
@@ -640,7 +637,8 @@ function getWebSocket(socketAuthentification: string, _boardsObservable: Observa
 
   // @ts-ignore
   webSocket.onmessage = (event) => {
-    console.log(event.data);
+    //fuer testzwecke
+    //console.log(event.data);
   };
 
   socket = webSocket;
@@ -650,7 +648,6 @@ function sendMessageToServer(message: string) {
   if (socket !== undefined) {
     socket.send(message);
   }
-
 }
 
 function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
@@ -1156,8 +1153,6 @@ function addPositionsToBoards(_boardsObservabel: Observable<Board[]>): Observabl
 
 function sortBoards(_boardsObservabel: Observable<Board[]>): Observable<Board[]> {
   let boardsArray: Board[] = getBoardsArray(_boardsObservabel);
-
-  console.log("sortBoards: ", boardsArray);
 
   for (let board of boardsArray) {
     for (let task of board.tasks) {
