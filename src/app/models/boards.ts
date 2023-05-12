@@ -32,5 +32,6 @@ export interface Subtask {
   position: number,
   name: string,
   description: string,
-  worker: string
+  worker: string,
+  priority: number
 }

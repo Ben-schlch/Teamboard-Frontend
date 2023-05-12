@@ -157,6 +157,45 @@ export class Service {
     }
   }
 
+  changePriorityFromSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputNumber: number) {
+
+    let boardsArray: Board[] = getBoardsArray(this._boardsObservable);
+
+    for (const boardsArrayElement of boardsArray) {
+      if (boardsArrayElement.id === boardGet.id) {
+
+        for (const tasksArrayElement of boardsArrayElement.tasks) {
+          if (tasksArrayElement === taskGet) {
+
+            for (const state of tasksArrayElement.states) {
+              if (state === stateGet) {
+
+                for (const subtask of state.subtasks) {
+                  if (subtask.id == subtaskGet.id) {
+                    subtask.priority = inputNumber;
+                    //send message to server
+                    let message: MessageChangeDescription = {
+                      kind_of_object: 'subtask',
+                      type_of_edit: 'edit',
+                      teamboard_id: boardGet.id,
+                      task_id: taskGet.id,
+                      state_id: stateGet.id,
+                      subtask: subtask
+                    }
+
+                    sendMessageToServer(JSON.stringify(message));
+                    break;
+
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   //add Task to Observable
   addTask(boardGet: Board, newTask: Task) {
     let boardsArray: Board[] = [];
@@ -951,6 +990,7 @@ function deleteSubtask(teamboardId: number, taskId: number, columnId: number, su
   const stateIndex = getStatePosition(boardsArray[boardIndex].tasks[taskIndex].states, columnId);
 
   const subtaskIndex = boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.findIndex(subtask => subtask === subtaskGet);
+
   // gibt es den Subtask noch, wenn nein tue nichts, sonst lösche ihn?
   if (subtaskIndex !== -1) {
     boardsArray[boardIndex].tasks[taskIndex].states[stateIndex].subtasks.splice(subtaskIndex, 1);
@@ -1099,7 +1139,8 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
             position: l,
             name: JSONObject[i].tasks[j].states[k].subtasks[l].name,
             description: JSONObject[i].tasks[j].states[k].subtasks[l].description,
-            worker: JSONObject[i].tasks[j].states[k].subtasks[l].worker
+            worker: JSONObject[i].tasks[j].states[k].subtasks[l].worker,
+            priority: JSONObject[i].tasks[j].states[k].subtasks[l].priority
           }
 
           subtasks.push(newSubtask);

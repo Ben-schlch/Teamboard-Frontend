@@ -277,7 +277,8 @@ export class AppComponent {
       description: '',
       worker: '',
       id: -1,
-      position: stateGet.subtasks.length
+      position: stateGet.subtasks.length,
+      priority: 0
     }
 
     this.service.addSubtask(boardGet, taskGet, stateGet, newSubtask);
@@ -349,6 +350,20 @@ export class AppComponent {
 
   changeDescription(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: string) {
     this.service.changeDescriptionFromSubtask(boardGet, taskGet, stateGet, subtaskGet, inputValue);
+  }
+
+  changePriority(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, inputValue: HTMLInputElement){
+    const value = Number(inputValue.value);
+    if (value < 0) {
+      inputValue.value = '0';
+    }
+    else if (value > 5) {
+      inputValue.value = '5';
+    }
+    else if(isNaN(value)){
+      inputValue.value = '0';
+    }
+    this.service.changePriorityFromSubtask(boardGet, taskGet, stateGet, subtaskGet, Number(inputValue.value));
   }
 
 
@@ -433,6 +448,10 @@ export class AppComponent {
     window.location.reload();
   }
 
+
+  getPriorityClass(priority: number): string {
+  return `priority-${priority}`;
+  }
 
 }
 
