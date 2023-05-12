@@ -438,7 +438,6 @@ export class AppComponent {
   _deleteTask() {
     try {
       this.service.deleteTask(this.deleteTask.board, this.deleteTask.task)
-      //Todo: Teamboard aktualisieren, nachdem Backend das Teamboard gelöscht hat
     } catch (e) {
       console.log(e);
     }
