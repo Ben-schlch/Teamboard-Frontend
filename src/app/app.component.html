@@ -156,13 +156,13 @@
             </form>
             <button
               type="button"
-              class="btn"
+              class="btn label"
               (click)="_showModalDeleteTask(board, task);
             $event.preventDefault();
             $event.stopPropagation();
             "
             >
-              <b>Löschen: "{{task.name}}"</b>
+              <img src="assets/delete.png" width=40% alt="Lösche Task">
             </button>
           </clr-accordion-title>
           <clr-accordion-content *clrIfExpanded>
@@ -172,7 +172,7 @@
 
 
               <div cdkDropListGroup>
-                <div *ngFor="let state of task.states" cdkDrag style="display: inline-block">
+                <div *ngFor="let state of task.states" cdkDrag class="inlineBlock">
 
                   <div class="example-container">
 
@@ -184,7 +184,7 @@
                       (cdkDropListDropped)="drop($event, board, task, state)"
                       class="example-list">
                       <!--              columns      -->
-                      <div style="display: inline-flex">
+                      <div class="inlineFlex">
                         <h4>
                           {{state.state}}
                         </h4>
@@ -210,7 +210,7 @@
 
                         <button
                           type="button"
-                          class="btn largeButton"
+                          class="btn label"
                           (click)="_deleteState(board, task, state);
                                         $event.preventDefault();
                                         $event.stopPropagation()"

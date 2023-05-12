@@ -4,7 +4,6 @@ import {NonNullableFormBuilder, Validators} from "@angular/forms";
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ClarityModule, ClrLoadingState} from '@clr/angular';
-// import { AppComponent } from './app.component';
 import {Service} from './service';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import {ToastrService} from 'ngx-toastr';
@@ -12,10 +11,6 @@ import {HttpStatusCode} from '@angular/common/http';
 import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip} from 'rxjs';
 import {ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon} from '@cds/core/icon';
 import {FormsModule} from "@angular/forms";
-
-// import 'clarity-icons';
-// import 'clarity-icons/shapes/essential-shapes';
-// import 'clarity-icons/shapes/technology-shapes';
 
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
@@ -87,9 +82,6 @@ export class AppComponent {
   @Input()
   dep: any;
 
-
-  // // @ts-ignore
-  // _isChecked: any =  document.getElementById("isRegistration")?.checked;
   _websocketAuthentification: string = '';
 
   _boards$ = this.service._boardsObservable.pipe(
@@ -119,7 +111,6 @@ export class AppComponent {
     };
 
     // use stored email
-
     this.service.login(person).subscribe({
       next: (tokenmessage: MessageToken) => {
         this.toastr.success('Logged in successfully');
@@ -140,7 +131,7 @@ export class AppComponent {
             this.toastr.error('Login failed, server unreachable');
             break;
           case HttpStatusCode.NotAcceptable:
-            this.toastr.error('Login failed, you are not a correct User');
+            this.toastr.error('Login failed. Please check your password complexity (Upper and lower letter and numer, at least 8 characters)');
             break;
           default:
             this.toastr.error('Login failed');
@@ -175,7 +166,6 @@ export class AppComponent {
 
     if (person_register.pwd !== person_register.pwd_wdh) {
       this.toastr.error("Passwörter nicht identisch");
-      // set form to invalid?
       return;
     }
     this._createButtonState = ClrLoadingState.LOADING;
@@ -286,7 +276,7 @@ export class AppComponent {
 
   _addTask(taskName: string, boardGet: Board) {
 
-    //open modal to add
+    //generate new Task
     let newTask: Task = {
       name: taskName,
       states: [],
@@ -298,8 +288,7 @@ export class AppComponent {
 
 
   _addState(boardGet: Board, taskGet: Task, stateName: string) {
-    //todo: add state
-
+  //generate new State
     let newState: State = {
       id: -1,
       state: stateName,
@@ -311,6 +300,7 @@ export class AppComponent {
   }
 
   _addBoard(boardName: string) {
+    //generate new Board
     let newBoard: Board = {
       id: -1,
       name: boardName,
@@ -327,6 +317,7 @@ export class AppComponent {
 
   // Board for modals
   board: any = null;
+
 
   //Add User with modal
   showModalAddUser: boolean = false;
@@ -363,7 +354,6 @@ export class AppComponent {
     this.showModalDeleteUser = true
     this.board = board
   }
-
 
   _deleteUserFromBoard() {
     if (this.email == "") {
@@ -514,10 +504,3 @@ function validateEmail(email: string | null) {
   return res.test(String(email).toLowerCase());
 }
 
-function sortBoards(_boards$: Observable<Board[]>): Observable<Board[]> {
-  let boardsArray: Board[] = getBoardsArray(_boards$);
-
-  //todo: sort boards
-
-  return of(boardsArray);
-}

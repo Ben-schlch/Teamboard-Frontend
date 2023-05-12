@@ -36,6 +36,14 @@ footer {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.inlineBlock {
+  display: inline-block;
+}
+
+.inlineFlex{
+  display: inline-flex;
+}
+
 .spacer {
   flex: 1;
 }
@@ -116,4 +124,8 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.clr-form{
+  display:inline-block !important;
 }
