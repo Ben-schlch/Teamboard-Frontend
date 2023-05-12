@@ -44,6 +44,24 @@ footer {
   font-size: large;
 }
 
+::ng-deep .clr-control-container {
+  width: 100%!important
+}
+
+.clr-control-container {
+  width: 100%;
+}
+
+.width textarea{
+  width: 100%;
+  height: 100px;
+  resize: none;
+  border: none;
+  outline: 0;
+}
+
+
+
 .numberinput-padding {
   display: inline-block;
   padding-right: 0.5rem;
