@@ -172,7 +172,7 @@
 
 
               <div cdkDropListGroup>
-                <div *ngFor="let state of task.states" cdkDrag style="display: inline-block">
+                <div *ngFor="let state of task.states" cdkDrag class="inlineBlock">
 
                   <div class="example-container">
 
@@ -184,7 +184,7 @@
                       (cdkDropListDropped)="drop($event, board, task, state)"
                       class="example-list">
                       <!--              columns      -->
-                      <div style="display: inline-flex">
+                      <div class="inlineFlex">
                         <h4>
                           {{state.state}}
                         </h4>
