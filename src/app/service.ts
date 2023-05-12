@@ -639,7 +639,6 @@ export class Service {
     }
     sendMessageToServer(JSON.stringify(message));
   }
-
 }
 
 function getWebSocket(socketAuthentification: string, _boardsObservable: Observable<Board[]>, successCallback: () => void) {
@@ -709,10 +708,9 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
         case 'delete':
           deleteBoard(JSONObject.teamboard, _boardsObservabel);
           break;
-        case 'load': {
+        case 'load':
           _boardsObservabel = loadBoards(JSONObject.teamboard, _boardsObservabel);
           break;
-        }
       }
       break;
 
@@ -725,6 +723,13 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
           break;
         case 'delete':
           deleteTask(JSONObject.teamboard_id, JSONObject.task, _boardsObservabel);
+          break;
+      }
+      break;
+    case 'teamboard':
+      switch(JSONObject.type_of_edit) {
+        case 'addUser':
+          addBoard(JSONObject.teamboard, _boardsObservabel);
           break;
       }
       break;
@@ -1264,6 +1269,5 @@ function getStatePosition(stateArray: State[], state_id: number): number {
 function getSubtaskPosition(subtaskArray: Subtask[], subtask_id: number): number {
 
   return subtaskArray.findIndex(subtask => subtask.id === subtask_id);
-
 }
 
