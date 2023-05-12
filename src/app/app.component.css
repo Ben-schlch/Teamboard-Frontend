@@ -36,6 +36,14 @@ footer {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.inlineBlock {
+  display: inline-block;
+}
+
+.inlineFlex{
+  display: inline-flex;
+}
+
 .spacer {
   flex: 1;
 }
