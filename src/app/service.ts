@@ -701,7 +701,6 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
 
   switch (JSONObject.kind_of_object) {
     case 'teamboard':
-      //TODO: add/delete Teamboard
       switch (JSONObject.type_of_edit) {
         case 'addUser':
           addBoard(JSONObject.teamboard, _boardsObservabel);
