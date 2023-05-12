@@ -665,10 +665,7 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
       //TODO: add/delete Teamboard
       switch (JSONObject.type_of_edit) {
         case 'addUser':
-          console.log("Email " + JSONObject.email + "added to " + JSONObject.teamboard_id)
-          break;
-        case 'deleteUser':
-          console.log("Email " + JSONObject.email + "delete from " + JSONObject.teamboard_id)
+          addBoard(JSONObject.teamboard, _boardsObservabel);
           break;
       }
       break;
@@ -679,7 +676,7 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
           addBoard(JSONObject.teamboard, _boardsObservabel);
           break;
         case 'delete':
-          deleteBoard(JSONObject.teamboard, _boardsObservabel);
+          deleteBoardWithID(JSONObject.teamboard, _boardsObservabel);
           break;
         case 'load': {
           _boardsObservabel = loadBoards(JSONObject.teamboard, _boardsObservabel);
@@ -775,21 +772,17 @@ function addBoard(addBoard: any, _boardsObservable: Observable<Board[]>): void {
   _boardsObservable = of(boardsArray);
 }
 
-function deleteBoard(deleteBoard: any, _boardsObservable: Observable<Board[]>) {
+function deleteBoardWithID(deleteBoard: any, _boardsObservable: Observable<Board[]>) {
   let boardsArray: Board[] = [];
 
-  let newBoard: Board = {
-    id: deleteBoard.id,
-    name: deleteBoard.name,
-    tasks: deleteBoard.tasks
-  }
+  let deleteBoardID = deleteBoard.id;
 
   if (_boardsObservable !== undefined) {
     //move Observable to array to add subtask
-    let board: Board[] = getBoardsArray(_boardsObservable);
+    boardsArray = getBoardsArray(_boardsObservable);
   }
 
-  const index = boardsArray.findIndex((board) => board.id === newBoard.id);
+  const index = boardsArray.findIndex((board) => board.id === deleteBoardID);
 
   //wenn nicht gefunden nichts machen
   if (index !== -1) {
