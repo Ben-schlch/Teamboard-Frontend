@@ -62,4 +62,58 @@ footer {
 
 
 
+.numberinput-padding {
+  display: inline-block;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
 
+.priority-input {
+  width: 30px;
+  border-radius: 0.6rem;
+  border: 0.05rem solid;
+  border-color: hsl(198, 0%, 55%);
+  height: 1.05rem;
+
+}
+
+.priority-0 {
+  border-color: black !important;
+}
+
+.priority-1 {
+  border-color: lightgreen !important;
+  box-shadow: 0 0 0 1px lightgreen;
+}
+
+.priority-2 {
+  border-color: greenyellow !important;
+  box-shadow: 0 0 0 1px greenyellow;
+}
+
+.priority-3 {
+  border-color: gold !important;
+  box-shadow: 0 0 0 1px gold;
+}
+
+.priority-4 {
+  border-color: orange !important;
+  box-shadow: 0 0 0 1px orange;
+}
+
+.priority-5 {
+  border-color: red !important;
+  box-shadow: 0 0 0 1px red;
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
