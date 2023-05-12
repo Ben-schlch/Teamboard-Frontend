@@ -156,13 +156,13 @@
             </form>
             <button
               type="button"
-              class="btn"
+              class="btn label"
               (click)="_showModalDeleteTask(board, task);
             $event.preventDefault();
             $event.stopPropagation();
             "
             >
-              <b>Löschen: "{{task.name}}"</b>
+              <img src="assets/delete.png" width=40% alt="Lösche Task">
             </button>
           </clr-accordion-title>
           <clr-accordion-content *clrIfExpanded>

@@ -117,3 +117,7 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.clr-form{
+  display:inline-block !important;
+}
