@@ -263,6 +263,7 @@
 
 <footer>
   <button class="btn btn-primary" (click)="basic=true">IMPRESSUM</button>
+  <button class="btn btn-primary" (click)="datenschutz=true">DATENSCHUTZ</button>
 </footer>
 
 </body>
@@ -422,8 +423,15 @@
       Thomas Schwenke</a></p>
   </div>
 
-  <!--Datenschutz-->
-   <h3 class="modal-title">Datenschutzerklärung</h3>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="basic = false">Ok</button>
+  </div>
+</clr-modal>
+
+<!--Datenschutz-->
+<clr-modal [(clrModalOpen)]="datenschutz" [clrModalSize]="'xl'">
+  <h3 class="modal-title">Datenschutz</h3>
   <div class="modal-body">
     <h1>Datenschutzerklärung</h1>
 <h2 id="m4158">Präambel</h2>
@@ -470,7 +478,6 @@ Die Messung der Öffnungsraten und der Klickraten sowie Speicherung der Messerge
 
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline" (click)="basic = false">Cancel</button>
     <button type="button" class="btn btn-primary" (click)="basic = false">Ok</button>
   </div>
 </clr-modal>
