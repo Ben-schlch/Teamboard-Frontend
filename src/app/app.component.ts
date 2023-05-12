@@ -185,7 +185,7 @@ export class AppComponent {
             this.toastr.error('Registration failed, server unreachable');
             break;
           case HttpStatusCode.NotAcceptable:
-            this.toastr.error('Registration failed, you are not a correct User');
+            this.toastr.error('Registration failed. Please also check your password complecity(8 characters including Upper, lower letter and number)');
             break;
           default:
             this.toastr.error('Registration failed');
