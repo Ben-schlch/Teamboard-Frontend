@@ -130,3 +130,6 @@ input[type=number] {
 .clr-form{
   display:inline-block !important;
 }
+.leftborder{
+  padding-left: 1rem;
+}
