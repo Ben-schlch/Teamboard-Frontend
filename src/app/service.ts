@@ -650,6 +650,7 @@ function sendMessageToServer(message: string) {
   }
 }
 
+
 function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
 
   switch (JSONObject.kind_of_object) {
@@ -658,6 +659,8 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
         case 'addUser':
           addBoard(JSONObject.teamboard, _boardsObservabel);
           break;
+        case 'changeBoardName':
+          changeBoardName(JSONObject.teamboard_id, JSONObject.name_new, _boardsObservabel);
       }
       break;
 
@@ -731,6 +734,25 @@ function parseData(JSONObject: any, _boardsObservabel: Observable<Board[]>) {
     default:
       loadBoards(JSONObject, _boardsObservabel);
   }
+}
+
+
+function changeBoardName(teamboard_id: number, name_new: string, _boardsObservable: Observable<Board[]>): void {
+  let boardsArray: Board[] = [];
+
+  if (_boardsObservable !== undefined) {
+    //move Observable to array to add subtask
+    boardsArray = getBoardsArray(_boardsObservable);
+  }
+
+  const index = boardsArray.findIndex((board) => board.id === teamboard_id);
+
+  //wenn nicht gefunden nichts machen
+  if (index !== -1) {
+    boardsArray.at(index).name = name_new;
+  }
+
+  _boardsObservable = addPositionsToBoards(of(boardsArray));
 }
 
 function addBoard(addBoard: any, _boardsObservable: Observable<Board[]>): void {
