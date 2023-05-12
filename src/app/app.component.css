@@ -42,6 +42,7 @@ footer {
 
 .inlineFlex{
   display: inline-flex;
+  align-items: baseline;
 }
 
 .spacer {
