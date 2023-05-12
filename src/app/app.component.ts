@@ -140,7 +140,7 @@ export class AppComponent {
             this.toastr.error('Login failed, server unreachable');
             break;
           case HttpStatusCode.NotAcceptable:
-            this.toastr.error('Login failed, you are not a correct User');
+            this.toastr.error('Login failed. Please check your password complexity (Upper and lower letter and numer, at least 8 characters)');
             break;
           default:
             this.toastr.error('Login failed');
