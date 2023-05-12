@@ -46,12 +46,12 @@
 
 <body>
 
-<clr-tabs class="leftborder">
+<clr-tabs>
   <!--  alle Boards der liste anzeigen-->
   <!--  !!! async wird als fehler markiert, da intelliJ es nicht kennt. !!!-->
   <clr-tab *ngFor="let board of _boards$ | async">
     <!--show boardname in tab mit den möglichen beabeitungsmethoden diese brauchen stopPropagation, da sonst der tab auf und zu geht-->
-    <div clrTabLink id=board.name>
+    <div clrTabLink id=board.name class="leftborder">
       {{board.name}}
       <!--Dropdown-Menu to Edit Teamboards (Change name, delete, addUser, deleteUser)-->
       <clr-dropdown clrTabLink>
