@@ -147,6 +147,7 @@ input[type=number] {
   position: relative;
   width: 4rem;
   height: 1rem;
+  background: none;
 }
 
 .color-picker inout{

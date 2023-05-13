@@ -228,7 +228,7 @@
                           </div>
                         </div>
                         <div class="card-block width">
-                                  <textarea class="width" clrTextarea #description name="description" placeholder="Beschreibung" [value]=subtask.description
+                                  <textarea class="width" clrTextarea #description name="description" placeholder="Beschreibung" [style.background-color]="setTransparency(subtask.color)" [value]=subtask.description
                                             (change)="changeDescription(board, task, state, subtask, description.value)" >
                                   </textarea>
 
