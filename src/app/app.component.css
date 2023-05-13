@@ -136,11 +136,4 @@ input[type=number] {
 }
 
 
-
-
 /* New css colorpicker */
-.color-picker {
-  transition: background-color 0.3s;
-}
-
-
