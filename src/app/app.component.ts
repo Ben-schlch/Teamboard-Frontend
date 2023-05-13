@@ -483,11 +483,15 @@ export class AppComponent {
   }
 
   setTransparency(color: string): string {
-    // Remove any existing alpha value
-    const colorWithoutAlpha = color.slice(0, 7);
+    if (color) {
+      // Remove any existing alpha value
+      const colorWithoutAlpha = color.slice(0, 7);
 
-    // Set the transparency to 0.3 (hex: 4C)
-    return colorWithoutAlpha + '4C';
+      // Set the transparency to 0.3 (hex: 4C)
+      return colorWithoutAlpha + '4C';
+    } else {
+      return '';
+    }
   }
 }
 
