@@ -175,6 +175,12 @@ input[type=number] {
 .hex-text.ng-star-inserted{
   display:none;
 }
+.hex-text.ng-star-inserted {
+    display: none !important;
+}
+.type-policy.ng-star-inserted {
+  display:none;
+}
 
 .label img{
   width: 19.2px;
