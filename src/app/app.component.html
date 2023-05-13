@@ -223,8 +223,9 @@
                       <div class="card" [style.background-color]="setTransparency(subtask.color)" *ngFor="let subtask of state.subtasks" cdkDrag>
                         <div class="card-header">
                           <h3 class="card-name">{{subtask.name}}</h3>
-
-                          <input class="color-picker" [(colorPicker)]="subtask.color" [cpAlphaChannel]="'disabled'" />
+                          <div class="color-picker label">
+                            <input [(colorPicker)]="subtask.color" [cpAlphaChannel]="'disabled'" />
+                          </div>
                         </div>
                         <div class="card-block width">
                                   <textarea class="width" clrTextarea #description name="description" placeholder="Beschreibung" [value]=subtask.description
