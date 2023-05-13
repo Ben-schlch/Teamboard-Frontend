@@ -224,7 +224,7 @@
                         <div class="card-header">
                           <h3 class="card-header">{{subtask.name}}</h3>
 
-                          <input [(colorPicker)]="subtask.color" [style.background]="(subtask.color)" [cpAlphaChannel]="'disabled'" />
+                          <input [(colorPicker)]="subtask.color" [style.background]="'rgba(' + subtask.color.substring(1) + ', 0.3)'" [cpAlphaChannel]="'disabled'" />
                         </div>
                         <div class="card-block width">
                                   <textarea class="width" clrTextarea #description name="description" placeholder="Beschreibung" [value]=subtask.description
