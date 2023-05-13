@@ -172,6 +172,10 @@ input[type=number] {
   text-align: center;
 }
 
+.hex-text.ng-star-inserted{
+  display:none;
+}
+
 .label img{
   width: 19.2px;
 }
