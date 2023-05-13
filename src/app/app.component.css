@@ -181,6 +181,12 @@ input[type=number] {
 .type-policy.ng-star-inserted {
   display:none!important;
 }
+.color-picker hex-text{
+  display:none !important;
+}
+.color-picker .type-policy{
+  display:none !important;
+}
 
 .label img{
   width: 19.2px;
