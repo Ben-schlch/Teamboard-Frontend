@@ -224,7 +224,7 @@
                         <div class="card-header">
                           <h3 class="card-name">{{subtask.name}}</h3>
                           <div class="color-picker label">
-                            <input [(colorPicker)]="subtask.color" (colorPickerClose)="changeSubtaskColor(board, task, state, subtask, $event)" [cpAlphaChannel]="'disabled'" value="Farbe" readonly/>
+                            <input [(colorPicker)]="subtask.color" (colorPickerClose)="changeSubtaskColor(board, task, state, subtask, $event)" [cpPosition]="'top'" [cpAlphaChannel]="'disabled'" value="Farbe" readonly/>
                           </div>
                         </div>
                         <div class="card-block width">
