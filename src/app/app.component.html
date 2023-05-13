@@ -222,6 +222,8 @@
                       </div>
                       <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
                         <h3 class="card-header">{{subtask.name}}</h3>
+
+                        <input type="color" #colorPicker (change)="changeSubtaskColor(subtask, colorPicker.value)" class="color-picker">
                         <div class="card-block width">
                                   <textarea class="width" clrTextarea #description name="description" placeholder="Beschreibung" [value]=subtask.description
                                             (change)="changeDescription(board, task, state, subtask, description.value)" >

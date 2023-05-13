@@ -84,6 +84,7 @@ footer {
   border-color: hsl(198, 0%, 55%);
   height: 1.05rem;
 
+  text-align: center;
 }
 
 .priority-0 {
@@ -132,4 +133,32 @@ input[type=number] {
 }
 .leftborder{
   padding-left: 1rem;
+}
+
+
+
+
+/* New css colorpicker */
+.card .card-header {
+  display: flex;
+  align-items: center;
+}
+
+.card .card-header input.color-picker {
+  margin-left: 8px;
+}
+
+.card .card-header,
+.card .card-block {
+  background-color: rgba(0, 0, 0, 0.3); /* Default background color with 0.3 opacity */
+}
+
+.card .card-block {
+  /* Rest of the styles... */
+}
+
+/* Apply the picked color to the subtask */
+.card .card-header[style],
+.card .card-block[style] {
+  background-color: var(--subtask-color, rgba(0, 0, 0, 0.3));
 }
