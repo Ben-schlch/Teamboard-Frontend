@@ -486,8 +486,8 @@ export class AppComponent {
   return `priority-${priority}`;
   }
 
-  changeSubtaskColor(subtask, color: string) {
-    subtask.color = color;
+  changeSubtaskColor(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, color: string) {
+    this.service.changeColorofSubtask(boardGet, taskGet, stateGet, subtaskGet, color);
   }
 
 }

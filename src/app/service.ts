@@ -166,6 +166,34 @@ export class Service {
 
   }
 
+    changeColorofSubtask(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, color: string) {
+
+    let boardsArray: Board[] = getBoardsArray(this._boardsObservable);
+
+    const boardsIndex: number = getBoardPosition(boardsArray, boardGet.id);
+    const tasksIndex: number = getTaskPosition(boardsArray[boardsIndex].tasks, taskGet.id);
+    const stateIndex: number = getStatePosition(boardsArray[boardsIndex].tasks[tasksIndex].states, stateGet.id);
+    const subtaskIndex: number = getSubtaskPosition(boardsArray[boardsIndex].tasks[tasksIndex].states[stateIndex].subtasks, subtaskGet.id);
+
+
+    boardsArray[boardsIndex].tasks[tasksIndex].states[stateIndex].subtasks[subtaskIndex].color = color;
+
+    const subtask = boardsArray[boardsIndex].tasks[tasksIndex].states[stateIndex].subtasks[subtaskIndex];
+
+    //send message to server
+    let message: MessageChangeDescription = {
+      kind_of_object: 'subtask',
+      type_of_edit: 'edit',
+      teamboard_id: boardGet.id,
+      task_id: taskGet.id,
+      state_id: stateGet.id,
+      subtask: subtask
+    }
+
+    sendMessageToServer(JSON.stringify(message));
+
+  }
+
   //add Task to Observable
   addTask(boardGet: Board, newTask: Task) {
     let boardsArray: Board[] = [];
