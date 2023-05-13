@@ -142,4 +142,5 @@ input[type=number] {
 }
 .color-picker{
   float: right;
+  display: inline-block;
 }
