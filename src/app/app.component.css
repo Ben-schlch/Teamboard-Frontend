@@ -137,3 +137,6 @@ input[type=number] {
 
 
 /* New css colorpicker */
+.card-name{
+  display:inline-flex;
+}
