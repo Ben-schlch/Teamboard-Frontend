@@ -12,7 +12,7 @@ import { ToastrModule } from 'ngx-toastr';
 // importing the sessionstorage
 import { NgxWebstorageModule } from 'ngx-webstorage';
 //color picker
-import { ColorPickerModule } from 'ngx-color-picker';
+import { ColorPickerModule, Color} from 'ngx-color-picker';
 
 @NgModule({
   declarations: [
