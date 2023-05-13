@@ -33,5 +33,6 @@ export interface Subtask {
   name: string,
   description: string,
   worker: string,
-  priority: number
+  priority: number,
+  color: string
 }
