@@ -271,7 +271,8 @@ export class AppComponent {
       worker: '',
       id: -1,
       position: stateGet.subtasks.length,
-      priority: 0
+      priority: 0,
+      color: ''
     }
 
     this.service.addSubtask(boardGet, taskGet, stateGet, newSubtask);

@@ -1104,7 +1104,8 @@ function loadBoards(JSONObject: any, _boardsObservabel: Observable<Board[]>): Ob
             name: JSONObject[i].tasks[j].states[k].subtasks[l].name,
             description: JSONObject[i].tasks[j].states[k].subtasks[l].description,
             worker: JSONObject[i].tasks[j].states[k].subtasks[l].worker,
-            priority: JSONObject[i].tasks[j].states[k].subtasks[l].priority
+            priority: JSONObject[i].tasks[j].states[k].subtasks[l].priority,
+            color: JSONObject[i].tasks[j].states[k].subtasks[l].color
           }
 
           subtasks.push(newSubtask);
