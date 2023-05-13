@@ -140,3 +140,6 @@ input[type=number] {
 .card-name{
   display:inline-flex;
 }
+.color-picker{
+  float: right;
+}
