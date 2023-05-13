@@ -88,7 +88,7 @@ footer {
 }
 
 .priority-0 {
-  border-color: black !important;
+  border-color: hsl(198, 0%, 55%) !important;
 }
 
 .priority-1 {
@@ -160,6 +160,7 @@ input[type=number] {
 }
 
 .color-picker * {
+  font-size:0.55rem;
   border: none;
   outline: none;
   background: none;
@@ -167,4 +168,8 @@ input[type=number] {
   width: auto;
   height: auto;
   text-align: center;
+}
+
+.label img{
+  width: 19.2px;
 }
