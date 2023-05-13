@@ -153,12 +153,7 @@ input[type=number] {
   background-color: rgba(0, 0, 0, 0.3); /* Default background color with 0.3 opacity */
 }
 
-.card .card-block {
-  /* Rest of the styles... */
-}
-
 /* Apply the picked color to the subtask */
-.card .card-header[style],
-.card .card-block[style] {
+.card {
   background-color: var(--subtask-color, rgba(0, 0, 0, 0.3));
 }

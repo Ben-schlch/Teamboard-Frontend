@@ -12,9 +12,6 @@ import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscrip
 import {ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon} from '@cds/core/icon';
 import {FormsModule} from "@angular/forms";
 
-//added:
-import { ViewChild, ElementRef } from '@angular/core';
-
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
 import '@clr/icons/shapes/media-shapes';
