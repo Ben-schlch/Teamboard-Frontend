@@ -172,14 +172,6 @@ input[type=number] {
   text-align: center;
 }
 
-.hex-text * {
-  display:none !important;
-}
-.type-policy * {
-  display:none!important;
-}
-
-
 .label img{
   width: 19.2px;
 }
