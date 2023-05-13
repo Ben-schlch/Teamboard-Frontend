@@ -139,21 +139,6 @@ input[type=number] {
 
 
 /* New css colorpicker */
-.card .card-header {
-  display: flex;
-  align-items: center;
-}
-
-.card .card-header input.color-picker {
-  margin-left: 8px;
-}
-
-.card .card-header,
-.card .card-block {
-  background-color: rgba(0, 0, 0, 0.3); /* Default background color with 0.3 opacity */
-}
-
-/* Apply the picked color to the subtask */
-.card {
-  background-color: var(--subtask-color, rgba(0, 0, 0, 0.3));
+.color-picker {
+  transition: background-color 0.3s;
 }
