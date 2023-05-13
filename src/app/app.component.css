@@ -145,4 +145,16 @@ input[type=number] {
   margin-top: 1.2rem;
   margin-bottom: 0;
   position: relative;
+  width: 4rem;
+  height: 1rem;
+}
+
+.color-picker inout{
+  border: none;
+  outline: none;
+  background: none;
+
+  width: auto;
+  height: auto;
+  text-align: center;
 }
