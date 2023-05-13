@@ -172,21 +172,13 @@ input[type=number] {
   text-align: center;
 }
 
-.hex-text.ng-star-inserted{
+.hex-text * {
   display:none !important;
 }
-.hex-text.ng-star-inserted {
-    display: none !important;
-}
-.type-policy.ng-star-inserted {
+.type-policy * {
   display:none!important;
 }
-.color-picker hex-text{
-  display:none !important;
-}
-.color-picker .type-policy{
-  display:none !important;
-}
+
 
 .label img{
   width: 19.2px;
