@@ -158,3 +158,13 @@ input[type=number] {
   height: auto;
   text-align: center;
 }
+
+.color-picker * {
+  border: none;
+  outline: none;
+  background: none;
+
+  width: auto;
+  height: auto;
+  text-align: center;
+}
