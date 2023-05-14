@@ -220,8 +220,13 @@
                         </button>
 
                       </div>
-                      <div class="card" *ngFor="let subtask of state.subtasks" cdkDrag>
-                        <h3 class="card-header">{{subtask.name}}</h3>
+                      <div class="card" [style.background-color]="setTransparency(subtask.color)" *ngFor="let subtask of state.subtasks" cdkDrag>
+                        <div class="card-header">
+                          <h3 class="card-name">{{subtask.name}}</h3>
+                          <div class="color-picker label">
+                            <input [(colorPicker)]="subtask.color" (colorPickerClose)="changeSubtaskColor(board, task, state, subtask, $event)" [cpAlphaChannel]="'disabled'" value="Farbe" readonly/>
+                          </div>
+                        </div>
                         <div class="card-block width">
                                   <textarea class="width" clrTextarea #description name="description" placeholder="Beschreibung" [value]=subtask.description
                                             (change)="changeDescription(board, task, state, subtask, description.value)" >

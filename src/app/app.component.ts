@@ -1,16 +1,11 @@
 import {Component, inject, Input} from '@angular/core';
-import {NgModule} from '@angular/core';
 import {NonNullableFormBuilder, Validators} from "@angular/forms";
-import {BrowserModule} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {ClarityModule, ClrLoadingState} from '@clr/angular';
+import {ClrLoadingState} from '@clr/angular';
 import {Service} from './service';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 import {ToastrService} from 'ngx-toastr';
 import {HttpStatusCode} from '@angular/common/http';
-import {concat, forkJoin, from, map, mergeAll, Observable, of, Subject, Subscription, tap, zip} from 'rxjs';
-import {ClarityIcons, userIcon, homeIcon, vmBugIcon, cogIcon, eyeIcon} from '@cds/core/icon';
-import {FormsModule} from "@angular/forms";
+import {map, Observable, of, Subscription} from 'rxjs';
 
 import '@clr/icons';
 import '@clr/icons/shapes/essential-shapes';
@@ -19,7 +14,7 @@ import '@clr/icons/shapes/social-shapes';
 import '@clr/icons/shapes/travel-shapes';
 import '@clr/icons/shapes/technology-shapes';
 import '@clr/icons/shapes/chart-shapes';
-import {Board, Task, State, Subtask, Person} from './models/boards';
+import {Board, Person, State, Subtask, Task} from './models/boards';
 import {MessageToken} from './models/communication';
 
 @Component({
@@ -268,7 +263,8 @@ export class AppComponent {
       worker: '',
       id: -1,
       position: stateGet.subtasks.length,
-      priority: 0
+      priority: 0,
+      color: ''
     }
 
     this.service.addSubtask(boardGet, taskGet, stateGet, newSubtask);
@@ -482,6 +478,21 @@ export class AppComponent {
   return `priority-${priority}`;
   }
 
+  changeSubtaskColor(boardGet: Board, taskGet: Task, stateGet: State, subtaskGet: Subtask, color: string) {
+    this.service.changeColorofSubtask(boardGet, taskGet, stateGet, subtaskGet, color);
+  }
+
+  setTransparency(color: string): string {
+    if (color) {
+      // Remove any existing alpha value
+      const colorWithoutAlpha = color.slice(0, 7);
+
+      // Set the transparency to 0.3 (hex: 4C)
+      return colorWithoutAlpha + '4C';
+    } else {
+      return '';
+    }
+  }
 }
 
 function getBoardsArray(_boardsObservable: Observable<Board[]>): Board[] {

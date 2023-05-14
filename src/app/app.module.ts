@@ -11,6 +11,8 @@ import { ToastrModule } from 'ngx-toastr';
 
 // importing the sessionstorage
 import { NgxWebstorageModule } from 'ngx-webstorage';
+//color picker
+import { ColorPickerModule} from 'ngx-color-picker';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,8 @@ import { NgxWebstorageModule } from 'ngx-webstorage';
     DragDropModule,
     HttpClientModule,
     NgxWebstorageModule.forRoot(),
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    ColorPickerModule
   ],
   providers: [HttpClient],
   bootstrap: [AppComponent]

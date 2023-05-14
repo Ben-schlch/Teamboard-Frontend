@@ -67,6 +67,7 @@ footer {
   resize: none;
   border: none;
   outline: 0;
+  background: none;
 }
 
 
@@ -84,10 +85,11 @@ footer {
   border-color: hsl(198, 0%, 55%);
   height: 1.05rem;
 
+  text-align: center;
 }
 
 .priority-0 {
-  border-color: black !important;
+  border-color: hsl(198, 0%, 55%) !important;
 }
 
 .priority-1 {
@@ -132,4 +134,44 @@ input[type=number] {
 }
 .leftborder{
   padding-left: 1rem;
+}
+
+
+/* New css colorpicker */
+.card-name{
+  display:inline-flex;
+}
+.color-picker{
+  float: right;
+  margin-top: 1.2rem;
+  margin-bottom: 0;
+  position: relative;
+  width: 4rem;
+  height: 1rem;
+  background: none;
+}
+
+.color-picker inout{
+  border: none;
+  outline: none;
+  background: none;
+
+  width: auto;
+  height: auto;
+  text-align: center;
+}
+
+.color-picker * {
+  font-size:0.55rem;
+  border: none;
+  outline: none;
+  background: none;
+
+  width: auto;
+  height: auto;
+  text-align: center;
+}
+
+.label img{
+  width: 19.2px;
 }
