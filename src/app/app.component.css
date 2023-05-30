@@ -17,6 +17,10 @@
   padding: 3.2rem 8rem 3.2rem 10em;
 }
 
+body {
+  margin-bottom: 50px;
+}
+
 footer {
   text-align: center;
   position: fixed;
